@@ -1,0 +1,64 @@
+project('tt', 'c')
+
+cc = meson.get_compiler('c')
+
+m_dep = cc.find_library('m', required : false)
+glfw_dep = dependency('glfw3')
+glew_dep = dependency('glew')
+
+dependencies = [m_dep, glfw_dep, glew_dep]
+
+includes = include_directories('include')
+
+
+### Library ###
+
+lib_sources = [
+  #  'src/tt-component-position.c',
+  'src/tt-entities.c',
+  'src/tt-storage-vector.c',
+]
+
+lib = both_libraries(
+  'tt', lib_sources,
+  include_directories : includes,
+  dependencies : dependencies,
+  install : true,
+)
+
+
+### Game ###
+
+test_exe = executable(
+  'tt',
+  'src/main.c',
+  include_directories : includes,
+  dependencies : dependencies,
+  # link_with : lib,
+  install : true,
+)
+
+
+### Tests ###
+
+test_includes = include_directories('include', 'tests')
+
+test_suites = {
+  'entities': [
+    'new',
+    'release',
+  ]
+}
+
+foreach suite, tests : test_suites
+  foreach test_name : tests
+    test_exe = executable(
+      'test-' + suite + '-' + test_name,
+      'tests/' + suite + '/test_' + test_name + '.c',
+      include_directories : test_includes,
+      link_with : lib,
+      install : false,
+    )
+    test(suite + ':' + test_name, test_exe, timeout: 120)
+  endforeach
+endforeach
