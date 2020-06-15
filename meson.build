@@ -43,23 +43,18 @@ test_exe = executable(
 
 test_includes = include_directories('include', 'tests')
 
-test_suites = {
-  'entities': [
-    'new',
-    'release',
-    'realloc_free_list',
-  ]
-}
+test_names = [
+  'tt-test-entities-new',
+  'tt-test-entities-release',
+  'tt-test-entities-realloc-free-list',
+]
 
-foreach suite, tests : test_suites
-  foreach test_name : tests
-    test_exe = executable(
-      'test-' + suite + '-' + test_name,
-      'tests/' + suite + '/test_' + test_name + '.c',
-      include_directories : test_includes,
-      link_with : lib,
-      install : false,
-    )
-    test(suite + ':' + test_name, test_exe, timeout: 120)
-  endforeach
+foreach test_name : test_names
+  test_exe = executable(
+    test_name, 'tests/' + test_name + '.c',
+    include_directories : test_includes,
+    link_with : lib,
+    install : false,
+  )
+  test(test_name, test_exe, timeout: 120)
 endforeach
