@@ -58,7 +58,7 @@ void *tt_storage_vector_add(TTStorageVector *storage, TTEntityId entity_id) {
         size_t new_count = storage->count;
 
         while (entity_id >= new_count) {
-            new_count *= 2;
+            new_count += new_count / 2;
         }
 
         storage->mask = (uint64_t *) realloc(
