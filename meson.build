@@ -47,6 +47,7 @@ test_suites = {
   'entities': [
     'new',
     'release',
+    'realloc_free_list',
   ]
 }
 
