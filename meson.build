@@ -47,6 +47,8 @@ test_names = [
   'tt-test-entities-new',
   'tt-test-entities-release',
   'tt-test-entities-realloc-free-list',
+  'tt-test-storage-vector-basic',
+  'tt-test-storage-vector-realloc',
 ]
 
 foreach test_name : test_names
