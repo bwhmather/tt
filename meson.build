@@ -49,6 +49,7 @@ test_names = [
   'tt-test-entities-realloc-free-list',
   'tt-test-storage-vector-basic',
   'tt-test-storage-vector-realloc',
+  'tt-test-storage-vector-removal',
 ]
 
 foreach test_name : test_names
