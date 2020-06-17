@@ -24,8 +24,10 @@ TTStorageVector *tt_storage_vector_new(size_t component_size) {
     storage->size = component_size;
     storage->count = 256;
     
-    storage->mask = (uint64_t *) calloc(sizeof(uint64_t), 256 / 64);
-    storage->buffer = calloc(component_size, 256);
+    storage->mask = (uint64_t *) calloc(
+        sizeof(uint64_t), ((storage->count - 1) / 64) + 1
+    );
+    storage->buffer = calloc(component_size, storage->count);
 
     return storage;
 }
@@ -35,6 +37,8 @@ void tt_storage_vector_free(TTStorageVector *storage) {
 
     free(storage->mask);
     free(storage->buffer);
+
+    free(storage);
 }
 
 bool tt_storage_vector_has(TTStorageVector *storage, TTEntityId entity_id) {
@@ -61,15 +65,20 @@ void *tt_storage_vector_add(TTStorageVector *storage, TTEntityId entity_id) {
             new_count += new_count / 2;
         }
 
+        /* Reallocate mask. */
+        size_t old_mask_count = ((storage->count - 1) / 64) + 1;
+        size_t new_mask_count = ((new_count - 1) / 64) + 1;
+
         storage->mask = (uint64_t *) realloc(
-            storage->mask, sizeof(uint64_t) * new_count / 64
+            storage->mask, sizeof(uint64_t) * new_mask_count
         );
         assert(storage->mask);
         memset(
-            &storage->mask[storage->count / 64],
-            0, sizeof(uint64_t) * (new_count - storage->count)
+            &storage->mask[old_mask_count],
+            0, sizeof(uint64_t) * (new_mask_count - old_mask_count)
         );
 
+        /* Reallocate buffer */
         storage->buffer = realloc(storage->buffer, storage->size * new_count);
         assert(storage->buffer);
         memset(
@@ -80,7 +89,7 @@ void *tt_storage_vector_add(TTStorageVector *storage, TTEntityId entity_id) {
         storage->count = new_count;
     }
 
-    storage->mask[entity_id / 64] &= ~(1 << (entity_id % 64));
+    storage->mask[entity_id / 64] |= (1 << (entity_id % 64));
     
     return (void *) &storage->buffer[storage->size * entity_id];
 }
