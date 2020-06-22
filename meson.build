@@ -14,9 +14,9 @@ includes = include_directories('include')
 ### Library ###
 
 lib_sources = [
-  #  'src/tt-component-position.c',
   'src/tt-entities.c',
   'src/tt-storage-vector.c',
+  'src/tt-component-position.c',
 ]
 
 lib = both_libraries(
