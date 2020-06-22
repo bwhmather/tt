@@ -49,6 +49,19 @@ static void key_callback(
     }
 }
  
+
+
+void render(void) {
+    TTVertex vertex;
+    vertex.x = x;
+    vertex.y = y;
+    vertex.z = z;
+    vertex.u = u;
+    vertex.v = v;
+    tt_renderer_push_vertex(&vertex)
+}
+
+
 int main(void) {
     GLFWwindow* window;
     GLuint vertex_buffer, vertex_shader, fragment_shader, program;
