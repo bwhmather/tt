@@ -126,7 +126,6 @@ int main(void) {
         glClear(GL_COLOR_BUFFER_BIT);
  
         mat4x4_identity(model_matrix);
-        mat4x4_rotate_Z(model_matrix, model_matrix, (float) glfwGetTime());
 
         vec3 eye_vector = {-2.0f, 0.0f, 1.0f};
         vec3 centre_vector = {0.0f, 0.0f, 0.0f};
