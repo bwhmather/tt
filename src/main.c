@@ -117,7 +117,7 @@ int main(void) {
     while (!glfwWindowShouldClose(window)) {
         float ratio;
         int width, height;
-        mat4x4 m, p, mvp;
+        mat4x4 model_matrix, view_matrix, projection_matrix, mvp_matrix;
  
         glfwGetFramebufferSize(window, &width, &height);
         ratio = width / (float) height;
@@ -125,13 +125,23 @@ int main(void) {
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT);
  
-        mat4x4_identity(m);
-        mat4x4_rotate_Z(m, m, (float) glfwGetTime());
-        mat4x4_ortho(p, -ratio, ratio, -1.f, 1.f, 1.f, -1.f);
-        mat4x4_mul(mvp, p, m);
+        mat4x4_identity(model_matrix);
+        mat4x4_rotate_Z(model_matrix, model_matrix, (float) glfwGetTime());
+
+        vec3 eye_vector = {-2.0f, 0.0f, 1.0f};
+        vec3 centre_vector = {0.0f, 0.0f, 0.0f};
+        vec4 up_vector = {0.0f, 0.0f, 1.0f};
+        mat4x4_look_at(view_matrix, eye_vector, centre_vector, up_vector);
+
+        mat4x4_perspective(projection_matrix, M_PI / 3, ratio, 0.1f, 100.0f);
+
+        mat4x4_identity(mvp_matrix);
+        mat4x4_mul(mvp_matrix, mvp_matrix, projection_matrix);
+        mat4x4_mul(mvp_matrix, mvp_matrix, view_matrix);
+        mat4x4_mul(mvp_matrix, mvp_matrix, model_matrix);
  
         glUseProgram(program);
-        glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (const GLfloat*) mvp);
+        glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (const GLfloat*) mvp_matrix);
         glDrawArrays(GL_TRIANGLES, 0, 6);
  
         glfwSwapBuffers(window);
