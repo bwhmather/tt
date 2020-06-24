@@ -49,18 +49,17 @@ static void key_callback(
     }
 }
 
-
-
-void render(void) {
-    TTVertex vertex;
-    vertex.x = x;
-    vertex.y = y;
-    vertex.z = z;
-    vertex.u = u;
-    vertex.v = v;
-    tt_renderer_push_vertex(&vertex)
+static void GLAPIENTRY debug_callback(
+    GLenum source, GLenum type, GLuint id,
+    GLenum severity, GLsizei length,
+    const GLchar* message, const void* userParam
+) {
+    fprintf(
+        stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+        (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
+        type, severity, message
+    );
 }
-
 
 int main(void) {
     GLFWwindow* window;
@@ -90,6 +89,9 @@ int main(void) {
     if (glewInit() != GLEW_OK) {
         exit(EXIT_FAILURE);
     }
+    glEnable(GL_DEBUG_OUTPUT);
+    glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, NULL, 0, GL_TRUE);
+    glDebugMessageCallback(debug_callback, 0);
 
     glfwSwapInterval(1);
 
