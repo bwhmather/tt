@@ -35,7 +35,7 @@ test_exe = executable(
   'src/main.c',
   include_directories : includes,
   dependencies : dependencies,
-  # link_with : lib,
+  link_with : lib,
   install : true,
 )
 
