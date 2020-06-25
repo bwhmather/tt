@@ -1,6 +1,6 @@
 typedef struct {
-    float x, y, z,
-    float u, v
+    float x, y, z;
+    float u, v;
 } TTVertex;
 
 
