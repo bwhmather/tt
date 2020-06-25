@@ -91,7 +91,9 @@ int main(void) {
         exit(EXIT_FAILURE);
     }
     glEnable(GL_DEBUG_OUTPUT);
-    glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, NULL, 0, GL_TRUE);
+    glDebugMessageControl(
+        GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE
+    );
     glDebugMessageCallback(debug_callback, 0);
 
     glfwSwapInterval(1);
