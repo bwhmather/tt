@@ -1,3 +1,5 @@
+#include "tt-renderer.h"
+
 #include "linmath.h"
 
 #include <GL/glew.h>
@@ -136,6 +138,8 @@ int main(void) {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
+    tt_renderer_startup();
+
     while (!glfwWindowShouldClose(window)) {
         float ratio;
         int width, height;
@@ -174,9 +178,32 @@ int main(void) {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
+
+        TTVertex a = {
+            .x = 0.0, .y = -0.1, .z = -0.2,
+            .u = 0.0, .v = 0.0,
+        };
+        tt_renderer_push_vertex(&a);
+
+        TTVertex b = {
+            .x = 0.0, .y = 0.1, .z = -0.2,
+            .u = 1.0, .v = 0.0,
+        };
+        tt_renderer_push_vertex(&b);
+
+        TTVertex c = {
+            .x = 0.0, .y = 0.1, .z = 0.2,
+            .u = 0.0, .v = 0.0,
+        };
+        tt_renderer_push_vertex(&c);
+        tt_renderer_do_render();
+
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+
+    tt_renderer_shutdown();
 
     glfwDestroyWindow(window);
 
