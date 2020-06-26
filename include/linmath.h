@@ -81,7 +81,7 @@ LINMATH_H_FUNC void vec3_mul_cross(vec3 r, vec3 const a, vec3 const b) {
 }
 
 LINMATH_H_FUNC void vec3_reflect(vec3 r, vec3 const v, vec3 const n) {
-    float p  = 2.f*vec3_mul_inner(v, n);
+    float p = 2.f*vec3_mul_inner(v, n);
     int i;
     for (i=0;i<3;++i) {
         r[i] = v[i] - p*n[i];
@@ -96,7 +96,7 @@ LINMATH_H_FUNC void vec4_mul_cross(vec4 r, vec4 a, vec4 b) {
 }
 
 LINMATH_H_FUNC void vec4_reflect(vec4 r, vec4 v, vec4 n) {
-    float p  = 2.f*vec4_mul_inner(v, n);
+    float p = 2.f*vec4_mul_inner(v, n);
     int i;
     for (i=0;i<4;++i) {
         r[i] = v[i] - p*n[i];
@@ -231,10 +231,10 @@ LINMATH_H_FUNC void mat4x4_rotate(
         mat4x4_from_vec3_mul_outer(T, u, u);
 
         mat4x4 S = {
-            {    0,  u[2], -u[1], 0},
-            {-u[2],     0,  u[0], 0},
-            { u[1], -u[0],     0, 0},
-            {    0,     0,     0, 0}
+            {0, u[2], -u[1], 0},
+            {-u[2], 0, u[0], 0},
+            {u[1], -u[0], 0, 0},
+            {0, 0, 0, 0}
         };
         mat4x4_scale(S, S, s);
 
@@ -258,8 +258,8 @@ LINMATH_H_FUNC void mat4x4_rotate_X(mat4x4 Q, mat4x4 M, float angle) {
     float c = cosf(angle);
     mat4x4 R = {
         {1.f, 0.f, 0.f, 0.f},
-        {0.f,   c,   s, 0.f},
-        {0.f,  -s,   c, 0.f},
+        {0.f, c, s, 0.f},
+        {0.f, -s, c, 0.f},
         {0.f, 0.f, 0.f, 1.f}
     };
     mat4x4_mul(Q, M, R);
@@ -268,10 +268,10 @@ LINMATH_H_FUNC void mat4x4_rotate_Y(mat4x4 Q, mat4x4 M, float angle) {
     float s = sinf(angle);
     float c = cosf(angle);
     mat4x4 R = {
-        {   c, 0.f,  -s, 0.f},
-        { 0.f, 1.f, 0.f, 0.f},
-        {   s, 0.f,   c, 0.f},
-        { 0.f, 0.f, 0.f, 1.f}
+        {c, 0.f, -s, 0.f},
+        {0.f, 1.f, 0.f, 0.f},
+        {s, 0.f, c, 0.f},
+        {0.f, 0.f, 0.f, 1.f}
     };
     mat4x4_mul(Q, M, R);
 }
@@ -279,10 +279,10 @@ LINMATH_H_FUNC void mat4x4_rotate_Z(mat4x4 Q, mat4x4 M, float angle) {
     float s = sinf(angle);
     float c = cosf(angle);
     mat4x4 R = {
-        {   c,   s, 0.f, 0.f},
-        {  -s,   c, 0.f, 0.f},
-        { 0.f, 0.f, 1.f, 0.f},
-        { 0.f, 0.f, 0.f, 1.f}
+        {c, s, 0.f, 0.f},
+        {-s, c, 0.f, 0.f},
+        {0.f, 0.f, 1.f, 0.f},
+        {0.f, 0.f, 0.f, 1.f}
     };
     mat4x4_mul(Q, M, R);
 }
@@ -313,25 +313,25 @@ LINMATH_H_FUNC void mat4x4_invert(mat4x4 T, mat4x4 M) {
         s[5] * c[0]
     );
 
-    T[0][0] = ( M[1][1] * c[5] - M[1][2] * c[4] + M[1][3] * c[3]) * idet;
+    T[0][0] = (M[1][1] * c[5] - M[1][2] * c[4] + M[1][3] * c[3]) * idet;
     T[0][1] = (-M[0][1] * c[5] + M[0][2] * c[4] - M[0][3] * c[3]) * idet;
-    T[0][2] = ( M[3][1] * s[5] - M[3][2] * s[4] + M[3][3] * s[3]) * idet;
+    T[0][2] = (M[3][1] * s[5] - M[3][2] * s[4] + M[3][3] * s[3]) * idet;
     T[0][3] = (-M[2][1] * s[5] + M[2][2] * s[4] - M[2][3] * s[3]) * idet;
 
     T[1][0] = (-M[1][0] * c[5] + M[1][2] * c[2] - M[1][3] * c[1]) * idet;
-    T[1][1] = ( M[0][0] * c[5] - M[0][2] * c[2] + M[0][3] * c[1]) * idet;
+    T[1][1] = (M[0][0] * c[5] - M[0][2] * c[2] + M[0][3] * c[1]) * idet;
     T[1][2] = (-M[3][0] * s[5] + M[3][2] * s[2] - M[3][3] * s[1]) * idet;
-    T[1][3] = ( M[2][0] * s[5] - M[2][2] * s[2] + M[2][3] * s[1]) * idet;
+    T[1][3] = (M[2][0] * s[5] - M[2][2] * s[2] + M[2][3] * s[1]) * idet;
 
-    T[2][0] = ( M[1][0] * c[4] - M[1][1] * c[2] + M[1][3] * c[0]) * idet;
+    T[2][0] = (M[1][0] * c[4] - M[1][1] * c[2] + M[1][3] * c[0]) * idet;
     T[2][1] = (-M[0][0] * c[4] + M[0][1] * c[2] - M[0][3] * c[0]) * idet;
-    T[2][2] = ( M[3][0] * s[4] - M[3][1] * s[2] + M[3][3] * s[0]) * idet;
+    T[2][2] = (M[3][0] * s[4] - M[3][1] * s[2] + M[3][3] * s[0]) * idet;
     T[2][3] = (-M[2][0] * s[4] + M[2][1] * s[2] - M[2][3] * s[0]) * idet;
 
     T[3][0] = (-M[1][0] * c[3] + M[1][1] * c[1] - M[1][2] * c[0]) * idet;
-    T[3][1] = ( M[0][0] * c[3] - M[0][1] * c[1] + M[0][2] * c[0]) * idet;
+    T[3][1] = (M[0][0] * c[3] - M[0][1] * c[1] + M[0][2] * c[0]) * idet;
     T[3][2] = (-M[3][0] * s[3] + M[3][1] * s[1] - M[3][2] * s[0]) * idet;
-    T[3][3] = ( M[2][0] * s[3] - M[2][1] * s[1] + M[2][2] * s[0]) * idet;
+    T[3][3] = (M[2][0] * s[3] - M[2][1] * s[1] + M[2][2] * s[0]) * idet;
 }
 LINMATH_H_FUNC void mat4x4_orthonormalize(mat4x4 R, mat4x4 M) {
     mat4x4_dup(R, M);
@@ -434,25 +434,25 @@ LINMATH_H_FUNC void mat4x4_look_at(mat4x4 m, vec3 eye, vec3 center, vec3 up) {
     vec3 t;
     vec3_mul_cross(t, s, f);
 
-    m[0][0] =  s[0];
-    m[0][1] =  t[0];
+    m[0][0] = s[0];
+    m[0][1] = t[0];
     m[0][2] = -f[0];
-    m[0][3] =   0.f;
+    m[0][3] = 0.f;
 
-    m[1][0] =  s[1];
-    m[1][1] =  t[1];
+    m[1][0] = s[1];
+    m[1][1] = t[1];
     m[1][2] = -f[1];
-    m[1][3] =   0.f;
+    m[1][3] = 0.f;
 
-    m[2][0] =  s[2];
-    m[2][1] =  t[2];
+    m[2][0] = s[2];
+    m[2][1] = t[2];
     m[2][2] = -f[2];
-    m[2][3] =   0.f;
+    m[2][3] = 0.f;
 
-    m[3][0] =  0.f;
-    m[3][1] =  0.f;
-    m[3][2] =  0.f;
-    m[3][3] =  1.f;
+    m[3][0] = 0.f;
+    m[3][1] = 0.f;
+    m[3][2] = 0.f;
+    m[3][3] = 1.f;
 
     mat4x4_translate_in_place(m, -eye[0], -eye[1], -eye[2]);
 }
@@ -577,7 +577,7 @@ LINMATH_H_FUNC void quat_from_mat4x4(quat q, mat4x4 M) {
     float r=0.f;
     int i;
 
-    int perm[] = { 0, 1, 2, 0, 1 };
+    int perm[] = {0, 1, 2, 0, 1};
     int *p = perm;
 
     for (i = 0; i<3; i++) {
@@ -589,7 +589,7 @@ LINMATH_H_FUNC void quat_from_mat4x4(quat q, mat4x4 M) {
         p = &perm[i];
     }
 
-    r = sqrtf(1.f + M[p[0]][p[0]] - M[p[1]][p[1]] - M[p[2]][p[2]] );
+    r = sqrtf(1.f + M[p[0]][p[0]] - M[p[1]][p[1]] - M[p[2]][p[2]]);
 
     if (r < 1e-6) {
         q[0] = 1.f;
