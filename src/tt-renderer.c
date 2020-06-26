@@ -176,3 +176,4 @@ void tt_renderer_do_render(void) {
     // Empty the render buffer, but don't free the memory..
     tt_renderer_buffer_size = 0;
 }
+

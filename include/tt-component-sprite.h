@@ -12,4 +12,3 @@ TTSprite *tt_component_sprite_add(TTEntityId entity);
 TTSprite *tt_component_sprite_get(TTEntityId entity);
 void tt_component_sprite_remove(TTEntityId entity);
 
-

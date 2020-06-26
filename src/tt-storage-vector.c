@@ -23,7 +23,7 @@ TTStorageVector *tt_storage_vector_new(size_t component_size) {
 
     storage->size = component_size;
     storage->count = 256;
-    
+
     storage->mask = (uint64_t *) calloc(
         sizeof(uint64_t), ((storage->count - 1) / 64) + 1
     );
@@ -51,13 +51,13 @@ bool tt_storage_vector_has(TTStorageVector *storage, TTEntityId entity_id) {
     if (!(storage->mask[entity_id / 64] & (1 << (entity_id % 64)))) {
         return false;
     }
-    
+
     return true;
 }
 
 void *tt_storage_vector_add(TTStorageVector *storage, TTEntityId entity_id) {
     assert(storage != NULL);
-    
+
     if (entity_id >= storage->count) {
         size_t new_count = storage->count;
 
@@ -85,31 +85,31 @@ void *tt_storage_vector_add(TTStorageVector *storage, TTEntityId entity_id) {
             &storage->buffer[storage->size * storage->count],
             0, storage->size * (new_count - storage->count)
         );
-        
+
         storage->count = new_count;
     }
 
     storage->mask[entity_id / 64] |= (1 << (entity_id % 64));
-    
+
     return (void *) &storage->buffer[storage->size * entity_id];
 }
 
 void *tt_storage_vector_get(TTStorageVector *storage, TTEntityId entity_id) {
     assert(storage != NULL);
-    
+
     if (!tt_storage_vector_has(storage, entity_id)) {
         return NULL;
     }
-    
+
     assert(entity_id > 0);
     assert(entity_id < storage->count);
-    
+
     return &storage->buffer[storage->size * entity_id];
 }
 
 void tt_storage_vector_remove(TTStorageVector *storage, TTEntityId entity_id) {
     assert(storage != NULL);
-    
+
     if (!tt_storage_vector_has(storage, entity_id)) {
         return;
     }

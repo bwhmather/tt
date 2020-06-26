@@ -9,14 +9,14 @@
 
 
 #define tt_assert(tt_test_condition) do {                                   \
-    if (!(tt_test_condition)) {                                             \
-        fprintf(                                                            \
-            stderr, "%s:%i %s: Assertion `%s' failed",                      \
-            __FILE__, __LINE__, __func__, #tt_test_condition                \
-        );                                                                  \
-        abort();                                                            \
-    }                                                                       \
-} while (0)
+        if (!(tt_test_condition)) {                                         \
+            fprintf(                                                        \
+                stderr, "%s:%i %s: Assertion `%s' failed",                  \
+                __FILE__, __LINE__, __func__, #tt_test_condition            \
+            );                                                              \
+            abort();                                                        \
+        }                                                                   \
+    } while (0)
 
 static jmp_buf tt_test_on_sigabrt_jump_target;
 static inline void tt_test_on_sigabrt(int signal) {
@@ -25,25 +25,25 @@ static inline void tt_test_on_sigabrt(int signal) {
 }
 
 #define tt_assert_aborts(tt_test_expression) do {                           \
-    struct sigaction tt_test_handler_old;                                   \
-    struct sigaction tt_test_handler_new;                                   \
-    memset(&tt_test_handler_new, 0, sizeof(tt_test_handler_new));           \
-    sigemptyset(&tt_test_handler_new.sa_mask);                              \
-    tt_test_handler_new.sa_handler = &tt_test_on_sigabrt;                   \
-    sigaction(SIGABRT, &tt_test_handler_new, &tt_test_handler_old);         \
-    int tt_test_abort_called = setjmp(tt_test_on_sigabrt_jump_target);      \
-    if (!tt_test_abort_called) {                                            \
-        tt_test_expression;                                                 \
-    }                                                                       \
-    sigaction(SIGABRT, &tt_test_handler_old, NULL);                         \
-    if (!tt_test_abort_called) {                                            \
-        fprintf(                                                            \
-            stderr, "%s:%i %s: Expression `%s' did not abort",              \
-            __FILE__, __LINE__, __func__, #tt_test_expression               \
-        );                                                                  \
-        abort();                                                            \
-    }                                                                       \
-} while(0)
+        struct sigaction tt_test_handler_old;                               \
+        struct sigaction tt_test_handler_new;                               \
+        memset(&tt_test_handler_new, 0, sizeof(tt_test_handler_new));       \
+        sigemptyset(&tt_test_handler_new.sa_mask);                          \
+        tt_test_handler_new.sa_handler = &tt_test_on_sigabrt;               \
+        sigaction(SIGABRT, &tt_test_handler_new, &tt_test_handler_old);     \
+        int tt_test_abort_called = setjmp(tt_test_on_sigabrt_jump_target);  \
+        if (!tt_test_abort_called) {                                        \
+            tt_test_expression;                                             \
+        }                                                                   \
+        sigaction(SIGABRT, &tt_test_handler_old, NULL);                     \
+        if (!tt_test_abort_called) {                                        \
+            fprintf(                                                        \
+                stderr, "%s:%i %s: Expression `%s' did not abort",          \
+                __FILE__, __LINE__, __func__, #tt_test_expression           \
+            );                                                              \
+            abort();                                                        \
+        }                                                                   \
+    } while(0)
 
 
 /**

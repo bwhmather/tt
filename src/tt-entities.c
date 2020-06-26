@@ -12,7 +12,7 @@ static TTEntityId *tt_entities_free_list = NULL;
 
 void tt_entities_startup(void) {
     assert(tt_entities_free_list == NULL);
-    
+
     tt_entities_free_list_capacity = 256;
     tt_entities_free_list = (TTEntityId *) calloc(
         sizeof(TTEntityId), tt_entities_free_list_capacity
@@ -55,3 +55,4 @@ void tt_entities_release_id(TTEntityId entity_id) {
     tt_entities_free_list[tt_entities_free_list_length] = entity_id;
     tt_entities_free_list_length++;
 }
+

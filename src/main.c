@@ -22,22 +22,22 @@ static const struct {
 };
 
 static const char* vertex_shader_text =
-"#version 110\n"
-"uniform mat4 MVP;\n"
-"attribute vec3 vCol;\n"
-"attribute vec3 vPos;\n"
-"varying vec3 color;\n"
-"void main() {\n"
-"    gl_Position = MVP * vec4(vPos, 1.0);\n"
-"    color = vCol;\n"
-"}\n";
+    "#version 110\n"
+    "uniform mat4 MVP;\n"
+    "attribute vec3 vCol;\n"
+    "attribute vec3 vPos;\n"
+    "varying vec3 color;\n"
+    "void main() {\n"
+    "    gl_Position = MVP * vec4(vPos, 1.0);\n"
+    "    color = vCol;\n"
+    "}\n";
 
 static const char* fragment_shader_text =
-"#version 110\n"
-"varying vec3 color;\n"
-"void main() {\n"
-"    gl_FragColor = vec4(color, 1.0);\n"
-"}\n";
+    "#version 110\n"
+    "varying vec3 color;\n"
+    "void main() {\n"
+    "    gl_FragColor = vec4(color, 1.0);\n"
+    "}\n";
 
 static void error_callback(int error, const char* description) {
     fprintf(stderr, "Error: %s\n", description);
@@ -166,12 +166,16 @@ int main(void) {
         mat4x4_mul(mvp_matrix, mvp_matrix, model_matrix);
 
         glUseProgram(program);
-        glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (const GLfloat*) mvp_matrix);
+        glUniformMatrix4fv(
+            mvp_location, 1, GL_FALSE, (const GLfloat*) mvp_matrix
+        );
 
         glBindVertexArray(vertex_array);
         glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
 
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STREAM_DRAW);
+        glBufferData(
+            GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STREAM_DRAW
+        );
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
 

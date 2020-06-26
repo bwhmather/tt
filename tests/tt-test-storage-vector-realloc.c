@@ -24,14 +24,18 @@ int main(void) {
         ids[i] = tt_entities_new_id();
 
         if (i % 3) {
-            uint64_t *data = (uint64_t *) tt_storage_vector_add(storage, ids[i]);
+            uint64_t *data = (uint64_t *) tt_storage_vector_add(
+                storage, ids[i]
+            );
             *data = ((uint64_t) i) + ((~((uint64_t) i)) << 32);
         }
     }
 
     for (size_t i = 0; i < COUNT; i++) {
         if (i % 3) {
-            uint64_t *data = (uint64_t *) tt_storage_vector_get(storage, ids[i]);
+            uint64_t *data = (uint64_t *) tt_storage_vector_get(
+                storage, ids[i]
+            );
             assert(*data == ((uint64_t) i) + ((~((uint64_t) i)) << 32));
         }
     }
@@ -42,3 +46,4 @@ int main(void) {
 
     return 0;
 }
+

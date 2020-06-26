@@ -43,5 +43,3 @@ void tt_component_position_remove(TTEntityId entity) {
     tt_storage_vector_remove(tt_component_position_storage, entity);
 }
 
-
-

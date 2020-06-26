@@ -43,5 +43,3 @@ void tt_component_sprite_remove(TTEntityId entity) {
     tt_storage_vector_remove(tt_component_sprite_storage, entity);
 }
 
-
-

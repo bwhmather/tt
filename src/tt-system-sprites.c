@@ -61,3 +61,4 @@ void tt_system_sprites_run(void) {
         tt_renderer_push_vertex(&vertex)
     }
 }
+
