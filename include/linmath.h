@@ -22,7 +22,7 @@
     }                                                                       \
     LINMATH_H_FUNC void vec##n##_sub(                                       \
         vec##n r, vec##n const a, vec##n const b                            \
-    ) { \                                                                   \
+    ) {                                                                     \
         int i;                                                              \
         for (i=0; i<n; ++i) {                                               \
             r[i] = a[i] - b[i];                                             \
