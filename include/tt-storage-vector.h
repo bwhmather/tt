@@ -1,8 +1,8 @@
+#pragma once
+
 #include "tt-entities.h"
 
-
 typedef struct TTStorageVector TTStorageVector;
-
 
 TTStorageVector *tt_storage_vector_new(size_t component_size);
 void tt_storage_vector_free(TTStorageVector *storage);

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "tt-entities.h"
 
 void tt_renderer_sprites_startup(void);

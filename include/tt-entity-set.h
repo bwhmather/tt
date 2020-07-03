@@ -1,3 +1,5 @@
+#pragma once
+
 #include "tt-entities.h"
 
 #include <stdbool.h>

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "tt-types.h"
 
 void tt_entities_startup(void);
