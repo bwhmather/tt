@@ -1,4 +1,5 @@
 #include "tt-entity-set.h"
+#include "tt-entity-set-private.h"
 
 #include "tt-entities.h"
 
@@ -8,12 +9,6 @@
 #include <string.h>
 #include <assert.h>
 #include <stdlib.h>
-
-
-struct TTEntitySet {
-    size_t nblocks;
-    uint64_t *mask;
-};
 
 TTEntitySet *tt_entity_set_new(void) {
     size_t nblocks = 8;
