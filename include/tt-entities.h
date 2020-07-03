@@ -1,6 +1,4 @@
-#include <stddef.h>
-
-typedef size_t TTEntityId;
+#include "tt-types.h"
 
 void tt_entities_startup(void);
 void tt_entities_shutdown(void);
