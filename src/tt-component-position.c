@@ -15,7 +15,7 @@ void tt_component_position_startup(void) {
     tt_component_position_storage = tt_storage_vector_new(sizeof(TTPosition));
 
     tt_component_position_release_handle = tt_entities_bind_release_callback(
-        tt_component_position_remove
+        tt_remove_position
     );
 }
 
@@ -29,7 +29,7 @@ void tt_component_position_shutdown(void) {
     tt_component_position_release_handle = 0;
 }
 
-TTPosition *tt_component_position_add(TTEntityId entity) {
+TTPosition *tt_add_position(TTEntityId entity) {
     assert(tt_component_position_storage != NULL);
 
     return (TTPosition *) tt_storage_vector_add(
@@ -37,7 +37,7 @@ TTPosition *tt_component_position_add(TTEntityId entity) {
     );
 }
 
-TTPosition *tt_component_position_get(TTEntityId entity) {
+TTPosition *tt_get_position(TTEntityId entity) {
     assert(tt_component_position_storage != NULL);
 
     return (TTPosition *) tt_storage_vector_get(
@@ -45,7 +45,7 @@ TTPosition *tt_component_position_get(TTEntityId entity) {
     );
 }
 
-void tt_component_position_remove(TTEntityId entity) {
+void tt_remove_position(TTEntityId entity) {
     assert(tt_component_position_storage != NULL);
 
     tt_storage_vector_remove(tt_component_position_storage, entity);
