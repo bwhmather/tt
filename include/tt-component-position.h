@@ -10,7 +10,7 @@ typedef struct {
 void tt_component_position_startup(void);
 void tt_component_position_shutdown(void);
 
-TTPosition *tt_add_position(TTEntityId entity);
-TTPosition *tt_get_position(TTEntityId entity);
-void tt_remove_position(TTEntityId entity);
+TTPosition *tt_component_position_add(TTEntityId entity);
+TTPosition *tt_component_position_get(TTEntityId entity);
+void tt_component_position_remove(TTEntityId entity);
 

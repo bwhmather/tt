@@ -15,7 +15,7 @@ void tt_component_sprite_startup(void) {
     tt_component_sprite_storage = tt_storage_vector_new(sizeof(TTSprite));
 
     tt_component_sprite_release_handle = tt_entities_bind_release_callback(
-        tt_remove_sprite
+        tt_component_sprite_remove
     );
 }
 
@@ -29,7 +29,7 @@ void tt_component_sprite_shutdown(void) {
     tt_component_sprite_release_handle = 0;
 }
 
-TTSprite *tt_add_sprite(TTEntityId entity) {
+TTSprite *tt_component_sprite_add(TTEntityId entity) {
     assert(tt_component_sprite_storage != NULL);
 
     return (TTSprite *) tt_storage_vector_add(
@@ -37,7 +37,7 @@ TTSprite *tt_add_sprite(TTEntityId entity) {
     );
 }
 
-TTSprite *tt_get_sprite(TTEntityId entity) {
+TTSprite *tt_component_sprite_get(TTEntityId entity) {
     assert(tt_component_sprite_storage != NULL);
 
     return (TTSprite *) tt_storage_vector_get(
@@ -45,7 +45,7 @@ TTSprite *tt_get_sprite(TTEntityId entity) {
     );
 }
 
-void tt_remove_sprite(TTEntityId entity) {
+void tt_component_sprite_remove(TTEntityId entity) {
     assert(tt_component_sprite_storage != NULL);
 
     tt_storage_vector_remove(tt_component_sprite_storage, entity);
