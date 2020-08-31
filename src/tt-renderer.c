@@ -140,7 +140,7 @@ void tt_renderer_do_render(void) {
 
     mat4x4_identity(model_matrix);
 
-    vec3 eye_vector = {-2.0f, 0.0f, 1.0f};
+    vec3 eye_vector = {1.0f, -2.0f, 1.0f};
     vec3 centre_vector = {0.0f, 0.0f, 0.0f};
     vec4 up_vector = {0.0f, 0.0f, 1.0f};
     mat4x4_look_at(view_matrix, eye_vector, centre_vector, up_vector);

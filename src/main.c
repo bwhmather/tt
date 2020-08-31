@@ -1,4 +1,7 @@
 #include "tt-renderer.h"
+#include "tt-entities.h"
+#include "tt-component-position.h"
+#include "tt-component-sprite.h"
 
 #include "linmath.h"
 
@@ -138,7 +141,22 @@ int main(void) {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
+    tt_entities_startup();
+    tt_component_position_startup();
+    tt_component_sprite_startup();
     tt_renderer_startup();
+
+
+    TTEntityId entity_id = tt_entities_new_id();
+
+    TTPosition *position = tt_component_position_add(entity_id);
+    position->x = 0.0;
+    position->y = 0.0;
+
+    TTSprite *sprite = tt_component_sprite_add(entity_id);
+    sprite->width = 0.2;
+    sprite->height = 0.5;
+
 
     while (!glfwWindowShouldClose(window)) {
         float ratio;
@@ -153,7 +171,7 @@ int main(void) {
 
         mat4x4_identity(model_matrix);
 
-        vec3 eye_vector = {-2.0f, 0.0f, 1.0f};
+        vec3 eye_vector = {1.0f, -2.0f, 1.0f};
         vec3 centre_vector = {0.0f, 0.0f, 0.0f};
         vec4 up_vector = {0.0f, 0.0f, 1.0f};
         mat4x4_look_at(view_matrix, eye_vector, centre_vector, up_vector);
@@ -182,26 +200,8 @@ int main(void) {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
-
-        TTVertex a = {
-            .x = 0.0, .y = -0.1, .z = -0.2,
-            .u = 0.0, .v = 0.0,
-        };
-        tt_renderer_push_vertex(&a);
-
-        TTVertex b = {
-            .x = 0.0, .y = 0.1, .z = -0.2,
-            .u = 1.0, .v = 0.0,
-        };
-        tt_renderer_push_vertex(&b);
-
-        TTVertex c = {
-            .x = 0.0, .y = 0.1, .z = 0.2,
-            .u = 0.0, .v = 0.0,
-        };
-        tt_renderer_push_vertex(&c);
+        tt_system_sprites_run();
         tt_renderer_do_render();
-
 
         glfwSwapBuffers(window);
         glfwPollEvents();

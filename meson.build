@@ -19,6 +19,8 @@ lib_sources = [
   'src/tt-renderer.c',
   'src/tt-storage-vector.c',
   'src/tt-component-position.c',
+  'src/tt-component-sprite.c',
+  'src/tt-system-sprites.c',
 ]
 
 lib = both_libraries(
