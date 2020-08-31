@@ -1,5 +1,7 @@
 #include "tt-entities.h"
 
+#include "tt-storage-bitset.h"
+
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
@@ -14,6 +16,8 @@ typedef struct TTReleaseCallbackState {
 static bool tt_entities_is_initialised;
 static size_t tt_entities_max = 0;
 
+static TTStorageBitSet *tt_entities_live_set = NULL;
+
 static size_t tt_entities_free_list_length = 0;
 static size_t tt_entities_free_list_capacity = 0;
 static TTEntityId *tt_entities_free_list = NULL;
@@ -26,6 +30,8 @@ static TTReleaseCallbackState *tt_entities_release_callback_list = NULL;
 
 void tt_entities_startup(void) {
     assert(!tt_entities_is_initialised);
+
+    tt_entities_live_set = tt_storage_bitset_new();
 
     tt_entities_free_list_length = 0;
     tt_entities_free_list_capacity = 256;
@@ -48,6 +54,9 @@ void tt_entities_startup(void) {
 void tt_entities_shutdown(void) {
     assert(tt_entities_is_initialised);
 
+    tt_storage_bitset_free(tt_entities_live_set);
+    tt_entities_live_set = NULL;
+
     tt_entities_free_list_length = 0;
     tt_entities_free_list_capacity = 0;
     free(tt_entities_free_list);
@@ -62,15 +71,22 @@ void tt_entities_shutdown(void) {
 }
 
 TTEntityId tt_entities_new_id(void) {
+    TTEntityId entity_id;
+
     assert(tt_entities_is_initialised);
 
     if (tt_entities_free_list_length) {
         tt_entities_free_list_length--;
-        return tt_entities_free_list[tt_entities_free_list_length];
+        entity_id = tt_entities_free_list[tt_entities_free_list_length];
     } else {
         tt_entities_max++;
-        return tt_entities_max;
+        entity_id = tt_entities_max;
     }
+
+    assert(!tt_storage_bitset_contains(tt_entities_live_set, entity_id));
+    tt_storage_bitset_add(tt_entities_live_set, entity_id);
+
+    return entity_id;
 }
 
 void tt_entities_release_id(TTEntityId entity_id) {
@@ -78,12 +94,12 @@ void tt_entities_release_id(TTEntityId entity_id) {
 
     assert(entity_id != 0);
     assert(entity_id <= tt_entities_max);
+    assert(tt_storage_bitset_contains(tt_entities_live_set, entity_id));
 
     for (size_t i = 0; i < tt_entities_release_callback_list_length; i++) {
         TTReleaseCallbackState *state = &tt_entities_release_callback_list[i];
         state->callback(entity_id);
     }
-
 
     if (tt_entities_free_list_length == tt_entities_free_list_capacity) {
         tt_entities_free_list_capacity += tt_entities_free_list_capacity / 2;
@@ -96,6 +112,8 @@ void tt_entities_release_id(TTEntityId entity_id) {
 
     tt_entities_free_list[tt_entities_free_list_length] = entity_id;
     tt_entities_free_list_length++;
+
+    tt_storage_bitset_remove(tt_entities_live_set, entity_id);
 }
 
 int tt_entities_bind_release_callback(
@@ -124,4 +142,29 @@ int tt_entities_bind_release_callback(
 void tt_entities_unbind_release_callback(int handle) {
     assert(tt_entities_is_initialised);
     // TODO;
+}
+
+
+void tt_entity_iter_begin(TTEntityIter *iter) {
+    *iter = 1;
+}
+
+bool tt_entity_iter_has_next(TTEntityIter *iter) {
+    return *iter <= tt_entities_max ? true : false;
+}
+
+TTEntityId tt_entity_iter_next(TTEntityIter *iter) {
+    TTEntityId entity_id = (TTEntityId) *iter;
+
+    assert(entity_id <= tt_entities_max);
+    assert(tt_storage_bitset_contains(tt_entities_live_set, entity_id));
+
+    while (true) {
+        (*iter)++;
+
+        if (*iter > tt_entities_max) break;
+        if (tt_storage_bitset_contains(tt_entities_live_set, *iter)) break;
+    }
+
+    return entity_id;
 }
