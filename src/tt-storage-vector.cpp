@@ -27,7 +27,7 @@ TTStorageVector *tt_storage_vector_new(size_t component_size) {
     storage->mask = (uint64_t *) calloc(
         sizeof(uint64_t), ((storage->count - 1) / 64) + 1
     );
-    storage->buffer = calloc(component_size, storage->count);
+    storage->buffer = (unsigned char *) calloc(component_size, storage->count);
 
     return storage;
 }
@@ -79,7 +79,7 @@ void *tt_storage_vector_add(TTStorageVector *storage, TTEntityId entity_id) {
         );
 
         /* Reallocate buffer */
-        storage->buffer = realloc(storage->buffer, storage->size * new_count);
+        storage->buffer = (unsigned char *) realloc(storage->buffer, storage->size * new_count);
         assert(storage->buffer);
         memset(
             &storage->buffer[storage->size * storage->count],

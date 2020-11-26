@@ -115,7 +115,7 @@ void tt_renderer_push_vertex(TTVertex *vertex) {
     if (tt_renderer_buffer_size >= tt_renderer_buffer_capacity) {
         tt_renderer_buffer_capacity += tt_renderer_buffer_capacity / 2;
 
-        tt_renderer_buffer_data = realloc(
+        tt_renderer_buffer_data = (TTVertex *) realloc(
             tt_renderer_buffer_data,
             sizeof(TTVertex) * tt_renderer_buffer_capacity
         );

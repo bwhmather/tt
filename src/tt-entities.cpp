@@ -103,7 +103,7 @@ void tt_entities_release_id(TTEntityId entity_id) {
 
     if (tt_entities_free_list_length == tt_entities_free_list_capacity) {
         tt_entities_free_list_capacity += tt_entities_free_list_capacity / 2;
-        tt_entities_free_list = realloc(
+        tt_entities_free_list = (TTEntityId *) realloc(
             tt_entities_free_list,
             tt_entities_free_list_capacity * sizeof(TTEntityId)
         );

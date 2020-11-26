@@ -16,7 +16,9 @@ struct TTStorageBitSet {
 TTStorageBitSet *tt_storage_bitset_new(void) {
     size_t nblocks = 8;
 
-    TTStorageBitSet *storage_bitset = malloc(sizeof(TTStorageBitSet));
+    TTStorageBitSet *storage_bitset = (TTStorageBitSet *) malloc(
+        sizeof(TTStorageBitSet)
+    );
     assert(storage_bitset != NULL);
 
     storage_bitset->mask = (uint64_t *) malloc(sizeof(uint64_t) * nblocks);
