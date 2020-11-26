@@ -1,6 +1,6 @@
-project('tt', 'c')
+project('tt', 'cpp')
 
-cc = meson.get_compiler('c')
+cc = meson.get_compiler('cpp')
 
 m_dep = cc.find_library('m', required : false)
 glfw_dep = dependency('glfw3')
@@ -14,13 +14,13 @@ includes = include_directories('include')
 ### Library ###
 
 lib_sources = [
-  'src/tt-entities.c',
-  'src/tt-storage-bitset.c',
-  'src/tt-renderer.c',
-  'src/tt-storage-vector.c',
-  'src/tt-component-position.c',
-  'src/tt-component-sprite.c',
-  'src/tt-system-sprites.c',
+  'src/tt-entities.cpp',
+  'src/tt-storage-bitset.cpp',
+  'src/tt-renderer.cpp',
+  'src/tt-storage-vector.cpp',
+  'src/tt-component-position.cpp',
+  'src/tt-component-sprite.cpp',
+  'src/tt-system-sprites.cpp',
 ]
 
 lib = both_libraries(
@@ -58,7 +58,7 @@ test_names = [
 
 foreach test_name : test_names
   test_exe = executable(
-    test_name, 'tests/' + test_name + '.c',
+    test_name, 'tests/' + test_name + '.cpp',
     include_directories : test_includes,
     link_with : lib,
     install : false,

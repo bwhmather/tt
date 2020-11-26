@@ -1,6 +1,6 @@
-#include "tt-component-sprite.h"
+#include "tt-component-sprite.hpp"
 
-#include "tt-storage-vector.h"
+#include "tt-storage-vector.hpp"
 
 #include <assert.h>
 

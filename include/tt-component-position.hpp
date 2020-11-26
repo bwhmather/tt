@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tt-entities.h"
+#include "tt-entities.hpp"
 
 typedef struct {
     double x;

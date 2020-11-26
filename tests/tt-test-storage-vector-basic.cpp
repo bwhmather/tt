@@ -1,10 +1,10 @@
 /**
  * Checks that adding and removing stuff from vector storage mostly works.
  */
-#include "tt-entities.h"
-#include "tt-storage-vector.h"
+#include "tt-entities.hpp"
+#include "tt-storage-vector.hpp"
 
-#include "tt-test.h"
+#include "tt-test.hpp"
 
 #include <assert.h>
 #include <stdint.h>

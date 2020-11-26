@@ -1,6 +1,6 @@
-#include "tt-component-position.h"
+#include "tt-component-position.hpp"
 
-#include "tt-storage-vector.h"
+#include "tt-storage-vector.hpp"
 
 #include <assert.h>
 

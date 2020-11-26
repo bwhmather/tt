@@ -1,9 +1,10 @@
-#include "tt-renderer.h"
-#include "tt-entities.h"
-#include "tt-component-position.h"
-#include "tt-component-sprite.h"
+#include "tt-renderer.hpp"
+#include "tt-entities.hpp"
+#include "tt-component-position.hpp"
+#include "tt-component-sprite.hpp"
+#include "tt-system-sprites.hpp"
 
-#include "linmath.h"
+#include "linmath.hpp"
 
 #include <GL/glew.h>
 #define GLFW_INCLUDE_NONE
@@ -200,7 +201,7 @@ int main(void) {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
-        tt_system_sprites_run();
+        tt_renderer_sprites_run();
         tt_renderer_do_render();
 
         glfwSwapBuffers(window);

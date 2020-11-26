@@ -1,6 +1,6 @@
-#include "tt-renderer.h"
+#include "tt-renderer.hpp"
 
-#include "linmath.h"
+#include "linmath.hpp"
 
 #include <assert.h>
 #include <malloc.h>

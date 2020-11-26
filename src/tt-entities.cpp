@@ -1,6 +1,6 @@
-#include "tt-entities.h"
+#include "tt-entities.hpp"
 
-#include "tt-storage-bitset.h"
+#include "tt-storage-bitset.hpp"
 
 #include <stdbool.h>
 #include <stddef.h>

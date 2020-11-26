@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tt-types.h"
+#include "tt-types.hpp"
 
 #include <stdbool.h>
 #include <stdint.h>

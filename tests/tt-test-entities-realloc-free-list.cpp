@@ -2,9 +2,9 @@
  * Checks that free list will continue to work when it contains more than its
  * initial capacity.
  */
-#include "tt-entities.h"
+#include "tt-entities.hpp"
 
-#include "tt-test.h"
+#include "tt-test.hpp"
 
 
 int main(void) {

@@ -1,10 +1,10 @@
 /**
  * Checks that things can be removed from a storage vector.
  */
-#include "tt-entities.h"
-#include "tt-storage-vector.h"
+#include "tt-entities.hpp"
+#include "tt-storage-vector.hpp"
 
-#include "tt-test.h"
+#include "tt-test.hpp"
 
 #include <assert.h>
 #include <stdint.h>

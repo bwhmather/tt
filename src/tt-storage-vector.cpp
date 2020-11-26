@@ -1,6 +1,6 @@
-#include "tt-storage-vector.h"
+#include "tt-storage-vector.hpp"
 
-#include "tt-entities.h"
+#include "tt-entities.hpp"
 
 #include <stdint.h>
 #include <stdbool.h>

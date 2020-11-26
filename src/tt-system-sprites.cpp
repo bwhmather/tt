@@ -1,8 +1,8 @@
-#include "tt-renderer.h"
+#include "tt-renderer.hpp"
 
-#include "tt-entities.h"
-#include "tt-component-position.h"
-#include "tt-component-sprite.h"
+#include "tt-entities.hpp"
+#include "tt-component-position.hpp"
+#include "tt-component-sprite.hpp"
 
 #include <stdio.h>
 #include <assert.h>
