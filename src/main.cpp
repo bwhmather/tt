@@ -201,7 +201,7 @@ int main(void) {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
-        tt_renderer_sprites_run();
+        tt_system_sprites_run();
         tt_renderer_do_render();
 
         glfwSwapBuffers(window);
