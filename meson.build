@@ -17,7 +17,6 @@ lib_sources = [
   'src/tt-entities.cpp',
   'src/tt-storage-bitset.cpp',
   'src/tt-renderer.cpp',
-  'src/tt-storage-vector.cpp',
   'src/tt-component-position.cpp',
   'src/tt-component-sprite.cpp',
   'src/tt-system-sprites.cpp',
@@ -51,9 +50,6 @@ test_names = [
   'tt-test-entities-new',
   'tt-test-entities-release',
   'tt-test-entities-realloc-free-list',
-  'tt-test-storage-vector-basic',
-  'tt-test-storage-vector-realloc',
-  'tt-test-storage-vector-removal',
 ]
 
 foreach test_name : test_names
