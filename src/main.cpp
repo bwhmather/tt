@@ -154,10 +154,9 @@ int main(void) {
     position.x = 0.0;
     position.y = 0.0;
 
-    TTSprite *sprite = tt_component_sprite_add(entity_id);
-    sprite->width = 0.2;
-    sprite->height = 0.5;
-
+    TTSprite& sprite = tt_add_sprite(entity_id);
+    sprite.width = 0.2;
+    sprite.height = 0.5;
 
     while (!glfwWindowShouldClose(window)) {
         float ratio;

@@ -1,53 +1,48 @@
 #include "tt-component-sprite.hpp"
 
-#include "tt-storage-vector.hpp"
-
 #include <assert.h>
 
+#include "tt-storage-vector.tpp"
 
-static TTStorageVector *tt_component_sprite_storage = NULL;
-static int tt_component_sprite_release_handle = 0;
 
+
+static TTStorageVector<TTSprite> *storage = NULL;
 
 void tt_component_sprite_startup(void) {
-    assert(tt_component_sprite_storage == NULL);
-
-    tt_component_sprite_storage = tt_storage_vector_new(sizeof(TTSprite));
-
-    tt_component_sprite_release_handle = tt_entities_bind_release_callback(
-        tt_component_sprite_remove
-    );
+    assert(storage == NULL);
+    storage = new TTStorageVector<TTSprite>();
 }
 
 void tt_component_sprite_shutdown(void) {
-    assert(tt_component_sprite_storage != NULL);
-
-    tt_storage_vector_free(tt_component_sprite_storage);
-    tt_component_sprite_storage = NULL;
-
-    tt_entities_unbind_release_callback(tt_component_sprite_release_handle);
-    tt_component_sprite_release_handle = 0;
+    assert(storage != NULL);
+    delete storage;
+    storage = NULL;
 }
 
-TTSprite *tt_component_sprite_add(TTEntityId entity) {
-    assert(tt_component_sprite_storage != NULL);
-
-    return (TTSprite *) tt_storage_vector_add(
-        tt_component_sprite_storage, entity
-    );
+void tt_add_sprite(TTEntityId entity_id, TTSprite sprite) {
+    assert(storage != NULL);
+    return storage->add(entity_id, sprite);
 }
 
-TTSprite *tt_component_sprite_get(TTEntityId entity) {
-    assert(tt_component_sprite_storage != NULL);
-
-    return (TTSprite *) tt_storage_vector_get(
-        tt_component_sprite_storage, entity
-    );
+TTSprite &tt_add_sprite(TTEntityId entity_id) {
+    assert(storage != NULL);
+    TTSprite sprite = { 0, 0 };
+    storage->add(entity_id, sprite);
+    return storage->get(entity_id);
 }
 
-void tt_component_sprite_remove(TTEntityId entity) {
-    assert(tt_component_sprite_storage != NULL);
+bool tt_has_sprite(TTEntityId entity_id) {
+    assert(storage != NULL);
+    return storage->has(entity_id);
+}
 
-    tt_storage_vector_remove(tt_component_sprite_storage, entity);
+TTSprite& tt_get_sprite(TTEntityId entity_id) {
+    assert(storage != NULL);
+    return storage->get(entity_id);
+}
+
+void tt_remove_sprite(TTEntityId entity_id) {
+    assert(storage != NULL);
+    return storage->remove(entity_id);
 }
 

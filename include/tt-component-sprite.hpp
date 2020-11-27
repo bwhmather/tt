@@ -10,7 +10,11 @@ typedef struct {
 void tt_component_sprite_startup(void);
 void tt_component_sprite_shutdown(void);
 
-TTSprite *tt_component_sprite_add(TTEntityId entity);
-TTSprite *tt_component_sprite_get(TTEntityId entity);
-void tt_component_sprite_remove(TTEntityId entity);
+void tt_add_sprite(TTEntityId, TTSprite sprite);
+TTSprite& tt_add_sprite(TTEntityId entity);
 
+bool tt_has_sprite(TTEntityId entity);
+
+TTSprite& tt_get_sprite(TTEntityId entity);
+
+void tt_remove_sprite(TTEntityId entity);
