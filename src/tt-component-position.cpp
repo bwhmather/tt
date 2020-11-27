@@ -1,53 +1,47 @@
 #include "tt-component-position.hpp"
 
-#include "tt-storage-vector.hpp"
-
 #include <assert.h>
 
+#include "tt-storage-vector.tpp"
 
-static TTStorageVector *tt_component_position_storage = NULL;
-static int tt_component_position_release_handle = 0;
 
+static TTStorageVector<TTPosition> *storage = NULL;
 
 void tt_component_position_startup(void) {
-    assert(tt_component_position_storage == NULL);
-
-    tt_component_position_storage = tt_storage_vector_new(sizeof(TTPosition));
-
-    tt_component_position_release_handle = tt_entities_bind_release_callback(
-        tt_component_position_remove
-    );
+    assert(storage == NULL);
+    storage = new TTStorageVector<TTPosition>();
 }
 
 void tt_component_position_shutdown(void) {
-    assert(tt_component_position_storage != NULL);
-
-    tt_storage_vector_free(tt_component_position_storage);
-    tt_component_position_storage = NULL;
-
-    tt_entities_unbind_release_callback(tt_component_position_release_handle);
-    tt_component_position_release_handle = 0;
+    assert(storage != NULL);
+    delete storage;
+    storage = NULL;
 }
 
-TTPosition *tt_component_position_add(TTEntityId entity) {
-    assert(tt_component_position_storage != NULL);
-
-    return (TTPosition *) tt_storage_vector_add(
-        tt_component_position_storage, entity
-    );
+void tt_add_position(TTEntityId entity_id, TTPosition position) {
+    assert(storage != NULL);
+    return storage->add(entity_id, position);
 }
 
-TTPosition *tt_component_position_get(TTEntityId entity) {
-    assert(tt_component_position_storage != NULL);
-
-    return (TTPosition *) tt_storage_vector_get(
-        tt_component_position_storage, entity
-    );
+TTPosition &tt_add_position(TTEntityId entity_id) {
+    assert(storage != NULL);
+    TTPosition position = { 0, 0 };
+    storage->add(entity_id, position);
+    return storage->get(entity_id);
 }
 
-void tt_component_position_remove(TTEntityId entity) {
-    assert(tt_component_position_storage != NULL);
+bool tt_has_position(TTEntityId entity_id) {
+    assert(storage != NULL);
+    return storage->has(entity_id);
+}
 
-    tt_storage_vector_remove(tt_component_position_storage, entity);
+TTPosition& tt_get_position(TTEntityId entity_id) {
+    assert(storage != NULL);
+    return storage->get(entity_id);
+}
+
+void tt_remove_position(TTEntityId entity_id) {
+    assert(storage != NULL);
+    return storage->remove(entity_id);
 }
 

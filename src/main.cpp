@@ -150,9 +150,9 @@ int main(void) {
 
     TTEntityId entity_id = tt_entities_new_id();
 
-    TTPosition *position = tt_component_position_add(entity_id);
-    position->x = 0.0;
-    position->y = 0.0;
+    TTPosition& position = tt_add_position(entity_id);
+    position.x = 0.0;
+    position.y = 0.0;
 
     TTSprite *sprite = tt_component_sprite_add(entity_id);
     sprite->width = 0.2;

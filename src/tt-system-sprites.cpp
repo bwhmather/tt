@@ -20,46 +20,46 @@ void tt_system_sprites_run(void) {
         TTSprite *sprite = tt_component_sprite_get(entity_id);
         if (sprite == NULL) continue;
 
-        TTPosition *position = tt_component_position_get(entity_id);
-        if (position == NULL) continue;
+        if (!tt_has_position(entity_id)) continue;
+        TTPosition& position = tt_get_position(entity_id);
 
-        vertex.x = position->x - 0.5 * sprite->width;
-        vertex.y = position->y;
+        vertex.x = position.x - 0.5 * sprite->width;
+        vertex.y = position.y;
         vertex.z = 0.0;
         vertex.u = 0.0;
         vertex.v = 0.0;
         tt_renderer_push_vertex(&vertex);
 
-        vertex.x = position->x + 0.5 * sprite->width;
-        vertex.y = position->y;
+        vertex.x = position.x + 0.5 * sprite->width;
+        vertex.y = position.y;
         vertex.z = 0.0;
         vertex.u = 1.0;
         vertex.v = 0.0;
         tt_renderer_push_vertex(&vertex);
 
-        vertex.x = position->x + 0.5 * sprite->width;
-        vertex.y = position->y;
+        vertex.x = position.x + 0.5 * sprite->width;
+        vertex.y = position.y;
         vertex.z = sprite->height;
         vertex.u = 1.0;
         vertex.v = 1.0;
         tt_renderer_push_vertex(&vertex);
 
-        vertex.x = position->x + 0.5 * sprite->width;
-        vertex.y = position->y;
+        vertex.x = position.x + 0.5 * sprite->width;
+        vertex.y = position.y;
         vertex.z = sprite->height;
         vertex.u = 1.0;
         vertex.v = 1.0;
         tt_renderer_push_vertex(&vertex);
 
-        vertex.x = position->x - 0.5 * sprite->width;
-        vertex.y = position->y;
+        vertex.x = position.x - 0.5 * sprite->width;
+        vertex.y = position.y;
         vertex.z = sprite->height;
         vertex.u = 0.0;
         vertex.v = 1.0;
         tt_renderer_push_vertex(&vertex);
 
-        vertex.x = position->x - 0.5 * sprite->width;
-        vertex.y = position->y;
+        vertex.x = position.x - 0.5 * sprite->width;
+        vertex.y = position.y;
         vertex.z = 0.0;
         vertex.u = 0.0;
         vertex.v = 0.0;
