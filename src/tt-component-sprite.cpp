@@ -5,7 +5,6 @@
 #include "tt-storage-vector.tpp"
 
 
-
 static TTStorageVector<TTSprite> *storage = NULL;
 
 void tt_component_sprite_startup(void) {

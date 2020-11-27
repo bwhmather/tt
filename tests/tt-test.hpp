@@ -1,11 +1,11 @@
 #pragma once
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <signal.h>
-#include <string.h>
-#include <setjmp.h>
-#include <stdint.h>
+#include <csetjmp>
+#include <csignal>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 
 #define tt_assert(tt_test_condition) do {                                   \

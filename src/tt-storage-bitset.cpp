@@ -1,12 +1,12 @@
 #include "tt-storage-bitset.hpp"
 
+#include <cassert>
+#include <cstdint>
+#include <cstdlib>
+#include <cstring>
+
 #include "tt-entities.hpp"
 
-#include <stdbool.h>
-#include <stdint.h>
-#include <string.h>
-#include <stdlib.h>
-#include <assert.h>
 
 struct TTStorageBitSet {
     size_t nblocks;

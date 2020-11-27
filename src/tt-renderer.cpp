@@ -1,12 +1,13 @@
 #include "tt-renderer.hpp"
 
-#include "linmath.hpp"
-
-#include <assert.h>
-#include <malloc.h>
-#include <string.h>
+#include <cassert>
+#include <cstdlib>
+#include <cstring>
 
 #include <GL/glew.h>
+
+#include "linmath.hpp"
+
 
 static const char* VERTEX_SHADER_TEXT =
     "#version 110\n"

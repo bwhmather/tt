@@ -1,11 +1,11 @@
 #include "tt-renderer.hpp"
 
-#include "tt-entities.hpp"
+#include <cassert>
+#include <cstdio>
+
 #include "tt-component-position.hpp"
 #include "tt-component-sprite.hpp"
-
-#include <stdio.h>
-#include <assert.h>
+#include "tt-entities.hpp"
 
 
 void tt_system_sprites_run(void) {

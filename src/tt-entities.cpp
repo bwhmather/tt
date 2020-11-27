@@ -1,11 +1,11 @@
 #include "tt-entities.hpp"
 
+#include <cassert>
+#include <cstdint>
+#include <cstdlib>
+
 #include "tt-storage-bitset.hpp"
 
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <assert.h>
 
 typedef struct TTReleaseCallbackState {
     int handle;
