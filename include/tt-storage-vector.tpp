@@ -1,52 +1,34 @@
 #pragma once
 
-#include <assert.h>
+#include <cassert>
+#include <memory>
 #include <type_traits>
 #include <vector>
 
 
 template<typename T>
-struct Wrapper {
-private:
-    T m_value;
-
-public:
-    Wrapper() {
-        static_assert(std::is_standard_layout<Wrapper<T>>::value);
-        static_assert(sizeof(T) == sizeof(Wrapper<T>));
-    }
-
-    ~Wrapper() : m_value{} {}
-
-    void set(T value) {
-        m_value = value;
-    }
-
-    T& get() {
-        return m_value;
-    }
-
-    void unset() {
-        m_value.~T();
-    }
-};
-
-template<typename T>
 class TTStorageVector final {
     std::vector<bool> m_mask;
-    std::vector<Wrapper<T>> m_data;
+
+    T* m_data;
+    size_t m_data_capacity;
 
   public:
-    TTStorageVector() : m_mask(), m_data() {
+    TTStorageVector() : m_mask(), m_data(NULL), m_data_capacity(0) {
         // TODO bind entity deleted callback.
     }
 
     ~TTStorageVector() {
+        assert(m_data_capacity >= m_mask.size());
+
         for (TTEntityId entity_id = 0;  entity_id < m_mask.size(); entity_id++) {
             if (m_mask[entity_id]) {
-                m_data[entity_id].unset();
+                m_data[entity_id].~T();
             }
         }
+
+        std::allocator<T>().deallocate(m_data, m_data_capacity);
+        m_data_capacity = 0;
         // TODO unbind entity deleted callback.
     }
 
@@ -56,15 +38,48 @@ class TTStorageVector final {
     void add(TTEntityId entity_id, T value) {
         if (entity_id >= m_mask.size()) {
             m_mask.resize(entity_id + 1, false);
-            m_data.resize(entity_id + 1);
         }
+
+        if (entity_id >= m_data_capacity) {
+            size_t new_capacity = m_data_capacity;
+
+            if (new_capacity == 0) {
+                new_capacity = 16;
+            }
+
+            while (entity_id >= new_capacity) {
+                new_capacity += new_capacity / 2;
+            }
+
+            T* new_data = std::allocator<T>().allocate(new_capacity);
+
+            for (TTEntityId move_id = 0; move_id < m_mask.size(); move_id++) {
+                if (m_mask[move_id]) {
+                    new_data[move_id] = std::move_if_noexcept(m_data[move_id]);
+                }
+            }
+            // TODO call destructors on new array values on exception.
+
+            for (TTEntityId free_id = 0; free_id < m_mask.size(); free_id++) {
+                if (m_mask[free_id]) {
+                    m_data[free_id].~T();
+                }
+            }
+
+            std::allocator<T>().deallocate(m_data, m_data_capacity);
+            m_data = new_data;
+            m_data_capacity = new_capacity;
+        }
+
 
         if (m_mask[entity_id]) {
-            m_data[entity_id].unset();
+            m_data[entity_id].~T();
         }
 
+        m_data[entity_id] = std::move(value);
+        // Order important.  `std::move` can throw.  We assume that the new
+        // location is left in a meaningless state and don't try to clean up.
         m_mask[entity_id] = true;
-        m_data[entity_id].set(value);
     }
 
     bool has(TTEntityId entity_id) {
@@ -77,12 +92,12 @@ class TTStorageVector final {
 
     T& get(TTEntityId entity_id) {
         assert(has(entity_id));
-        return m_data[entity_id].get();
+        return m_data[entity_id];
     }
 
     void remove(TTEntityId entity_id) {
         assert(has(entity_id));
         m_mask[entity_id] = false;
-        m_data[entity_id].unset();
+        m_data[entity_id].~T();
     }
 };
