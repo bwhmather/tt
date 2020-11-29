@@ -46,18 +46,21 @@ test_exe = executable(
 
 test_includes = include_directories('include', 'tests')
 
-test_names = [
-  'tt-test-entities-new',
-  'tt-test-entities-release',
-  'tt-test-entities-realloc-free-list',
-]
+test_suites = {
+  'tt-storage-vector': [
+    'no-default-constructor',
+  ],
+}
 
-foreach test_name : test_names
-  test_exe = executable(
-    test_name, 'tests/' + test_name + '.cpp',
-    include_directories : test_includes,
-    link_with : lib,
-    install : false,
-  )
-  test(test_name, test_exe, timeout: 120)
+foreach suite, tests : test_suites
+  foreach test_name : tests
+    test_exe = executable(
+      'test-' + suite + '-' + test_name,
+      'tests/' + suite + '/test-' + test_name + '.cpp',
+      include_directories : test_includes,
+      link_with : lib,
+      install : false,
+    )
+    test(suite + '-' + test_name, test_exe, timeout: 120)
+  endforeach
 endforeach

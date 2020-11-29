@@ -16,12 +16,7 @@ public:
         static_assert(sizeof(T) == sizeof(Wrapper<T>));
     }
 
-    ~Wrapper() {}
-
-    Wrapper(T value) {
-        m_value = value;
-    }
-
+    ~Wrapper() : m_value{} {}
 
     void set(T value) {
         m_value = value;
