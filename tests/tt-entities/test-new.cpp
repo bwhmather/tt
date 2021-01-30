@@ -9,10 +9,10 @@
 int main(void) {
     tt_entities_startup();
 
-    tt_assert(tt_entities_new_id() == 1);
-    tt_assert(tt_entities_new_id() == 2);
-    tt_assert(tt_entities_new_id() == 3);
-    tt_assert(tt_entities_new_id() == 4);
+    tt_assert(tt_entities_create() == 1);
+    tt_assert(tt_entities_create() == 2);
+    tt_assert(tt_entities_create() == 3);
+    tt_assert(tt_entities_create() == 4);
 
     tt_entities_shutdown();
 

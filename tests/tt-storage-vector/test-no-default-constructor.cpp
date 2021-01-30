@@ -20,10 +20,10 @@ int main(void) {
 
     TTStorageVector<Component> *storage = new TTStorageVector<Component>();
 
-    tt_entities_new_id();
-    tt_entities_new_id();
+    tt_entities_create();
+    tt_entities_create();
 
-    storage->add(tt_entities_new_id(), Component(4));
+    storage->add(tt_entities_create(), Component(4));
 
     tt_entities_shutdown();
 

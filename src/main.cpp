@@ -148,7 +148,7 @@ int main(void) {
     tt_renderer_startup();
 
 
-    TTEntityId entity_id = tt_entities_new_id();
+    TTEntityId entity_id = tt_entities_create();
 
     TTPosition& position = tt_add_position(entity_id);
     position.x = 0.0;

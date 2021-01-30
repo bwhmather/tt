@@ -10,6 +10,8 @@ typedef size_t TTEntityIter;
 void tt_entities_startup(void);
 void tt_entities_shutdown(void);
 
+void tt_entities_maintain(void);
+
 TTEntityId tt_entities_create(void);
 void tt_entities_delete(TTEntityId entity_id);
 
