@@ -4,143 +4,121 @@
 #include <cstdint>
 #include <cstdlib>
 
-#include "tt-storage-bitset.hpp"
-
-
-typedef struct TTReleaseCallbackState {
+typedef struct OnCreateCallbackState {
     int handle;
-    void (*callback) (TTEntityId id);
-} TTReleaseCallbackState;
+    void (*callback) (TTEntityId id, void *user_data);
+    void *user_data;
+} OnCreateCallbackState;
 
+typedef struct OnDeleteCallbackState {
+    int handle;
+    void (*callback) (TTEntityId id, void *user_data);
+    void *user_data;
+} OnDeleteCallbackState;
 
-static bool tt_entities_is_initialised;
-static size_t tt_entities_max = 0;
+static bool initialized = false;
 
-static TTStorageBitSet *tt_entities_live_set = NULL;
+static std::vector<bool> this_live_set;
+static std::vector<bool> next_live_set;
 
-static size_t tt_entities_free_list_length = 0;
-static size_t tt_entities_free_list_capacity = 0;
-static TTEntityId *tt_entities_free_list = NULL;
+static std::vector<TTEntityId> free_list;
 
-static int tt_entities_release_callback_next_handle = 1;
-static size_t tt_entities_release_callback_list_length = 0;
-static size_t tt_entities_release_callback_list_capacity = 0;
-static TTReleaseCallbackState *tt_entities_release_callback_list = NULL;
-
+int next_callback_handle = 1;
+static std::vector<OnCreateCallbackState> on_create_callbacks;
+static std::vector<OnDeleteCallbackState> on_delete_callbacks;
 
 void tt_entities_startup(void) {
-    assert(!tt_entities_is_initialised);
-
-    tt_entities_live_set = tt_storage_bitset_new();
-
-    tt_entities_free_list_length = 0;
-    tt_entities_free_list_capacity = 256;
-    tt_entities_free_list = (TTEntityId *) calloc(
-        sizeof(TTEntityId), tt_entities_free_list_capacity
-    );
-    assert(tt_entities_free_list != NULL);
-
-    tt_entities_release_callback_list_length = 0;
-    tt_entities_release_callback_list_capacity = 256;
-    tt_entities_release_callback_list = (TTReleaseCallbackState *) calloc(
-        sizeof(TTReleaseCallbackState),
-        tt_entities_release_callback_list_capacity
-    );
-    assert(tt_entities_release_callback_list != NULL);
-
-    tt_entities_is_initialised = true;
+    assert(!initialized);
+    initialized = true;
 }
+
+void tt_entities_maintain(void) {
+    static std::vector<bool> prev_live_set(next_live_set);
+    std::swap(prev_live_set, this_live_set);
+
+}
+
 
 void tt_entities_shutdown(void) {
-    assert(tt_entities_is_initialised);
+    assert(initialized);
 
-    tt_storage_bitset_free(tt_entities_live_set);
-    tt_entities_live_set = NULL;
+    live_set.clear();
+    free_list.clear();
 
-    tt_entities_free_list_length = 0;
-    tt_entities_free_list_capacity = 0;
-    free(tt_entities_free_list);
-    tt_entities_free_list = NULL;
+    on_create_callbacks.clear();
+    on_delete_callbacks.clear();
 
-    tt_entities_release_callback_list_length = 0;
-    tt_entities_release_callback_list_capacity = 0;
-    free(tt_entities_release_callback_list);
-    tt_entities_release_callback_list = NULL;
-
-    tt_entities_is_initialised = false;
+    initialized = false;
 }
 
-TTEntityId tt_entities_new_id(void) {
+TTEntityId tt_entities_create(void) {
     TTEntityId entity_id;
 
-    assert(tt_entities_is_initialised);
+    assert(initialized);
 
-    if (tt_entities_free_list_length) {
-        tt_entities_free_list_length--;
-        entity_id = tt_entities_free_list[tt_entities_free_list_length];
+    if (free_list.size()) {
+        entity_id = free_list.pop_back();
+        live_set[entity_id] = true;
     } else {
-        tt_entities_max++;
-        entity_id = tt_entities_max;
+        entity_id = live_set.size();
+        live_set.push_back(true);
     }
 
-    assert(!tt_storage_bitset_contains(tt_entities_live_set, entity_id));
-    tt_storage_bitset_add(tt_entities_live_set, entity_id);
+    for (const &OnCreateCallbackState state : on_create_callbacks) {
+        state.callback(entity_id, state.user_data);
+    }
 
     return entity_id;
 }
 
-void tt_entities_release_id(TTEntityId entity_id) {
-    assert(tt_entities_free_list != NULL);
+void tt_entities_delete(TTEntityId entity_id) {
+    assert(initialized);
 
-    assert(entity_id != 0);
-    assert(entity_id <= tt_entities_max);
-    assert(tt_storage_bitset_contains(tt_entities_live_set, entity_id));
+    assert(live_set.at(entity_id) == true);
 
-    for (size_t i = 0; i < tt_entities_release_callback_list_length; i++) {
-        TTReleaseCallbackState *state = &tt_entities_release_callback_list[i];
-        state->callback(entity_id);
+    live_set[entity_id] = false;
+
+    for (const &OnDeleteCallbackState state : on_delete_callbacks) {
+        state.callback(entity_id, state.user_data);
     }
-
-    if (tt_entities_free_list_length == tt_entities_free_list_capacity) {
-        tt_entities_free_list_capacity += tt_entities_free_list_capacity / 2;
-        tt_entities_free_list = (TTEntityId *) realloc(
-            tt_entities_free_list,
-            tt_entities_free_list_capacity * sizeof(TTEntityId)
-        );
-        assert(tt_entities_free_list != NULL);
-    }
-
-    tt_entities_free_list[tt_entities_free_list_length] = entity_id;
-    tt_entities_free_list_length++;
-
-    tt_storage_bitset_remove(tt_entities_live_set, entity_id);
 }
 
-int tt_entities_bind_release_callback(
-    void (*callback) (TTEntityId id)
+
+int tt_entities_bind_on_create_callback(
+    void (*callback) (TTEntityId id, void *user_data), void *user_data
 ) {
-    assert(tt_entities_is_initialised);
-    // TODO: Resize array.
-    assert(
-        tt_entities_release_callback_list_length <
-        tt_entities_release_callback_list_capacity
-    );
+    assert(initialized);
 
-    int handle = tt_entities_release_callback_next_handle;
-    tt_entities_release_callback_next_handle++;
+    &OnCreateCallback state = on_create_callbacks.emplace_back();
 
-    TTReleaseCallbackState *state = &tt_entities_release_callback_list[
-        tt_entities_release_callback_list_length
-    ];
+    state.handle = next_callback_handle++;
+    state.callback = callback;
+    state.user_data = user_data;
 
-    state->handle = handle;
-    state->callback = callback;
-
-    return handle;
+    return state.handle;
 }
 
-void tt_entities_unbind_release_callback(int handle) {
-    assert(tt_entities_is_initialised);
+void tt_entities_unbind_create_callback(int handle) {
+    assert(initialised);
+    // TODO;
+}
+
+int tt_entities_bind_on_delete_callback(
+    void (*callback) (TTEntityId id, void *user_data), void *user_data
+) {
+    assert(initialized);
+
+    &OnDeleteCallback state = on_delete_callbacks.emplace_back();
+
+    state.handle = next_callback_handle++;
+    state.callback = callback;
+    state.user_data = user_data;
+
+    return state.handle;
+}
+
+void tt_entities_unbind_delete_callback(int handle) {
+    assert(initialised);
     // TODO;
 }
 
@@ -156,8 +134,8 @@ bool tt_entity_iter_has_next(TTEntityIter *iter) {
 TTEntityId tt_entity_iter_next(TTEntityIter *iter) {
     TTEntityId entity_id = (TTEntityId) *iter;
 
-    assert(entity_id <= tt_entities_max);
-    assert(tt_storage_bitset_contains(tt_entities_live_set, entity_id));
+    assert(entity_id <= live_set.size());
+    assert(live_set[entity_id] == true);
 
     while (true) {
         (*iter)++;

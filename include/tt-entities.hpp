@@ -10,13 +10,18 @@ typedef size_t TTEntityIter;
 void tt_entities_startup(void);
 void tt_entities_shutdown(void);
 
-TTEntityId tt_entities_new_id(void);
-void tt_entities_release_id(TTEntityId entity_id);
+TTEntityId tt_entities_create(void);
+void tt_entities_delete(TTEntityId entity_id);
 
-int tt_entities_bind_release_callback(
-    void (*callback) (TTEntityId id)
+int tt_entities_bind_on_create_callback(
+    void (*callback) (TTEntityId id, void *user_data)
 );
-void tt_entities_unbind_release_callback(int handle);
+void tt_entities_unbind_on_create_callback(int handle);
+
+int tt_entities_bind_on_delete_callback(
+    void (*callback) (TTEntityId id, void *user_data)
+);
+void tt_entities_unbind_on_delete_callback(int handle);
 
 void tt_entity_iter_begin(TTEntityIter *iter);
 bool tt_entity_iter_has_next(TTEntityIter *iter);
