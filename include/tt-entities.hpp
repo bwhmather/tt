@@ -16,12 +16,12 @@ TTEntityId tt_entities_create(void);
 void tt_entities_delete(TTEntityId entity_id);
 
 int tt_entities_bind_on_create_callback(
-    void (*callback) (TTEntityId id, void *user_data)
+    void (*callback) (TTEntityId id, void *user_data), void *user_data
 );
 void tt_entities_unbind_on_create_callback(int handle);
 
 int tt_entities_bind_on_delete_callback(
-    void (*callback) (TTEntityId id, void *user_data)
+    void (*callback) (TTEntityId id, void *user_data), void *user_data
 );
 void tt_entities_unbind_on_delete_callback(int handle);
 

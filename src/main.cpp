@@ -200,6 +200,8 @@ int main(void) {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
+        tt_entities_maintain();
+
         tt_system_sprites_run();
         tt_renderer_do_render();
 

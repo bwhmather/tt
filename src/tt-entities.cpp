@@ -146,7 +146,7 @@ int tt_entities_bind_on_create_callback(
     return state.handle;
 }
 
-void tt_entities_unbind_create_callback(int handle) {
+void tt_entities_unbind_on_create_callback(int handle) {
     assert(initialized);
     assert(!maintaining);
 
@@ -173,7 +173,7 @@ int tt_entities_bind_on_delete_callback(
     return state.handle;
 }
 
-void tt_entities_unbind_delete_callback(int handle) {
+void tt_entities_unbind_on_delete_callback(int handle) {
     assert(initialized);
     assert(!maintaining);
 
@@ -195,17 +195,15 @@ bool tt_entity_iter_has_next(TTEntityIter *iter) {
 }
 
 TTEntityId tt_entity_iter_next(TTEntityIter *iter) {
-    TTEntityId entity_id = (TTEntityId) *iter;
-
-    assert(entity_id <= live_set.size());
-    assert(live_set[entity_id] == true);
+    assert(*iter <= live_set.size());
+    assert(live_set[*iter] == true);
 
     while (true) {
         (*iter)++;
 
         if (*iter > live_set.size()) break;
-        if (live_set[entity_id]) break;
+        if (live_set[*iter]) break;
     }
 
-    return entity_id;
+    return *iter;
 }

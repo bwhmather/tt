@@ -7,15 +7,22 @@
 
 
 template<typename T>
+static void on_delete_callback(TTEntityId entity_id, void *data);
+
+template<typename T>
 class TTStorageVector final {
     std::vector<bool> m_mask;
 
     T* m_data;
     size_t m_data_capacity;
 
+    int delete_callback_handle;
+
   public:
     TTStorageVector() : m_mask(), m_data(NULL), m_data_capacity(0) {
-        // TODO bind entity deleted callback.
+        delete_callback_handle = tt_entities_bind_on_delete_callback(
+            &on_delete_callback<T>, this
+        );
     }
 
     ~TTStorageVector() {
@@ -29,7 +36,8 @@ class TTStorageVector final {
 
         std::allocator<T>().deallocate(m_data, m_data_capacity);
         m_data_capacity = 0;
-        // TODO unbind entity deleted callback.
+
+        tt_entities_unbind_on_delete_callback(delete_callback_handle);
     }
 
     TTStorageVector(const TTStorageVector &) = delete;
@@ -101,3 +109,12 @@ class TTStorageVector final {
         m_data[entity_id].~T();
     }
 };
+
+template<typename T>
+static void on_delete_callback(TTEntityId entity_id, void *data) {
+    TTStorageVector<T>& storage = *((TTStorageVector<T> *) data);
+
+    if (storage.has(entity_id)) {
+        storage.remove(entity_id);
+    }
+}
