@@ -19,6 +19,7 @@ lib_sources = [
   'src/tt-renderer.cpp',
   'src/tt-component-position.cpp',
   'src/tt-component-sprite.cpp',
+  'src/tt-component-target.cpp',
   'src/tt-system-sprites.cpp',
 ]
 
