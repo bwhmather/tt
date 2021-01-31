@@ -1,5 +1,6 @@
 #include "tt-entities.hpp"
 
+#include <algorithm>
 #include <cassert>
 #include <cstdint>
 #include <cstdlib>
@@ -148,7 +149,13 @@ int tt_entities_bind_on_create_callback(
 void tt_entities_unbind_create_callback(int handle) {
     assert(initialized);
     assert(!maintaining);
-    // TODO;
+
+    std::remove_if(
+        on_create_callbacks.begin(), on_create_callbacks.end(),
+        [&handle](OnCreateCallbackState& state) {
+            return state.handle == handle;
+        }
+    );
 }
 
 int tt_entities_bind_on_delete_callback(
@@ -169,7 +176,13 @@ int tt_entities_bind_on_delete_callback(
 void tt_entities_unbind_delete_callback(int handle) {
     assert(initialized);
     assert(!maintaining);
-    // TODO;
+
+    std::remove_if(
+        on_delete_callbacks.begin(), on_delete_callbacks.end(),
+        [&handle](OnDeleteCallbackState& state) {
+            return state.handle == handle;
+        }
+    );
 }
 
 
