@@ -50,6 +50,11 @@ test_suites = {
   'tt-storage-vector': [
     'no-default-constructor',
   ],
+  'tt-entities': [
+    'new',
+    'release',
+    'realloc-free-list',
+  ],
 }
 
 foreach suite, tests : test_suites
