@@ -15,8 +15,8 @@ includes = include_directories('include')
 
 lib_sources = [
   'src/tt-entities.cpp',
-  'src/tt-storage-bitset.cpp',
   'src/tt-renderer.cpp',
+  'src/tt-component-job.cpp',
   'src/tt-component-position.cpp',
   'src/tt-component-sprite.cpp',
   'src/tt-component-target.cpp',
