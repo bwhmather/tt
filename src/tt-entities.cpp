@@ -186,24 +186,35 @@ void tt_entities_unbind_on_delete_callback(int handle) {
 }
 
 
-void tt_entity_iter_begin(TTEntityIter *iter) {
+void tt_entities_iter_begin(TTEntityIter *iter) {
+    assert(initialized);
+    assert(!maintaining);
+
     *iter = 1;
 }
 
-bool tt_entity_iter_has_next(TTEntityIter *iter) {
-    return *iter <= live_set.size() ? true : false;
+bool tt_entities_iter_has_next(TTEntityIter *iter) {
+    assert(initialized);
+    assert(!maintaining);
+
+    return *iter < live_set.size();
 }
 
-TTEntityId tt_entity_iter_next(TTEntityIter *iter) {
-    assert(*iter <= live_set.size());
-    assert(live_set[*iter] == true);
+TTEntityId tt_entities_iter_next(TTEntityIter *iter) {
+    assert(initialized);
+    assert(!maintaining);
+
+    TTEntityId entity_id = (TTEntityId) *iter;
+
+    assert(entity_id <= live_set.size());
+    assert(live_set[entity_id] == true);
 
     while (true) {
         (*iter)++;
 
-        if (*iter > live_set.size()) break;
-        if (live_set[*iter]) break;
+        if (*iter >= live_set.size()) break;
+        if (live_set.at(*iter)) break;
     }
 
-    return *iter;
+    return entity_id;
 }

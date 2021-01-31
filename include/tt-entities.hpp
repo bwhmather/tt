@@ -25,6 +25,6 @@ int tt_entities_bind_on_delete_callback(
 );
 void tt_entities_unbind_on_delete_callback(int handle);
 
-void tt_entity_iter_begin(TTEntityIter *iter);
-bool tt_entity_iter_has_next(TTEntityIter *iter);
-TTEntityId tt_entity_iter_next(TTEntityIter *iter);
+void tt_entities_iter_begin(TTEntityIter *iter);
+bool tt_entities_iter_has_next(TTEntityIter *iter);
+TTEntityId tt_entities_iter_next(TTEntityIter *iter);

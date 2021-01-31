@@ -54,6 +54,10 @@ test_suites = {
     'new',
     'release',
     'realloc-free-list',
+    'iterate',
+  ],
+  'tt-component-sprite': [
+    'basic',
   ],
 }
 

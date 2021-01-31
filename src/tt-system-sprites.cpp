@@ -11,11 +11,11 @@
 void tt_system_sprites_run(void) {
     TTEntityIter iter;
 
-    tt_entity_iter_begin(&iter);
+    tt_entities_iter_begin(&iter);
 
-    while (tt_entity_iter_has_next(&iter)) {
+    while (tt_entities_iter_has_next(&iter)) {
         TTVertex vertex;
-        TTEntityId entity_id = tt_entity_iter_next(&iter);
+        TTEntityId entity_id = tt_entities_iter_next(&iter);
 
         if (!tt_has_sprite(entity_id)) continue;
         if (!tt_has_position(entity_id)) continue;
