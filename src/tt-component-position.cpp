@@ -2,14 +2,14 @@
 
 #include <assert.h>
 
-#include "tt-storage-vector.tpp"
+#include "tt-storage-sparse-vector.tpp"
 
 
-static TTStorageVector<TTPosition> *storage = NULL;
+static TTStorageSparseVector<TTPosition> *storage = NULL;
 
 void tt_component_position_startup(void) {
     assert(storage == NULL);
-    storage = new TTStorageVector<TTPosition>();
+    storage = new TTStorageSparseVector<TTPosition>();
 }
 
 void tt_component_position_shutdown(void) {

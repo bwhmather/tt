@@ -2,14 +2,14 @@
 
 #include <assert.h>
 
-#include "tt-storage-vector.tpp"
+#include "tt-storage-sparse-vector.tpp"
 
 
-static TTStorageVector<TTEntityId> *storage = NULL;
+static TTStorageSparseVector<TTEntityId> *storage = NULL;
 
 void tt_component_target_startup(void) {
     assert(storage == NULL);
-    storage = new TTStorageVector<TTEntityId>();
+    storage = new TTStorageSparseVector<TTEntityId>();
 }
 
 void tt_component_target_shutdown(void) {

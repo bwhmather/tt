@@ -2,7 +2,7 @@
  * Checks that `tt_entities_release_id` will make an id available for reuse.
  */
 #include "tt-entities.hpp"
-#include "tt-storage-vector.tpp"
+#include "tt-storage-sparse-vector.tpp"
 
 #include "tt-test.hpp"
 
@@ -18,7 +18,7 @@ public:
 int main(void) {
     tt_entities_startup();
 
-    TTStorageVector<Component> *storage = new TTStorageVector<Component>();
+    TTStorageSparseVector<Component> *storage = new TTStorageSparseVector<Component>();
 
     tt_entities_create();
     tt_entities_create();

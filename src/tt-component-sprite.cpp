@@ -2,14 +2,14 @@
 
 #include <assert.h>
 
-#include "tt-storage-vector.tpp"
+#include "tt-storage-sparse-vector.tpp"
 
 
-static TTStorageVector<TTSprite> *storage = NULL;
+static TTStorageSparseVector<TTSprite> *storage = NULL;
 
 void tt_component_sprite_startup(void) {
     assert(storage == NULL);
-    storage = new TTStorageVector<TTSprite>();
+    storage = new TTStorageSparseVector<TTSprite>();
 }
 
 void tt_component_sprite_shutdown(void) {
