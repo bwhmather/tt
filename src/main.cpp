@@ -1,7 +1,10 @@
 #include "tt-renderer.hpp"
 #include "tt-entities.hpp"
+#include "tt-component-move-to-target.hpp"
 #include "tt-component-position.hpp"
 #include "tt-component-sprite.hpp"
+#include "tt-component-target.hpp"
+#include "tt-system-move-to-target.hpp"
 #include "tt-system-sprites.hpp"
 
 #include "linmath.hpp"
@@ -143,10 +146,20 @@ int main(void) {
     glBindVertexArray(0);
 
     tt_entities_startup();
+    tt_component_move_to_target_startup();
     tt_component_position_startup();
     tt_component_sprite_startup();
+    tt_component_target_startup();
     tt_renderer_startup();
 
+    TTEntityId tree_id = tt_entities_create();
+    TTPosition &tree_position = tt_add_position(tree_id);
+    tree_position.x = 1.0;
+    tree_position.y = 1.0;
+
+    TTSprite &tree_sprite = tt_add_sprite(tree_id);
+    tree_sprite.width = 0.3;
+    tree_sprite.height = 0.9;
 
     TTEntityId entity_id = tt_entities_create();
 
@@ -157,6 +170,9 @@ int main(void) {
     TTSprite& sprite = tt_add_sprite(entity_id);
     sprite.width = 0.2;
     sprite.height = 0.5;
+
+    tt_set_target(entity_id, tree_id);
+    tt_set_move_to_target(entity_id, 0.01);
 
     while (!glfwWindowShouldClose(window)) {
         float ratio;
@@ -201,6 +217,8 @@ int main(void) {
         glBindVertexArray(0);
 
         tt_entities_maintain();
+
+        tt_system_move_to_target_run();
 
         tt_system_sprites_run();
         tt_renderer_do_render();
