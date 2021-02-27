@@ -12,8 +12,9 @@ cc = meson.get_compiler('cpp')
 m_dep = cc.find_library('m', required : false)
 glfw_dep = dependency('glfw3')
 glew_dep = dependency('glew')
+libpng_dep = dependency('libpng')
 
-dependencies = [m_dep, glfw_dep, glew_dep]
+dependencies = [m_dep, glfw_dep, glew_dep, libpng_dep]
 
 includes = include_directories('include')
 
@@ -23,6 +24,7 @@ includes = include_directories('include')
 lib_sources = [
   'src/tt-entities.cpp',
   'src/tt-renderer.cpp',
+  'src/tt-texture.cpp',
   'src/tt-error.cpp',
   'src/tt-component-job.cpp',
   'src/tt-component-move-to-target.cpp',
