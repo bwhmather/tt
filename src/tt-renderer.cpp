@@ -8,6 +8,10 @@
 
 #include "linmath.hpp"
 
+namespace tt {
+namespace renderer {
+
+namespace detail {
 
 static const char* VERTEX_SHADER_TEXT =
     "#version 110\n"
@@ -28,73 +32,74 @@ static const char* FRAGMENT_SHADER_TEXT =
     "}\n";
 
 
-static GLuint tt_renderer_vertex_array = 0;
+static GLuint vertex_array = 0;
 
-static size_t tt_renderer_buffer_size = 0;
-static size_t tt_renderer_buffer_capacity = 0;
-static TTVertex *tt_renderer_buffer_data = NULL;
-static GLuint tt_renderer_buffer = 0;
+static size_t buffer_size = 0;
+static size_t buffer_capacity = 0;
+static vertex *buffer_data = NULL;
+static GLuint buffer = 0;
 
-static GLuint tt_renderer_shader_program = 0;
-static GLint tt_renderer_camera_matrix_location = 0;
-static GLint tt_renderer_position_location = 0;
-static GLint tt_renderer_tex_coord_location = 0;
+static GLuint shader_program = 0;
+static GLint camera_matrix_location = 0;
+static GLint position_location = 0;
+static GLint tex_coord_location = 0;
 
+} /* namespace detail */
 
-void tt_renderer_startup(void) {
+void startup(void) {
     GLuint vertex_shader, fragment_shader;
 
-    assert(tt_renderer_buffer_data == NULL);
+    assert(detail::buffer_data == NULL);
 
-    tt_renderer_buffer_capacity = 256;
-    tt_renderer_buffer_size = 0;
-    tt_renderer_buffer_data = (TTVertex *) malloc(
-        sizeof(TTVertex) * tt_renderer_buffer_capacity
+    detail::buffer_capacity = 256;
+    detail::buffer_size = 0;
+    detail::buffer_data = (vertex *) malloc(
+        sizeof(vertex) * detail::buffer_capacity
     );
-    assert(tt_renderer_buffer_data != NULL);
+    assert(detail::buffer_data != NULL);
 
     vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex_shader, 1, &VERTEX_SHADER_TEXT, NULL);
+    glShaderSource(vertex_shader, 1, &detail::VERTEX_SHADER_TEXT, NULL);
     glCompileShader(vertex_shader);
 
     fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_shader, 1, &FRAGMENT_SHADER_TEXT, NULL);
+    glShaderSource(fragment_shader, 1, &detail::FRAGMENT_SHADER_TEXT, NULL);
     glCompileShader(fragment_shader);
 
-    tt_renderer_shader_program = glCreateProgram();
-    glAttachShader(tt_renderer_shader_program, vertex_shader);
-    glAttachShader(tt_renderer_shader_program, fragment_shader);
-    glLinkProgram(tt_renderer_shader_program);
+    detail::shader_program = glCreateProgram();
+    glAttachShader(detail::shader_program, vertex_shader);
+    glAttachShader(detail::shader_program, fragment_shader);
+    glLinkProgram(detail::shader_program);
 
     glDeleteShader(vertex_shader);
     glDeleteShader(fragment_shader);
 
-    tt_renderer_camera_matrix_location = glGetUniformLocation(
-        tt_renderer_shader_program, "camera_matrix"
+    detail::camera_matrix_location = glGetUniformLocation(
+        detail::shader_program, "camera_matrix"
     );
-    tt_renderer_position_location = glGetAttribLocation(
-        tt_renderer_shader_program, "vertex_position"
+    detail::position_location = glGetAttribLocation(
+        detail::shader_program, "vertex_position"
     );
-    tt_renderer_tex_coord_location = glGetAttribLocation(
-        tt_renderer_shader_program, "vertex_tex_coord"
+    detail::tex_coord_location = glGetAttribLocation(
+        detail::shader_program, "vertex_tex_coord"
     );
 
     /* Configure vertex array stride and size */
-    glGenVertexArrays(1, &tt_renderer_vertex_array);
-    glGenBuffers(1, &tt_renderer_buffer);
+    glGenVertexArrays(1, &detail::vertex_array);
+    glGenBuffers(1, &detail::buffer);
 
-    glBindVertexArray(tt_renderer_vertex_array);
-    glBindBuffer(GL_ARRAY_BUFFER, tt_renderer_buffer);
+    glBindVertexArray(detail::vertex_array);
+    glBindBuffer(GL_ARRAY_BUFFER, detail::buffer);
 
-    glEnableVertexAttribArray(tt_renderer_position_location);
+    glEnableVertexAttribArray(detail::position_location);
     glVertexAttribPointer(
-        tt_renderer_position_location, 3, GL_FLOAT, GL_FALSE,
-        sizeof(TTVertex), (void*) 0
+        detail::position_location, 3, GL_FLOAT, GL_FALSE,
+        sizeof(vertex), (void*) 0
     );
-    glEnableVertexAttribArray(tt_renderer_tex_coord_location);
+    glEnableVertexAttribArray(detail::tex_coord_location);
     glVertexAttribPointer(
-        tt_renderer_tex_coord_location, 2, GL_FLOAT, GL_FALSE,
-        sizeof(TTVertex), (void*) (sizeof(float) * 3)
+        detail::tex_coord_location, 2, GL_FLOAT, GL_FALSE,
+        sizeof(vertex), (void*) (sizeof(float) * 3)
     );
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -102,37 +107,37 @@ void tt_renderer_startup(void) {
 }
 
 
-void tt_renderer_shutdown(void) {
-    assert(tt_renderer_buffer_data != NULL);
+void shutdown(void) {
+    assert(detail::buffer_data != NULL);
 
-    free(tt_renderer_buffer_data);
+    free(detail::buffer_data);
 
-    glDeleteVertexArrays(1, &tt_renderer_vertex_array);
-    glDeleteBuffers(1, &tt_renderer_buffer);
+    glDeleteVertexArrays(1, &detail::vertex_array);
+    glDeleteBuffers(1, &detail::buffer);
 }
 
 
-void tt_renderer_push_vertex(TTVertex *vertex) {
-    if (tt_renderer_buffer_size >= tt_renderer_buffer_capacity) {
-        tt_renderer_buffer_capacity += tt_renderer_buffer_capacity / 2;
+void push_vertex(vertex *v) {
+    if (detail::buffer_size >= detail::buffer_capacity) {
+        detail::buffer_capacity += detail::buffer_capacity / 2;
 
-        tt_renderer_buffer_data = (TTVertex *) realloc(
-            tt_renderer_buffer_data,
-            sizeof(TTVertex) * tt_renderer_buffer_capacity
+        detail::buffer_data = (vertex *) realloc(
+            detail::buffer_data,
+            sizeof(vertex) * detail::buffer_capacity
         );
-        assert(tt_renderer_buffer_data == NULL);
+        assert(detail::buffer_data == NULL);
     }
 
     memcpy(
-        &tt_renderer_buffer_data[tt_renderer_buffer_size],
-        vertex, sizeof(TTVertex)
+        &detail::buffer_data[detail::buffer_size],
+        v, sizeof(vertex)
     );
 
-    tt_renderer_buffer_size++;
+    detail::buffer_size++;
 }
 
 
-void tt_renderer_do_render(void) {
+void do_render(void) {
     float ratio;
     mat4x4 model_matrix, view_matrix, projection_matrix, mvp_matrix;
 
@@ -153,28 +158,30 @@ void tt_renderer_do_render(void) {
     mat4x4_mul(mvp_matrix, mvp_matrix, view_matrix);
     mat4x4_mul(mvp_matrix, mvp_matrix, model_matrix);
 
-    glUseProgram(tt_renderer_shader_program);
+    glUseProgram(detail::shader_program);
 
     glUniformMatrix4fv(
-        tt_renderer_camera_matrix_location,
+        detail::camera_matrix_location,
         1, GL_FALSE, (const GLfloat*) mvp_matrix
     );
 
-    glBindVertexArray(tt_renderer_vertex_array);
-    glBindBuffer(GL_ARRAY_BUFFER, tt_renderer_buffer);
+    glBindVertexArray(detail::vertex_array);
+    glBindBuffer(GL_ARRAY_BUFFER, detail::buffer);
 
     glBufferData(
         GL_ARRAY_BUFFER,
-        sizeof(TTVertex) * tt_renderer_buffer_size, tt_renderer_buffer_data,
+        sizeof(vertex) * detail::buffer_size, detail::buffer_data,
         GL_STREAM_DRAW
     );
 
-    glDrawArrays(GL_TRIANGLES, 0, tt_renderer_buffer_size);
+    glDrawArrays(GL_TRIANGLES, 0, detail::buffer_size);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
     // Empty the render buffer, but don't free the memory..
-    tt_renderer_buffer_size = 0;
+    detail::buffer_size = 0;
 }
 
+} /* namespace renderer */
+} /* namespace tt */

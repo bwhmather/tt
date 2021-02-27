@@ -1,14 +1,19 @@
 #pragma once
 
+namespace tt {
+namespace renderer {
+
 typedef struct {
     float x, y, z;
     float u, v;
-} TTVertex;
+} vertex;
 
 
-void tt_renderer_startup(void);
-void tt_renderer_shutdown(void);
+void startup(void);
+void shutdown(void);
 
-void tt_renderer_push_vertex(TTVertex *vertex);
-void tt_renderer_do_render(void);
+void push_vertex(vertex *vertex);
+void do_render(void);
 
+} /* namespace renderer */
+} /* namespace tt */

@@ -150,7 +150,7 @@ int main(void) {
     tt_component_position_startup();
     tt_component_sprite_startup();
     tt_component_target_startup();
-    tt_renderer_startup();
+    tt::renderer::startup();
 
     TTEntityId tree_id = tt_entities_create();
     TTPosition &tree_position = tt_add_position(tree_id);
@@ -221,13 +221,13 @@ int main(void) {
         tt_system_move_to_target_run();
 
         tt_system_sprites_run();
-        tt_renderer_do_render();
+        tt::renderer::do_render();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
-    tt_renderer_shutdown();
+    tt::renderer::shutdown();
 
     glfwDestroyWindow(window);
 

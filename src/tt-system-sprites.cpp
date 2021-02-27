@@ -14,7 +14,7 @@ void tt_system_sprites_run(void) {
     tt_entities_iter_begin(&iter);
 
     while (tt_entities_iter_has_next(&iter)) {
-        TTVertex vertex;
+        tt::renderer::vertex vertex;
         TTEntityId entity_id = tt_entities_iter_next(&iter);
 
         if (!tt_has_sprite(entity_id)) continue;
@@ -28,42 +28,42 @@ void tt_system_sprites_run(void) {
         vertex.z = 0.0;
         vertex.u = 0.0;
         vertex.v = 0.0;
-        tt_renderer_push_vertex(&vertex);
+        tt::renderer::push_vertex(&vertex);
 
         vertex.x = position.x + 0.5 * sprite.width;
         vertex.y = position.y;
         vertex.z = 0.0;
         vertex.u = 1.0;
         vertex.v = 0.0;
-        tt_renderer_push_vertex(&vertex);
+        tt::renderer::push_vertex(&vertex);
 
         vertex.x = position.x + 0.5 * sprite.width;
         vertex.y = position.y;
         vertex.z = sprite.height;
         vertex.u = 1.0;
         vertex.v = 1.0;
-        tt_renderer_push_vertex(&vertex);
+        tt::renderer::push_vertex(&vertex);
 
         vertex.x = position.x + 0.5 * sprite.width;
         vertex.y = position.y;
         vertex.z = sprite.height;
         vertex.u = 1.0;
         vertex.v = 1.0;
-        tt_renderer_push_vertex(&vertex);
+        tt::renderer::push_vertex(&vertex);
 
         vertex.x = position.x - 0.5 * sprite.width;
         vertex.y = position.y;
         vertex.z = sprite.height;
         vertex.u = 0.0;
         vertex.v = 1.0;
-        tt_renderer_push_vertex(&vertex);
+        tt::renderer::push_vertex(&vertex);
 
         vertex.x = position.x - 0.5 * sprite.width;
         vertex.y = position.y;
         vertex.z = 0.0;
         vertex.u = 0.0;
         vertex.v = 0.0;
-        tt_renderer_push_vertex(&vertex);
+        tt::renderer::push_vertex(&vertex);
     }
 }
 
