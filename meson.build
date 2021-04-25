@@ -1,4 +1,11 @@
-project('tt', 'cpp', default_options: ['cpp_std=c++17'])
+project(
+  'tt', 'cpp',
+  default_options: [
+    'cpp_std=c++17',
+    'cpp_eh=none',
+    'cpp_rtti=false',
+  ],
+)
 
 cc = meson.get_compiler('cpp')
 
