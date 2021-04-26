@@ -26,11 +26,11 @@ GLuint tt_load_texture(const std::string& filename) {
     unsigned long row_bytes;
     unsigned char* data = NULL;
 
-    tt_debug("loading %s", filename);
+    tt_debug("loading %s", filename.c_str());
 
     png_bytepp row_pointers = NULL;
 
-    fp = fopen(filename.c_str(), "rb");
+    fp = fopen(filename.c_str(), "r");
     tt_abort_if_errno("could not open image");
 
     png_ptr = png_create_read_struct(
@@ -115,7 +115,7 @@ GLuint tt_load_texture(const std::string& filename) {
     glTexParameteri(
         GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST
     );
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     tt_abort_if_gl_error("failed to set texture parameters");
@@ -136,6 +136,8 @@ GLuint tt_load_texture(const std::string& filename) {
 
     glGenerateMipmap(GL_TEXTURE_2D);
     tt_abort_if_gl_error("failed to generate mipmaps")
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     free(data);
 
