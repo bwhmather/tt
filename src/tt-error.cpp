@@ -84,7 +84,9 @@ void tt_abort_if_errno_impl(
     const char *file, int line, const char *func,
     const char *format, ...
 ) {
-    if (errno) {
+    int errno_saved = errno;
+    if (errno_saved) {
+
         fprintf(
             stderr, "%s:%i %s: %s: ",
             file, line, func, tt_error_level_str(TTLogLevel::ERROR)
@@ -95,7 +97,7 @@ void tt_abort_if_errno_impl(
         vfprintf(stderr, format, args);
         va_end(args);
 
-        fprintf(stderr, ": %s\n", strerror(errno));
+        fprintf(stderr, ": %s\n", strerror(errno_saved));
 
         abort();
     }
