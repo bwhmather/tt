@@ -23,6 +23,7 @@ includes = include_directories('include')
 lib_sources = [
   'src/tt-entities.cpp',
   'src/tt-renderer.cpp',
+  'src/tt-error.cpp',
   'src/tt-component-job.cpp',
   'src/tt-component-move-to-target.cpp',
   'src/tt-component-position.cpp',
@@ -30,7 +31,6 @@ lib_sources = [
   'src/tt-component-target.cpp',
   'src/tt-system-move-to-target.cpp',
   'src/tt-system-sprites.cpp',
-
 ]
 
 lib = both_libraries(
