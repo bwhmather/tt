@@ -115,7 +115,7 @@ void startup(void) {
         sizeof(vertex), (void*) (sizeof(float) * 3)
     );
 
-    detail::spritesheet = tt_load_texture("/home/ben/pro/games/tt/spritesheet.png");
+    detail::spritesheet = tt_load_texture("spritesheet.png");
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
