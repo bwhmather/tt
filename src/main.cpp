@@ -6,6 +6,7 @@
 #include "tt-component-target.hpp"
 #include "tt-system-move-to-target.hpp"
 #include "tt-system-sprites.hpp"
+#include "tt-error.hpp"
 
 #include "linmath.hpp"
 
@@ -13,6 +14,7 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
+#include <cerrno>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -86,6 +88,7 @@ int main(void) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
     window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
+    errno = 0;
     if (!window) {
         glfwTerminate();
         exit(EXIT_FAILURE);
@@ -150,6 +153,7 @@ int main(void) {
     tt_component_position_startup();
     tt_component_sprite_startup();
     tt_component_target_startup();
+
     tt::renderer::startup();
 
     TTEntityId tree_id = tt_entities_create();
