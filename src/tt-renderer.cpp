@@ -115,13 +115,13 @@ void startup(void) {
         sizeof(vertex), (void*) (sizeof(float) * 3)
     );
 
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
     detail::spritesheet = tt_load_texture("spritesheet.png");
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
 }
 
 
