@@ -12,13 +12,15 @@ int main(void) {
 
     tt_assert(!tt_has_sprite(entity_id));
 
-    tt_add_sprite(entity_id, {1, 2});
+    tt_add_sprite(entity_id, {0, 5, 1, 2});
 
     tt_assert(tt_has_sprite(entity_id));
 
     TTSprite& sprite = tt_get_sprite(entity_id);
-    tt_assert(sprite.width == 1);
-    tt_assert(sprite.height == 2);
+    tt_assert(sprite.grid_x == 0);
+    tt_assert(sprite.grid_y == 5);
+    tt_assert(sprite.grid_width == 1);
+    tt_assert(sprite.grid_height == 2);
 
     tt_component_sprite_shutdown();
     tt_entities_shutdown();

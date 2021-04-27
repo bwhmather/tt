@@ -162,8 +162,10 @@ int main(void) {
     tree_position.y = 1.0;
 
     TTSprite &tree_sprite = tt_add_sprite(tree_id);
-    tree_sprite.width = 0.3;
-    tree_sprite.height = 0.9;
+    tree_sprite.grid_x = 0;
+    tree_sprite.grid_y = 0;
+    tree_sprite.grid_width = 2;
+    tree_sprite.grid_height = 2;
 
     TTEntityId entity_id = tt_entities_create();
 
@@ -172,8 +174,10 @@ int main(void) {
     position.y = 0.0;
 
     TTSprite& sprite = tt_add_sprite(entity_id);
-    sprite.width = 0.2;
-    sprite.height = 0.5;
+    sprite.grid_x = 0;
+    sprite.grid_y = 0;
+    sprite.grid_width = 1;
+    sprite.grid_height = 1;
 
     tt_set_target(entity_id, tree_id);
     tt_set_move_to_target(entity_id, 0.01);

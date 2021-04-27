@@ -23,46 +23,51 @@ void tt_system_sprites_run(void) {
         TTSprite& sprite = tt_get_sprite(entity_id);
         TTPosition& position = tt_get_position(entity_id);
 
-        vertex.x = position.x - 0.5 * sprite.width;
+        float real_width = 0.1 * sprite.grid_width;
+        float real_height = 0.1 * sprite.grid_height;
+
+        float pixel = 1.0 / 128;
+
+        vertex.x = position.x - 0.5 * real_width;
         vertex.y = position.y;
         vertex.z = 0.0;
-        vertex.u = 0.0;
-        vertex.v = 0.0;
+        vertex.u = 8 * sprite.grid_x * pixel;
+        vertex.v = 8 * (sprite.grid_y + sprite.grid_height) * pixel;
         tt::renderer::push_vertex(&vertex);
 
-        vertex.x = position.x + 0.5 * sprite.width;
+        vertex.x = position.x + 0.5 * real_width;
         vertex.y = position.y;
         vertex.z = 0.0;
-        vertex.u = 1.0;
-        vertex.v = 0.0;
+        vertex.u = 8 * (sprite.grid_x + sprite.grid_width) * pixel;
+        vertex.v = 8 * (sprite.grid_y + sprite.grid_height) * pixel;
         tt::renderer::push_vertex(&vertex);
 
-        vertex.x = position.x + 0.5 * sprite.width;
+        vertex.x = position.x + 0.5 * real_width;
         vertex.y = position.y;
-        vertex.z = sprite.height;
-        vertex.u = 1.0;
-        vertex.v = 1.0;
+        vertex.z = real_height;
+        vertex.u = 8 * (sprite.grid_x + sprite.grid_width) * pixel;
+        vertex.v = 8 * sprite.grid_y * pixel;
         tt::renderer::push_vertex(&vertex);
 
-        vertex.x = position.x + 0.5 * sprite.width;
+        vertex.x = position.x + 0.5 * real_width;
         vertex.y = position.y;
-        vertex.z = sprite.height;
-        vertex.u = 1.0;
-        vertex.v = 1.0;
+        vertex.z = real_height;
+        vertex.u = 8 * (sprite.grid_x + sprite.grid_width) * pixel;
+        vertex.v = 8 * sprite.grid_y * pixel;
         tt::renderer::push_vertex(&vertex);
 
-        vertex.x = position.x - 0.5 * sprite.width;
+        vertex.x = position.x - 0.5 * real_width;
         vertex.y = position.y;
-        vertex.z = sprite.height;
-        vertex.u = 0.0;
-        vertex.v = 1.0;
+        vertex.z = real_height;
+        vertex.u = 8 * sprite.grid_x * pixel;
+        vertex.v = 8 * sprite.grid_y * pixel;
         tt::renderer::push_vertex(&vertex);
 
-        vertex.x = position.x - 0.5 * sprite.width;
+        vertex.x = position.x - 0.5 * real_width;
         vertex.y = position.y;
         vertex.z = 0.0;
-        vertex.u = 0.0;
-        vertex.v = 0.0;
+        vertex.u = 8 * sprite.grid_x * pixel;
+        vertex.v = 8 * (sprite.grid_y + sprite.grid_height) * pixel;
         tt::renderer::push_vertex(&vertex);
     }
 }

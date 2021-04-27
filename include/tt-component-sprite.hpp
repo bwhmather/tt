@@ -3,8 +3,10 @@
 #include "tt-entities.hpp"
 
 typedef struct {
-    double width;
-    double height;
+    int grid_x;
+    int grid_y;
+    int grid_width;
+    int grid_height;
 } TTSprite;
 
 void tt_component_sprite_startup(void);
