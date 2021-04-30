@@ -7,16 +7,7 @@
 #include <cstdlib>
 #include <cstring>
 
-
-#define tt_assert(tt_test_condition) do {                                   \
-        if (!(tt_test_condition)) {                                         \
-            fprintf(                                                        \
-                stderr, "%s:%i %s: Assertion `%s' failed",                  \
-                __FILE__, __LINE__, __func__, #tt_test_condition            \
-            );                                                              \
-            abort();                                                        \
-        }                                                                   \
-    } while (0)
+#include "tt-error.hpp"
 
 static jmp_buf tt_test_on_sigabrt_jump_target;
 static inline void tt_test_on_sigabrt(int signal) {

@@ -70,3 +70,9 @@ void tt_abort_if_gl_error_impl(
     tt_abort_if_gl_error_impl(                                              \
         __FILE__, __LINE__, __func__, __VA_ARGS__                           \
     );
+
+#define tt_assert(tt_test_condition) do {                                   \
+        if (!(tt_test_condition)) {                                         \
+            tt_abort("assertion failed: %s", #tt_test_condition)            \
+        }                                                                   \
+    } while (0)
