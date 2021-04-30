@@ -6,9 +6,10 @@
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 
+namespace tt {
+namespace resource_camera {
 
 namespace detail {
-
 static float fov;
 static float aspect_ratio;
 
@@ -18,10 +19,9 @@ static float far_clipping_plane;
 static glm::vec3 eye_vector;
 static glm::vec3 centre_vector;
 static glm::vec3 up_vector;
+}  /* namespace detail */
 
-} /* namespace detail */
-
-void tt_resource_camera_startup() {
+void startup() {
     detail::fov = glm::pi<float>() / 3.0f;
     detail::aspect_ratio = 1.0f;
 
@@ -33,25 +33,25 @@ void tt_resource_camera_startup() {
     detail::up_vector = glm::vec3(0.0, 0.0, 1.0f);
 }
 
-void tt_resource_camera_shutdown() {}
+void shutdown() {}
 
-void tt_camera_set_fov(float fov) {
+void set_fov(float fov) {
     detail::fov = fov;
 }
 
-void tt_camera_set_aspect_ratio(float aspect_ratio) {
+void set_aspect_ratio(float aspect_ratio) {
     detail::aspect_ratio = aspect_ratio;
 }
 
-void tt_camera_set_near_clipping_plane(float near) {
+void set_near_clipping_plane(float near) {
     detail::near_clipping_plane = near;
 }
 
-void tt_camera_set_far_clipping_plane(float far) {
+void set_far_clipping_plane(float far) {
     detail::far_clipping_plane = far;
 }
 
-void tt_camera_look_at(
+void look_at(
     glm::vec3 eye_vector, glm::vec3 centre_vector, glm::vec3 up_vector
 ) {
     detail::eye_vector = eye_vector;
@@ -59,7 +59,7 @@ void tt_camera_look_at(
     detail::up_vector = up_vector;
 }
 
-glm::mat4 tt_camera_get_matrix(void) {
+glm::mat4 get_matrix(void) {
     glm::mat4 model_matrix = glm::identity<glm::mat4>();
 
     glm::mat4 view_matrix = glm::lookAt(
@@ -73,3 +73,6 @@ glm::mat4 tt_camera_get_matrix(void) {
 
     return projection_matrix * view_matrix * model_matrix;
 }
+
+}  /* namespace resource_camera */
+}  /* namespace tt */

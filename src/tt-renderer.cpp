@@ -164,7 +164,7 @@ void push_vertex(vertex *v) {
 
 
 void do_render(void) {
-    glm::mat4 camera_matrix = tt_camera_get_matrix();
+    glm::mat4 camera_matrix = tt::resource_camera::get_matrix();
 
     glUseProgram(detail::shader_program);
 

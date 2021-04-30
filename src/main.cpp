@@ -153,7 +153,7 @@ int main(void) {
     glBindVertexArray(0);
 
     tt_entities_startup();
-    tt_resource_camera_startup();
+    tt::resource_camera::startup();
     tt_component_move_to_target_startup();
     tt_component_position_startup();
     tt_component_sprite_startup();
@@ -187,10 +187,10 @@ int main(void) {
     tt_set_target(entity_id, tree_id);
     tt_set_move_to_target(entity_id, 0.01);
 
-    tt_camera_set_fov(glm::pi<float>() / 3.0f);
-    tt_camera_set_near_clipping_plane(0.1f);
-    tt_camera_set_far_clipping_plane(4.0f);
-    tt_camera_look_at(
+    tt::resource_camera::set_fov(glm::pi<float>() / 3.0f);
+    tt::resource_camera::set_near_clipping_plane(0.1f);
+    tt::resource_camera::set_far_clipping_plane(4.0f);
+    tt::resource_camera::look_at(
         glm::vec3(1.0f, -2.0f, 1.0f),  // Eye vector.
         glm::vec3(0.0f, 0.0f, 0.0f),  // Centre vector.
         glm::vec3(0.0f, 0.0f, 1.0f)  // Up vector.
@@ -202,9 +202,9 @@ int main(void) {
 
         glfwGetFramebufferSize(window, &width, &height);
         aspect_ratio = (float) width / (float) height;
-        tt_camera_set_aspect_ratio(aspect_ratio);
+        tt::resource_camera::set_aspect_ratio(aspect_ratio);
 
-        glm::mat4 camera_matrix = tt_camera_get_matrix();
+        glm::mat4 camera_matrix = tt::resource_camera::get_matrix();
 
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
