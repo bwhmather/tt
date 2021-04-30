@@ -1,4 +1,4 @@
-#include "tt-renderer.hpp"
+#include "tt-system-sprites.hpp"
 
 #include <cassert>
 #include <cstdio>
@@ -6,10 +6,31 @@
 #include "tt-component-position.hpp"
 #include "tt-component-sprite.hpp"
 #include "tt-entities.hpp"
+#include "tt-error.hpp"
+#include "tt-renderer.hpp"
 
 
-void tt_system_sprites_run(void) {
+namespace tt {
+namespace system_sprites {
+
+namespace detail {
+    static bool initialised = false;
+}
+
+void startup(void) {
+    tt_assert(detail::initialised == false);
+    detail::initialised = true;
+}
+
+void shutdown(void) {
+    tt_assert(detail::initialised == true);
+    detail::initialised = false;
+}
+
+void run(void) {
     TTEntityIter iter;
+
+    tt_assert(detail::initialised == true);
 
     tt_entities_iter_begin(&iter);
 
@@ -72,3 +93,5 @@ void tt_system_sprites_run(void) {
     }
 }
 
+}  /* namespace system_sprites */
+}  /* namespace tt */

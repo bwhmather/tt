@@ -154,6 +154,7 @@ int main(void) {
 
     tt_entities_startup();
     tt::resource_camera::startup();
+    tt::system_sprites::startup();
     tt_component_move_to_target_startup();
     tt_component_position_startup();
     tt_component_sprite_startup();
@@ -230,7 +231,7 @@ int main(void) {
 
         tt_system_move_to_target_run();
 
-        tt_system_sprites_run();
+        tt::system_sprites::run();
         tt::renderer::do_render();
 
         glfwSwapBuffers(window);
