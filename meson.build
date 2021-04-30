@@ -12,9 +12,10 @@ cc = meson.get_compiler('cpp')
 m_dep = cc.find_library('m', required : false)
 glfw_dep = dependency('glfw3')
 glew_dep = dependency('glew')
+glm_dep = dependency('glm')
 libpng_dep = dependency('libpng')
 
-dependencies = [m_dep, glfw_dep, glew_dep, libpng_dep]
+dependencies = [m_dep, glfw_dep, glew_dep, glm_dep, libpng_dep]
 
 includes = include_directories('include')
 
