@@ -5,8 +5,10 @@
 #include <cstring>
 
 #include <GL/glew.h>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/mat4x4.hpp>
 
-#include "linmath.hpp"
+#include "tt-resource-camera.hpp"
 #include "tt-texture.hpp"
 
 namespace tt {
@@ -156,31 +158,13 @@ void push_vertex(vertex *v) {
 
 
 void do_render(void) {
-    float ratio;
-    mat4x4 model_matrix, view_matrix, projection_matrix, mvp_matrix;
-
-    // TODO
-    ratio = 1.0;
-
-    mat4x4_identity(model_matrix);
-
-    vec3 eye_vector = {1.0f, -2.0f, 1.0f};
-    vec3 centre_vector = {0.0f, 0.0f, 0.0f};
-    vec4 up_vector = {0.0f, 0.0f, 1.0f};
-    mat4x4_look_at(view_matrix, eye_vector, centre_vector, up_vector);
-
-    mat4x4_perspective(projection_matrix, M_PI / 3, ratio, 0.1f, 100.0f);
-
-    mat4x4_identity(mvp_matrix);
-    mat4x4_mul(mvp_matrix, mvp_matrix, projection_matrix);
-    mat4x4_mul(mvp_matrix, mvp_matrix, view_matrix);
-    mat4x4_mul(mvp_matrix, mvp_matrix, model_matrix);
+    glm::mat4 camera_matrix = tt_camera_get_matrix();
 
     glUseProgram(detail::shader_program);
 
     glUniformMatrix4fv(
         detail::camera_matrix_location,
-        1, GL_FALSE, (const GLfloat*) mvp_matrix
+        1, GL_FALSE, glm::value_ptr(camera_matrix)
     );
 
     glActiveTexture(GL_TEXTURE0);
