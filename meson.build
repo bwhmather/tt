@@ -27,6 +27,7 @@ lib_sources = [
   'src/tt-renderer.cpp',
   'src/tt-texture.cpp',
   'src/tt-error.cpp',
+  'src/tt-resource-camera.cpp',
   'src/tt-component-job.cpp',
   'src/tt-component-move-to-target.cpp',
   'src/tt-component-position.cpp',
