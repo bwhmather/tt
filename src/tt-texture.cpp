@@ -31,7 +31,9 @@ GLuint tt_load_texture(const std::string& filename) {
     png_bytepp row_pointers = NULL;
 
     fp = fopen(filename.c_str(), "r");
-    tt_abort_if_errno("could not open image");
+    if (!fp) {
+        tt_abort_errno("could not open image");
+    }
 
     png_ptr = png_create_read_struct(
         PNG_LIBPNG_VER_STRING, NULL, NULL, NULL
