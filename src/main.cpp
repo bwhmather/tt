@@ -4,15 +4,19 @@
 #include "tt-component-position.hpp"
 #include "tt-component-sprite.hpp"
 #include "tt-component-target.hpp"
+#include "tt-resource-camera.hpp"
 #include "tt-system-move-to-target.hpp"
 #include "tt-system-sprites.hpp"
 #include "tt-error.hpp"
 
-#include "linmath.hpp"
-
 #include <GL/glew.h>
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
+#include <glm/ext/scalar_constants.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/vec3.hpp>
+
 
 #include <cerrno>
 #include <stdlib.h>
@@ -149,6 +153,7 @@ int main(void) {
     glBindVertexArray(0);
 
     tt_entities_startup();
+    tt_resource_camera_startup();
     tt_component_move_to_target_startup();
     tt_component_position_startup();
     tt_component_sprite_startup();
@@ -182,34 +187,31 @@ int main(void) {
     tt_set_target(entity_id, tree_id);
     tt_set_move_to_target(entity_id, 0.01);
 
+    tt_camera_set_fov(glm::pi<float>() / 3.0f);
+    tt_camera_set_near_clipping_plane(0.1f);
+    tt_camera_set_far_clipping_plane(4.0f);
+    tt_camera_look_at(
+        glm::vec3(1.0f, -2.0f, 1.0f),  // Eye vector.
+        glm::vec3(0.0f, 0.0f, 0.0f),  // Centre vector.
+        glm::vec3(0.0f, 0.0f, 1.0f)  // Up vector.
+    );
+
     while (!glfwWindowShouldClose(window)) {
-        float ratio;
+        float aspect_ratio;
         int width, height;
-        mat4x4 model_matrix, view_matrix, projection_matrix, mvp_matrix;
 
         glfwGetFramebufferSize(window, &width, &height);
-        ratio = width / (float) height;
+        aspect_ratio = (float) width / (float) height;
+        tt_camera_set_aspect_ratio(aspect_ratio);
+
+        glm::mat4 camera_matrix = tt_camera_get_matrix();
 
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        mat4x4_identity(model_matrix);
-
-        vec3 eye_vector = {1.0f, -2.0f, 1.0f};
-        vec3 centre_vector = {0.0f, 0.0f, 0.0f};
-        vec4 up_vector = {0.0f, 0.0f, 1.0f};
-        mat4x4_look_at(view_matrix, eye_vector, centre_vector, up_vector);
-
-        mat4x4_perspective(projection_matrix, M_PI / 3, ratio, 0.1f, 100.0f);
-
-        mat4x4_identity(mvp_matrix);
-        mat4x4_mul(mvp_matrix, mvp_matrix, projection_matrix);
-        mat4x4_mul(mvp_matrix, mvp_matrix, view_matrix);
-        mat4x4_mul(mvp_matrix, mvp_matrix, model_matrix);
-
         glUseProgram(program);
         glUniformMatrix4fv(
-            mvp_location, 1, GL_FALSE, (const GLfloat*) mvp_matrix
+            mvp_location, 1, GL_FALSE, glm::value_ptr(camera_matrix)
         );
 
         glBindVertexArray(vertex_array);
