@@ -207,7 +207,7 @@ int main(void) {
         glm::mat4 camera_matrix = tt_camera_get_matrix();
 
         glViewport(0, 0, width, height);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glUseProgram(program);
         glUniformMatrix4fv(

@@ -37,7 +37,12 @@ static const char* FRAGMENT_SHADER_TEXT =
     "varying vec2 fragment_tex_coord;\n"
     "\n"
     "void main() {\n"
-    "    gl_FragColor = texture2D(spritesheet, fragment_tex_coord);\n"
+    "    vec4 colour = texture2D(spritesheet, fragment_tex_coord);\n"
+    "    if (colour.a == 0.0) {\n"
+    "        discard;\n"
+    "    } else {\n"
+    "        gl_FragColor = colour;\n"
+    "    }\n"
     "}\n";
 
 
@@ -122,6 +127,7 @@ void startup(void) {
 
     detail::spritesheet = tt_load_texture("spritesheet.png");
 
+    glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
