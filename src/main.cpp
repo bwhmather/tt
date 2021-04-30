@@ -157,7 +157,7 @@ int main(void) {
     tt::system_sprites::startup();
     tt_component_move_to_target_startup();
     tt_component_position_startup();
-    tt_component_sprite_startup();
+    tt::component_sprite::startup();
     tt_component_target_startup();
 
     tt::renderer::startup();
@@ -167,7 +167,7 @@ int main(void) {
     tree_position.x = 1.0;
     tree_position.y = 1.0;
 
-    TTSprite &tree_sprite = tt_add_sprite(tree_id);
+    tt::Sprite &tree_sprite = tt::component_sprite::add(tree_id);
     tree_sprite.grid_x = 0;
     tree_sprite.grid_y = 0;
     tree_sprite.grid_width = 2;
@@ -179,7 +179,7 @@ int main(void) {
     position.x = 0.0;
     position.y = 0.0;
 
-    TTSprite& sprite = tt_add_sprite(entity_id);
+    tt::Sprite& sprite = tt::component_sprite::add(entity_id);
     sprite.grid_x = 0;
     sprite.grid_y = 0;
     sprite.grid_width = 1;

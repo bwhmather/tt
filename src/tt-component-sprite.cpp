@@ -1,47 +1,63 @@
 #include "tt-component-sprite.hpp"
 
-#include <assert.h>
-
+#include "tt-error.hpp"
 #include "tt-storage-sparse-vector.tpp"
 
+namespace tt {
+namespace component_sprite {
 
-static TTStorageSparseVector<TTSprite> *storage = NULL;
+namespace detail {
 
-void tt_component_sprite_startup(void) {
-    assert(storage == NULL);
-    storage = new TTStorageSparseVector<TTSprite>();
+static bool initialised = false;
+static TTStorageSparseVector<tt::Sprite> *storage = NULL;
+
+}  /* namespace detail */
+
+void startup(void) {
+    tt_assert(detail::initialised == false);
+    detail::storage = new TTStorageSparseVector<tt::Sprite>();
+    detail::initialised = true;
 }
 
-void tt_component_sprite_shutdown(void) {
-    assert(storage != NULL);
-    delete storage;
-    storage = NULL;
+void shutdown(void) {
+    tt_assert(detail::initialised == true);
+
+    delete detail::storage;
+    detail::storage = NULL;
+    detail::initialised = false;
 }
 
-void tt_add_sprite(TTEntityId entity_id, TTSprite sprite) {
-    assert(storage != NULL);
-    return storage->add(entity_id, sprite);
+void add(TTEntityId entity_id, tt::Sprite sprite) {
+    tt_assert(detail::initialised == true);
+
+    return detail::storage->add(entity_id, sprite);
 }
 
-TTSprite &tt_add_sprite(TTEntityId entity_id) {
-    assert(storage != NULL);
-    TTSprite sprite = { 0, 0 };
-    storage->add(entity_id, sprite);
-    return storage->get(entity_id);
+tt::Sprite &add(TTEntityId entity_id) {
+    tt_assert(detail::initialised == true);
+
+    tt::Sprite sprite = { 0, 0 };
+    detail::storage->add(entity_id, sprite);
+    return detail::storage->get(entity_id);
 }
 
-bool tt_has_sprite(TTEntityId entity_id) {
-    assert(storage != NULL);
-    return storage->has(entity_id);
+bool has(TTEntityId entity_id) {
+    tt_assert(detail::initialised == true);
+
+    return detail::storage->has(entity_id);
 }
 
-TTSprite& tt_get_sprite(TTEntityId entity_id) {
-    assert(storage != NULL);
-    return storage->get(entity_id);
+tt::Sprite& get(TTEntityId entity_id) {
+    tt_assert(detail::initialised == true);
+
+    return detail::storage->get(entity_id);
 }
 
-void tt_remove_sprite(TTEntityId entity_id) {
-    assert(storage != NULL);
-    return storage->remove(entity_id);
+void remove(TTEntityId entity_id) {
+    tt_assert(detail::initialised == true);
+
+    return detail::storage->remove(entity_id);
 }
 
+}  /* namespace component_sprite */
+}  /* namespace tt */
