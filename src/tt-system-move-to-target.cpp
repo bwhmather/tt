@@ -23,7 +23,7 @@ void tt_system_move_to_target_run(void) {
             // warn();
             continue;
         }
-        if (!tt_has_position(entity_id)) {
+        if (!tt::component_position::has(entity_id)) {
             // warn()
             continue;
         }
@@ -34,13 +34,13 @@ void tt_system_move_to_target_run(void) {
         double speed = 0.2;
 
         TTEntityId target_id = tt_get_target(entity_id);
-        if (!tt_has_position(target_id)) {
+        if (!tt::component_position::has(target_id)) {
             // warn()
             continue;
         }
 
-        TTPosition &target_position = tt_get_position(target_id);
-        TTPosition &position = tt_get_position(entity_id);
+        tt::Position &target_position = tt::component_position::get(target_id);
+        tt::Position &position = tt::component_position::get(entity_id);
 
         double min_range = tt_get_move_to_target_range(entity_id);
         double current_range = std::sqrt(

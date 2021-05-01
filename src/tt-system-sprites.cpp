@@ -39,10 +39,10 @@ void run(void) {
         TTEntityId entity_id = tt_entities_iter_next(&iter);
 
         if (!tt::component_sprite::has(entity_id)) continue;
-        if (!tt_has_position(entity_id)) continue;
+        if (!tt::component_position::has(entity_id)) continue;
 
         tt::Sprite& sprite = tt::component_sprite::get(entity_id);
-        TTPosition& position = tt_get_position(entity_id);
+        tt::Position& position = tt::component_position::get(entity_id);
 
         float real_width = 0.1 * sprite.grid_width;
         float real_height = 0.1 * sprite.grid_height;

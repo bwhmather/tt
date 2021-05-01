@@ -4,44 +4,65 @@
 
 #include "tt-storage-sparse-vector.tpp"
 
+namespace tt{
+namespace component_position {
 
-static TTStorageSparseVector<TTPosition> *storage = NULL;
+namespace detail {
 
-void tt_component_position_startup(void) {
-    assert(storage == NULL);
-    storage = new TTStorageSparseVector<TTPosition>();
+static bool initialised = false;
+static TTStorageSparseVector<Position> *storage = NULL;
+
+}  /* namespace detail */
+
+void startup(void) {
+    assert(detail::initialised == false);
+
+    detail::storage = new TTStorageSparseVector<Position>();
+
+    detail::initialised = true;
 }
 
-void tt_component_position_shutdown(void) {
-    assert(storage != NULL);
-    delete storage;
-    storage = NULL;
+void shutdown(void) {
+    assert(detail::initialised == true);
+
+    delete detail::storage;
+    detail::storage = NULL;
+
+    detail::initialised = false;
 }
 
-void tt_add_position(TTEntityId entity_id, TTPosition position) {
-    assert(storage != NULL);
-    return storage->add(entity_id, position);
+void add(TTEntityId entity_id, Position position) {
+    assert(detail::initialised == true);
+
+    return detail::storage->add(entity_id, position);
 }
 
-TTPosition &tt_add_position(TTEntityId entity_id) {
-    assert(storage != NULL);
-    TTPosition position = { 0, 0 };
-    storage->add(entity_id, position);
-    return storage->get(entity_id);
+Position &add(TTEntityId entity_id) {
+    assert(detail::initialised == true);
+
+    Position position = { 0, 0 };
+    detail::storage->add(entity_id, position);
+
+    return detail::storage->get(entity_id);
 }
 
-bool tt_has_position(TTEntityId entity_id) {
-    assert(storage != NULL);
-    return storage->has(entity_id);
+bool has(TTEntityId entity_id) {
+    assert(detail::initialised == true);
+
+    return detail::storage->has(entity_id);
 }
 
-TTPosition& tt_get_position(TTEntityId entity_id) {
-    assert(storage != NULL);
-    return storage->get(entity_id);
+Position& get(TTEntityId entity_id) {
+    assert(detail::initialised == true);
+
+    return detail::storage->get(entity_id);
 }
 
-void tt_remove_position(TTEntityId entity_id) {
-    assert(storage != NULL);
-    return storage->remove(entity_id);
+void remove(TTEntityId entity_id) {
+    assert(detail::initialised == true);
+
+    return detail::storage->remove(entity_id);
 }
 
+}  /* namespace component_position */
+}  /* namespace tt */

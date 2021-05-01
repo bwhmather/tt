@@ -156,14 +156,14 @@ int main(void) {
     tt::resource_camera::startup();
     tt::system_sprites::startup();
     tt_component_move_to_target_startup();
-    tt_component_position_startup();
+    tt::component_position::startup();
     tt::component_sprite::startup();
     tt_component_target_startup();
 
     tt::renderer::startup();
 
     TTEntityId tree_id = tt_entities_create();
-    TTPosition &tree_position = tt_add_position(tree_id);
+    tt::Position &tree_position = tt::component_position::add(tree_id);
     tree_position.x = 1.0;
     tree_position.y = 1.0;
 
@@ -175,7 +175,7 @@ int main(void) {
 
     TTEntityId entity_id = tt_entities_create();
 
-    TTPosition& position = tt_add_position(entity_id);
+    tt::Position& position = tt::component_position::add(entity_id);
     position.x = 0.0;
     position.y = 0.0;
 
