@@ -18,7 +18,7 @@ void tt_system_move_to_target_run(void) {
     while (tt_entities_iter_has_next(&iter)) {
         TTEntityId entity_id = tt_entities_iter_next(&iter);
 
-        if (!tt_has_move_to_target(entity_id)) continue;
+        if (!tt::component_move_to_target::has(entity_id)) continue;
         if (!tt_has_target(entity_id)) {
             // warn();
             continue;
@@ -42,14 +42,16 @@ void tt_system_move_to_target_run(void) {
         tt::Position &target_position = tt::component_position::get(target_id);
         tt::Position &position = tt::component_position::get(entity_id);
 
-        double min_range = tt_get_move_to_target_range(entity_id);
+        double min_range = tt::component_move_to_target::get_target_range(
+            entity_id
+        );
         double current_range = std::sqrt(
             std::pow(position.x - target_position.x, 2) +
             std::pow(position.y - target_position.y, 2)
         );
 
         if (current_range < min_range) {
-            tt_remove_move_to_target(entity_id);
+            tt::component_move_to_target::remove(entity_id);
         }
 
         double step = std::min(speed * 1 / 60, current_range);  // TODO

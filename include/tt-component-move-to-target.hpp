@@ -3,13 +3,19 @@
 #include "tt-entities.hpp"
 
 
-void tt_component_move_to_target_startup(void);
-void tt_component_move_to_target_shutdown(void);
+namespace tt {
+namespace component_move_to_target {
 
-void tt_set_move_to_target(TTEntityId, double range);
+void startup(void);
+void shutdown(void);
 
-bool tt_has_move_to_target(TTEntityId entity);
+void set_target_range(TTEntityId, double range);
 
-double tt_get_move_to_target_range(TTEntityId entity);
+bool has(TTEntityId entity);
 
-void tt_remove_move_to_target(TTEntityId entity);
+double get_target_range(TTEntityId entity);
+
+void remove(TTEntityId entity);
+
+}  /* namespace tt */
+}  /* namespace component_move_to_target */
