@@ -153,14 +153,16 @@ int main(void) {
     glBindVertexArray(0);
 
     tt_entities_startup();
-    tt::resource_camera::startup();
-    tt::system_sprites::startup();
     tt::component_position::startup();
     tt::component_sprite::startup();
     tt_component_target_startup();
     tt::component_move_to_target::startup();
 
+    tt::resource_camera::startup();
     tt::renderer::startup();
+
+    tt::system_sprites::startup();
+    tt::system_move_to_target::startup();
 
     TTEntityId tree_id = tt_entities_create();
     tt::Position &tree_position = tt::component_position::add(tree_id);
@@ -229,7 +231,7 @@ int main(void) {
 
         tt_entities_maintain();
 
-        tt_system_move_to_target_run();
+        tt::system_move_to_target::run();
 
         tt::system_sprites::run();
         tt::renderer::do_render();

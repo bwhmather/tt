@@ -8,10 +8,31 @@
 #include "tt-component-position.hpp"
 #include "tt-component-target.hpp"
 #include "tt-entities.hpp"
+#include "tt-error.hpp"
 
+namespace tt {
+namespace system_move_to_target {
 
-void tt_system_move_to_target_run(void) {
+namespace detail {
+static bool initialised = false;
+}  /* namespace detail */
+
+void startup(void) {
+    tt_assert(detail::initialised == false);
+
+    detail::initialised = true;
+}
+
+void shutdown(void) {
+    tt_assert(detail::initialised == true);
+
+    detail::initialised = false;
+}
+
+void run(void) {
     TTEntityIter iter;
+
+    tt_assert(detail::initialised == true);
 
     tt_entities_iter_begin(&iter);
 
@@ -61,3 +82,5 @@ void tt_system_move_to_target_run(void) {
     }
 }
 
+}  /* namespace system_move_to_target */
+}  /* namespace tt */

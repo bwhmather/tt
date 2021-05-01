@@ -2,8 +2,13 @@
 
 #include "tt-entities.hpp"
 
-void tt_system_move_to_target_startup(void);
-void tt_system_move_to_target_shutdown(void);
+namespace tt {
+namespace system_move_to_target {
 
-void tt_system_move_to_target_run(void);
+void startup(void);
+void shutdown(void);
 
+void run(void);
+
+}  /* namespace system_move_to_target */
+}  /* namespace tt */
