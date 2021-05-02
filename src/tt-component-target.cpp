@@ -8,50 +8,50 @@
 namespace tt {
 namespace component_target {
 
-namespace detail {
-static bool initialised = false;
-static TTStorageSparseVector<TTEntityId> *storage = NULL;
-}  /* namespace detail */
+namespace state {
+    static bool initialised = false;
+    static TTStorageSparseVector<TTEntityId> *storage = NULL;
+}  /* namespace state */
 
 void startup(void) {
-    tt_assert(detail::initialised == false);
+    tt_assert(state::initialised == false);
 
-    detail::storage = new TTStorageSparseVector<TTEntityId>();
+    state::storage = new TTStorageSparseVector<TTEntityId>();
 
-    detail::initialised = true;
+    state::initialised = true;
 }
 
 void shutdown(void) {
-    tt_assert(detail::initialised == true);
+    tt_assert(state::initialised == true);
 
-    delete detail::storage;
-    detail::storage = NULL;
+    delete state::storage;
+    state::storage = NULL;
 
-    detail::initialised = false;
+    state::initialised = false;
 }
 
 void set(TTEntityId entity_id, TTEntityId target) {
-    tt_assert(detail::initialised == true);
+    tt_assert(state::initialised == true);
 
-    return detail::storage->add(entity_id, target);
+    return state::storage->add(entity_id, target);
 }
 
 bool has(TTEntityId entity_id) {
-    tt_assert(detail::initialised == true);
+    tt_assert(state::initialised == true);
 
-    return detail::storage->has(entity_id);
+    return state::storage->has(entity_id);
 }
 
 TTEntityId get(TTEntityId entity_id) {
-    tt_assert(detail::initialised == true);
+    tt_assert(state::initialised == true);
 
-    return detail::storage->get(entity_id);
+    return state::storage->get(entity_id);
 }
 
 void remove(TTEntityId entity_id) {
-    tt_assert(detail::initialised == true);
+    tt_assert(state::initialised == true);
 
-    return detail::storage->remove(entity_id);
+    return state::storage->remove(entity_id);
 }
 
 }  /* namespace component_target */

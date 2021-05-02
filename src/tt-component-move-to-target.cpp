@@ -6,51 +6,51 @@
 namespace tt {
 namespace component_move_to_target {
 
-namespace detail {
-static bool initialised = false;
-static TTStorageSparseVector<double> *storage = NULL;
-}  /* namespace detail */
+namespace state {
+    static bool initialised = false;
+    static TTStorageSparseVector<double> *storage = NULL;
+}  /* namespace state */
 
 void startup(void) {
-    tt_assert(detail::initialised == false);
+    tt_assert(state::initialised == false);
 
-    detail::storage = new TTStorageSparseVector<double>();
-    tt_assert(detail::storage != NULL);
+    state::storage = new TTStorageSparseVector<double>();
+    tt_assert(state::storage != NULL);
 
-    detail::initialised = true;
+    state::initialised = true;
 }
 
 void shutdown(void) {
-    tt_assert(detail::initialised == true);
+    tt_assert(state::initialised == true);
 
-    delete detail::storage;
-    detail::storage = NULL;
+    delete state::storage;
+    state::storage = NULL;
 
-    detail::initialised = false;
+    state::initialised = false;
 }
 
 void set_target_range(TTEntityId entity_id, double range) {
-    tt_assert(detail::initialised == true);
+    tt_assert(state::initialised == true);
 
-    detail::storage->add(entity_id, range);
+    state::storage->add(entity_id, range);
 }
 
 bool has(TTEntityId entity_id) {
-    tt_assert(detail::initialised == true);
+    tt_assert(state::initialised == true);
 
-    return detail::storage->has(entity_id);
+    return state::storage->has(entity_id);
 }
 
 double get_target_range(TTEntityId entity_id) {
-    tt_assert(detail::initialised == true);
+    tt_assert(state::initialised == true);
 
-    return detail::storage->get(entity_id);
+    return state::storage->get(entity_id);
 }
 
 void remove(TTEntityId entity_id) {
-    tt_assert(detail::initialised == true);
+    tt_assert(state::initialised == true);
 
-    detail::storage->remove(entity_id);
+    state::storage->remove(entity_id);
 }
 
 }  /* namespace component_move_to_storage */

@@ -13,24 +13,24 @@
 namespace tt {
 namespace system_sprites {
 
-namespace detail {
+namespace state {
     static bool initialised = false;
 }
 
 void startup(void) {
-    tt_assert(detail::initialised == false);
-    detail::initialised = true;
+    tt_assert(state::initialised == false);
+    state::initialised = true;
 }
 
 void shutdown(void) {
-    tt_assert(detail::initialised == true);
-    detail::initialised = false;
+    tt_assert(state::initialised == true);
+    state::initialised = false;
 }
 
 void run(void) {
     TTEntityIter iter;
 
-    tt_assert(detail::initialised == true);
+    tt_assert(state::initialised == true);
 
     tt_entities_iter_begin(&iter);
 
