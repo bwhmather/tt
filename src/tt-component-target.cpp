@@ -2,39 +2,57 @@
 
 #include <assert.h>
 
+#include "tt-error.hpp"
 #include "tt-storage-sparse-vector.tpp"
 
+namespace tt {
+namespace component_target {
 
+namespace detail {
+static bool initialised = false;
 static TTStorageSparseVector<TTEntityId> *storage = NULL;
+}  /* namespace detail */
 
-void tt_component_target_startup(void) {
-    assert(storage == NULL);
-    storage = new TTStorageSparseVector<TTEntityId>();
+void startup(void) {
+    tt_assert(detail::initialised == false);
+
+    detail::storage = new TTStorageSparseVector<TTEntityId>();
+
+    detail::initialised = true;
 }
 
-void tt_component_target_shutdown(void) {
-    assert(storage != NULL);
-    delete storage;
-    storage = NULL;
+void shutdown(void) {
+    tt_assert(detail::initialised == true);
+
+    delete detail::storage;
+    detail::storage = NULL;
+
+    detail::initialised = false;
 }
 
-void tt_set_target(TTEntityId entity_id, TTEntityId target) {
-    assert(storage != NULL);
-    return storage->add(entity_id, target);
+void set(TTEntityId entity_id, TTEntityId target) {
+    tt_assert(detail::initialised == true);
+
+    return detail::storage->add(entity_id, target);
 }
 
-bool tt_has_target(TTEntityId entity_id) {
-    assert(storage != NULL);
-    return storage->has(entity_id);
+bool has(TTEntityId entity_id) {
+    tt_assert(detail::initialised == true);
+
+    return detail::storage->has(entity_id);
 }
 
-TTEntityId tt_get_target(TTEntityId entity_id) {
-    assert(storage != NULL);
-    return storage->get(entity_id);
+TTEntityId get(TTEntityId entity_id) {
+    tt_assert(detail::initialised == true);
+
+    return detail::storage->get(entity_id);
 }
 
-void tt_remove_target(TTEntityId entity_id) {
-    assert(storage != NULL);
-    return storage->remove(entity_id);
+void remove(TTEntityId entity_id) {
+    tt_assert(detail::initialised == true);
+
+    return detail::storage->remove(entity_id);
 }
 
+}  /* namespace component_target */
+}  /* namespace tt */

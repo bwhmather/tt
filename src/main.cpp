@@ -155,7 +155,7 @@ int main(void) {
     tt_entities_startup();
     tt::component_position::startup();
     tt::component_sprite::startup();
-    tt_component_target_startup();
+    tt::component_target::startup();
     tt::component_move_to_target::startup();
 
     tt::resource_camera::startup();
@@ -187,7 +187,7 @@ int main(void) {
     sprite.grid_width = 1;
     sprite.grid_height = 1;
 
-    tt_set_target(entity_id, tree_id);
+    tt::component_target::set(entity_id, tree_id);
     tt::component_move_to_target::set_target_range(entity_id, 0.01);
 
     tt::resource_camera::set_fov(glm::pi<float>() / 3.0f);

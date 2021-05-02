@@ -40,7 +40,7 @@ void run(void) {
         TTEntityId entity_id = tt_entities_iter_next(&iter);
 
         if (!tt::component_move_to_target::has(entity_id)) continue;
-        if (!tt_has_target(entity_id)) {
+        if (!tt::component_target::has(entity_id)) {
             // warn();
             continue;
         }
@@ -54,7 +54,7 @@ void run(void) {
         //}
         double speed = 0.2;
 
-        TTEntityId target_id = tt_get_target(entity_id);
+        TTEntityId target_id = tt::component_target::get(entity_id);
         if (!tt::component_position::has(target_id)) {
             // warn()
             continue;
