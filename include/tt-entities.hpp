@@ -1,12 +1,12 @@
 #pragma once
 
-#include "tt-types.hpp"
-
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
 namespace tt {
 
+typedef size_t EntityId;
 typedef size_t EntityIter;
 
 namespace entities {
