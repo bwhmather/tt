@@ -4,30 +4,30 @@
 
 
 int main(void) {
-    tt_entities_startup();
+    tt::entities::startup();
 
-    tt_entities_create();
-    tt_entities_create();
-    tt_entities_create();
-    tt_entities_create();
-    tt_entities_create();
+    tt::entities::create();
+    tt::entities::create();
+    tt::entities::create();
+    tt::entities::create();
+    tt::entities::create();
 
-    tt_entities_delete(2);
-    tt_entities_delete(5);
+    tt::entities::remove(2);
+    tt::entities::remove(5);
 
-    tt_entities_maintain();
+    tt::entities::maintain();
 
-    TTEntityIter iter;
-    tt_entities_iter_begin(&iter);
-    tt_assert(tt_entities_iter_has_next(&iter));
-    tt_assert(tt_entities_iter_next(&iter) == 1);
-    tt_assert(tt_entities_iter_has_next(&iter));
-    tt_assert(tt_entities_iter_next(&iter) == 3);
-    tt_assert(tt_entities_iter_has_next(&iter));
-    tt_assert(tt_entities_iter_next(&iter) == 4);
-    tt_assert(!tt_entities_iter_has_next(&iter));
+    tt::EntityIter iter;
+    tt::entities::iter_begin(&iter);
+    tt_assert(tt::entities::iter_has_next(&iter));
+    tt_assert(tt::entities::iter_next(&iter) == 1);
+    tt_assert(tt::entities::iter_has_next(&iter));
+    tt_assert(tt::entities::iter_next(&iter) == 3);
+    tt_assert(tt::entities::iter_has_next(&iter));
+    tt_assert(tt::entities::iter_next(&iter) == 4);
+    tt_assert(!tt::entities::iter_has_next(&iter));
 
-    tt_entities_shutdown();
+    tt::entities::shutdown();
 
     return 0;
 }

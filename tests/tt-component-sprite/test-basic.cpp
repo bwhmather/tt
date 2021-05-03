@@ -5,10 +5,10 @@
 
 
 int main(void) {
-    tt_entities_startup();
+    tt::entities::startup();
     tt::component_sprite::startup();
 
-    TTEntityId entity_id = tt_entities_create();
+    tt::EntityId entity_id = tt::entities::create();
 
     tt_assert(!tt::component_sprite::has(entity_id));
 
@@ -23,7 +23,7 @@ int main(void) {
     tt_assert(sprite.grid_height == 2);
 
     tt::component_sprite::shutdown();
-    tt_entities_shutdown();
+    tt::entities::shutdown();
 
     return 0;
 }

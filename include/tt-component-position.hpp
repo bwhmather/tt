@@ -14,14 +14,14 @@ namespace component_position {
 void startup(void);
 void shutdown(void);
 
-void add(TTEntityId entity, Position position);
-Position& add(TTEntityId entity);
+void add(tt::EntityId entity, Position position);
+Position& add(tt::EntityId entity);
 
-bool has(TTEntityId entity);
+bool has(tt::EntityId entity);
 
-Position& get(TTEntityId entity);
+Position& get(tt::EntityId entity);
 
-void remove(TTEntityId entity);
+void remove(tt::EntityId entity);
 
 }  /* namespace component_position */
 }  /* namespace tt */

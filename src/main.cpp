@@ -152,7 +152,7 @@ int main(void) {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-    tt_entities_startup();
+    tt::entities::startup();
     tt::component_position::startup();
     tt::component_sprite::startup();
     tt::component_target::startup();
@@ -164,7 +164,7 @@ int main(void) {
     tt::system_sprites::startup();
     tt::system_move_to_target::startup();
 
-    TTEntityId tree_id = tt_entities_create();
+    tt::EntityId tree_id = tt::entities::create();
     tt::Position &tree_position = tt::component_position::add(tree_id);
     tree_position.x = 1.0;
     tree_position.y = 1.0;
@@ -175,7 +175,7 @@ int main(void) {
     tree_sprite.grid_width = 2;
     tree_sprite.grid_height = 2;
 
-    TTEntityId entity_id = tt_entities_create();
+    tt::EntityId entity_id = tt::entities::create();
 
     tt::Position& position = tt::component_position::add(entity_id);
     position.x = 0.0;
@@ -229,7 +229,7 @@ int main(void) {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
-        tt_entities_maintain();
+        tt::entities::maintain();
 
         tt::system_move_to_target::run();
 

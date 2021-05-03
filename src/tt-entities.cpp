@@ -6,215 +6,228 @@
 #include <cstdlib>
 #include <vector>
 
+namespace tt {
+namespace entities {
+
 typedef struct OnCreateCallbackState {
     int handle;
-    void (*callback) (TTEntityId id, void *user_data);
+    void (*callback) (tt::EntityId id, void *user_data);
     void *user_data;
 } OnCreateCallbackState;
 
-
 typedef struct OnDeleteCallbackState {
     int handle;
-    void (*callback) (TTEntityId id, void *user_data);
+    void (*callback) (tt::EntityId id, void *user_data);
     void *user_data;
 } OnDeleteCallbackState;
 
+namespace state {
+    static bool initialised = false;
+    static bool maintaining = false;
 
-static bool initialized = false;
-static bool maintaining = false;
+    static std::vector<bool> live_set;
+    static std::vector<bool> next_live_set;
 
-static std::vector<bool> live_set;
-static std::vector<bool> next_live_set;
+    static std::vector<tt::EntityId> free_list;
 
-static std::vector<TTEntityId> free_list;
-
-int next_callback_handle = 1;
-static std::vector<OnCreateCallbackState> on_create_callbacks;
-static std::vector<OnDeleteCallbackState> on_delete_callbacks;
-
-
-void tt_entities_startup(void) {
-    assert(!initialized);
-    assert(!maintaining);
-
-    initialized = true;
-
-    live_set.clear();
-    live_set.push_back(true);
-    next_live_set = std::vector<bool>(live_set);
-
-    free_list.clear();
-
-    on_create_callbacks.clear();
-    on_delete_callbacks.clear();
+    int next_callback_handle = 1;
+    static std::vector<OnCreateCallbackState> on_create_callbacks;
+    static std::vector<OnDeleteCallbackState> on_delete_callbacks;
 }
 
-void tt_entities_maintain(void) {
-    assert(initialized);
-    assert(!maintaining);
+void startup(void) {
+    assert(!state::initialised);
+    assert(!state::maintaining);
 
-    maintaining = true;
+    state::initialised = true;
 
-    for (TTEntityId id = 1; id < live_set.size(); id++) {
-        if (!live_set[id]) continue;
-        if (next_live_set[id]) continue;
+    state::live_set.clear();
+    state::live_set.push_back(true);
+    state::next_live_set = std::vector<bool>(state::live_set);
 
-        for (const OnDeleteCallbackState& state : on_delete_callbacks) {
-            state.callback(id, state.user_data);
+    state::free_list.clear();
+
+    state::on_create_callbacks.clear();
+    state::on_delete_callbacks.clear();
+}
+
+void maintain(void) {
+    assert(state::initialised);
+    assert(!state::maintaining);
+
+    state::maintaining = true;
+
+    for (tt::EntityId id = 1; id < state::live_set.size(); id++) {
+        if (!state::live_set[id]) continue;
+        if (state::next_live_set[id]) continue;
+
+        for (
+            const OnDeleteCallbackState& cb_state :
+            state::on_delete_callbacks
+        ) {
+            cb_state.callback(id, cb_state.user_data);
         }
     }
 
-    for (TTEntityId id = 1; id < next_live_set.size(); id++) {
-        if (id < live_set.size() && live_set[id]) continue;
-        if (!next_live_set[id]) continue;
+    for (tt::EntityId id = 1; id < state::next_live_set.size(); id++) {
+        if (id < state::live_set.size() && state::live_set[id]) continue;
+        if (!state::next_live_set[id]) continue;
 
-        for (const OnCreateCallbackState& state : on_create_callbacks) {
-            state.callback(id, state.user_data);
+        for (
+            const OnCreateCallbackState& cb_state :
+            state::on_create_callbacks
+        ) {
+            cb_state.callback(id, cb_state.user_data);
         }
     }
 
-    free_list.clear();
-    for (TTEntityId id = next_live_set.size() - 1; id > 0; id--) {
-        if (!next_live_set[id]) {
-            free_list.push_back(id);
+    state::free_list.clear();
+    for (tt::EntityId id = state::next_live_set.size() - 1; id > 0; id--) {
+        if (!state::next_live_set[id]) {
+            state::free_list.push_back(id);
         }
     }
 
-    live_set = next_live_set;
+    state::live_set = state::next_live_set;
 
-    maintaining = false;
+    state::maintaining = false;
 }
 
-void tt_entities_shutdown(void) {
-    assert(initialized);
-    assert(!maintaining);
+void shutdown(void) {
+    assert(state::initialised);
+    assert(!state::maintaining);
 
-    live_set.clear();
-    next_live_set.clear();
-    free_list.clear();
+    state::live_set.clear();
+    state::next_live_set.clear();
+    state::free_list.clear();
 
-    on_create_callbacks.clear();
-    on_delete_callbacks.clear();
+    state::on_create_callbacks.clear();
+    state::on_delete_callbacks.clear();
 
-    initialized = false;
+    state::initialised = false;
 }
 
-TTEntityId tt_entities_create(void) {
-    TTEntityId entity_id;
+tt::EntityId create(void) {
+    tt::EntityId entity_id;
 
-    assert(initialized);
-    assert(!maintaining);
+    assert(state::initialised);
+    assert(!state::maintaining);
 
-    if (free_list.size()) {
-        entity_id = free_list.back();
-        free_list.pop_back();
-        next_live_set[entity_id] = true;
+    if (state::free_list.size()) {
+        entity_id = state::free_list.back();
+        state::free_list.pop_back();
+        state::next_live_set[entity_id] = true;
     } else {
-        entity_id = next_live_set.size();
-        next_live_set.push_back(true);
+        entity_id = state::next_live_set.size();
+        state::next_live_set.push_back(true);
     }
 
     return entity_id;
 }
 
-void tt_entities_delete(TTEntityId entity_id) {
-    assert(initialized);
-    assert(!maintaining);
+void remove(tt::EntityId entity_id) {
+    assert(state::initialised);
+    assert(!state::maintaining);
 
-    assert(next_live_set.at(entity_id) == true);
+    assert(state::next_live_set.at(entity_id) == true);
 
-    next_live_set[entity_id] = false;
+    state::next_live_set[entity_id] = false;
 
-    for (const OnDeleteCallbackState& state : on_delete_callbacks) {
-        state.callback(entity_id, state.user_data);
+    for (const OnDeleteCallbackState& cb_state : state::on_delete_callbacks) {
+        cb_state.callback(entity_id, cb_state.user_data);
     }
 }
 
 
-int tt_entities_bind_on_create_callback(
-    void (*callback) (TTEntityId id, void *user_data), void *user_data
+int bind_on_create_callback(
+    void (*callback) (tt::EntityId id, void *user_data), void *user_data
 ) {
-    assert(initialized);
-    assert(!maintaining);
+    assert(state::initialised);
+    assert(!state::maintaining);
 
-    OnCreateCallbackState& state = on_create_callbacks.emplace_back();
+    OnCreateCallbackState& cb_state =
+        state::on_create_callbacks.emplace_back();
 
-    state.handle = next_callback_handle++;
-    state.callback = callback;
-    state.user_data = user_data;
+    cb_state.handle = state::next_callback_handle++;
+    cb_state.callback = callback;
+    cb_state.user_data = user_data;
 
-    return state.handle;
+    return cb_state.handle;
 }
 
-void tt_entities_unbind_on_create_callback(int handle) {
-    assert(initialized);
-    assert(!maintaining);
+void unbind_on_create_callback(int handle) {
+    assert(state::initialised);
+    assert(!state::maintaining);
 
     std::remove_if(
-        on_create_callbacks.begin(), on_create_callbacks.end(),
-        [&handle](OnCreateCallbackState& state) {
-            return state.handle == handle;
+        state::on_create_callbacks.begin(),
+        state::on_create_callbacks.end(),
+        [&handle](OnCreateCallbackState& cb_state) {
+            return cb_state.handle == handle;
         }
     );
 }
 
-int tt_entities_bind_on_delete_callback(
-    void (*callback) (TTEntityId id, void *user_data), void *user_data
+int bind_on_delete_callback(
+    void (*callback) (tt::EntityId id, void *user_data), void *user_data
 ) {
-    assert(initialized);
-    assert(!maintaining);
+    assert(state::initialised);
+    assert(!state::maintaining);
 
-    OnDeleteCallbackState state = on_delete_callbacks.emplace_back();
+    OnDeleteCallbackState cb_state = state::on_delete_callbacks.emplace_back();
 
-    state.handle = next_callback_handle++;
-    state.callback = callback;
-    state.user_data = user_data;
+    cb_state.handle = state::next_callback_handle++;
+    cb_state.callback = callback;
+    cb_state.user_data = user_data;
 
-    return state.handle;
+    return cb_state.handle;
 }
 
-void tt_entities_unbind_on_delete_callback(int handle) {
-    assert(initialized);
-    assert(!maintaining);
+void unbind_on_delete_callback(int handle) {
+    assert(state::initialised);
+    assert(!state::maintaining);
 
     std::remove_if(
-        on_delete_callbacks.begin(), on_delete_callbacks.end(),
-        [&handle](OnDeleteCallbackState& state) {
-            return state.handle == handle;
+        state::on_delete_callbacks.begin(),
+        state::on_delete_callbacks.end(),
+        [&handle](OnDeleteCallbackState& cb_state) {
+            return cb_state.handle == handle;
         }
     );
 }
 
-
-void tt_entities_iter_begin(TTEntityIter *iter) {
-    assert(initialized);
-    assert(!maintaining);
+void iter_begin(tt::EntityIter *iter) {
+    assert(state::initialised);
+    assert(!state::maintaining);
 
     *iter = 1;
 }
 
-bool tt_entities_iter_has_next(TTEntityIter *iter) {
-    assert(initialized);
-    assert(!maintaining);
+bool iter_has_next(tt::EntityIter *iter) {
+    assert(state::initialised);
+    assert(!state::maintaining);
 
-    return *iter < live_set.size();
+    return *iter < state::live_set.size();
 }
 
-TTEntityId tt_entities_iter_next(TTEntityIter *iter) {
-    assert(initialized);
-    assert(!maintaining);
+tt::EntityId iter_next(tt::EntityIter *iter) {
+    assert(state::initialised);
+    assert(!state::maintaining);
 
-    TTEntityId entity_id = (TTEntityId) *iter;
+    tt::EntityId entity_id = (tt::EntityId) *iter;
 
-    assert(entity_id <= live_set.size());
-    assert(live_set[entity_id] == true);
+    assert(entity_id <= state::live_set.size());
+    assert(state::live_set[entity_id] == true);
 
     while (true) {
         (*iter)++;
 
-        if (*iter >= live_set.size()) break;
-        if (live_set.at(*iter)) break;
+        if (*iter >= state::live_set.size()) break;
+        if (state::live_set.at(*iter)) break;
     }
 
     return entity_id;
 }
+
+}  /* namespace entities */
+}  /* namespace tt */

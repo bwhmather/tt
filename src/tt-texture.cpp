@@ -11,8 +11,9 @@
 
 #include "tt-error.hpp"
 
+namespace tt {
 
-GLuint tt_load_texture(const std::string& filename) {
+GLuint load_texture(const std::string& filename) {
     FILE *fp = NULL;
     png_structp png_ptr = NULL;
     png_infop info_ptr = NULL;
@@ -146,3 +147,4 @@ GLuint tt_load_texture(const std::string& filename) {
     return texture;
 }
 
+}  /* namespace tt */

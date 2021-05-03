@@ -28,15 +28,15 @@ void shutdown(void) {
 }
 
 void run(void) {
-    TTEntityIter iter;
+    tt::EntityIter iter;
 
     tt_assert(state::initialised == true);
 
-    tt_entities_iter_begin(&iter);
+    tt::entities::iter_begin(&iter);
 
-    while (tt_entities_iter_has_next(&iter)) {
+    while (tt::entities::iter_has_next(&iter)) {
         tt::renderer::vertex vertex;
-        TTEntityId entity_id = tt_entities_iter_next(&iter);
+        tt::EntityId entity_id = tt::entities::iter_next(&iter);
 
         if (!tt::component_sprite::has(entity_id)) continue;
         if (!tt::component_position::has(entity_id)) continue;

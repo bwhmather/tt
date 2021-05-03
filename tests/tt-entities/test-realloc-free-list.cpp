@@ -8,21 +8,21 @@
 
 
 int main(void) {
-    tt_entities_startup();
+    tt::entities::startup();
 
     for (size_t i = 1; i < 10001; i++) {
-        tt_assert(tt_entities_create() == i);
+        tt_assert(tt::entities::create() == i);
     }
 
     for (size_t i = 10000; i > 0; i--) {
-        tt_entities_delete(i);
+        tt::entities::remove(i);
     }
 
     for (size_t i = 1; i > 10001; i--) {
-        tt_assert(tt_entities_create() == i);
+        tt_assert(tt::entities::create() == i);
     }
 
-    tt_entities_shutdown();
+    tt::entities::shutdown();
 
     return 0;
 }

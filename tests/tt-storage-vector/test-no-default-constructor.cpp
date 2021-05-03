@@ -1,5 +1,5 @@
 /**
- * Checks that `tt_entities_release_id` will make an id available for reuse.
+ * Checks that `tt::entities::release_id` will make an id available for reuse.
  */
 #include "tt-entities.hpp"
 #include "tt-storage-sparse-vector.tpp"
@@ -16,16 +16,17 @@ public:
 };
 
 int main(void) {
-    tt_entities_startup();
+    tt::entities::startup();
 
-    TTStorageSparseVector<Component> *storage = new TTStorageSparseVector<Component>();
+    tt::StorageSparseVector<Component> *storage =
+        new tt::StorageSparseVector<Component>();
 
-    tt_entities_create();
-    tt_entities_create();
+    tt::entities::create();
+    tt::entities::create();
 
-    storage->add(tt_entities_create(), Component(4));
+    storage->add(tt::entities::create(), Component(4));
 
-    tt_entities_shutdown();
+    tt::entities::shutdown();
 
     return 0;
 }

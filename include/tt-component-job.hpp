@@ -2,18 +2,20 @@
 
 #include "tt-entities.hpp"
 
-enum TTJob {
+namespace tt {
+enum Job {
     attack,
     flee
 };
+}
 
 void tt_component_job_startup(void);
 void tt_component_job_shutdown(void);
 
-void tt_set_job(TTEntityId, TTJob job);
+void tt_set_job(tt::EntityId, tt::Job job);
 
-bool tt_has_job(TTEntityId entity);
+bool tt_has_job(tt::EntityId entity);
 
-TTJob tt_get_job(TTEntityId entity);
+tt::Job tt_get_job(tt::EntityId entity);
 
-void tt_remove_job(TTEntityId entity);
+void tt_remove_job(tt::EntityId entity);

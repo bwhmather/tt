@@ -5,26 +5,33 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-typedef size_t TTEntityIter;
+namespace tt {
 
-void tt_entities_startup(void);
-void tt_entities_shutdown(void);
+typedef size_t EntityIter;
 
-void tt_entities_maintain(void);
+namespace entities {
 
-TTEntityId tt_entities_create(void);
-void tt_entities_delete(TTEntityId entity_id);
+void startup(void);
+void shutdown(void);
 
-int tt_entities_bind_on_create_callback(
-    void (*callback) (TTEntityId id, void *user_data), void *user_data
+void maintain(void);
+
+tt::EntityId create(void);
+void remove(tt::EntityId entity_id);
+
+int bind_on_create_callback(
+    void (*callback) (tt::EntityId id, void *user_data), void *user_data
 );
-void tt_entities_unbind_on_create_callback(int handle);
+void unbind_on_create_callback(int handle);
 
-int tt_entities_bind_on_delete_callback(
-    void (*callback) (TTEntityId id, void *user_data), void *user_data
+int bind_on_delete_callback(
+    void (*callback) (tt::EntityId id, void *user_data), void *user_data
 );
-void tt_entities_unbind_on_delete_callback(int handle);
+void unbind_on_delete_callback(int handle);
 
-void tt_entities_iter_begin(TTEntityIter *iter);
-bool tt_entities_iter_has_next(TTEntityIter *iter);
-TTEntityId tt_entities_iter_next(TTEntityIter *iter);
+void iter_begin(tt::EntityIter *iter);
+bool iter_has_next(tt::EntityIter *iter);
+tt::EntityId iter_next(tt::EntityIter *iter);
+
+}  /* namespace entities */
+}  /* namespace tt */

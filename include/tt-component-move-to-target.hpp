@@ -9,13 +9,13 @@ namespace component_move_to_target {
 void startup(void);
 void shutdown(void);
 
-void set_target_range(TTEntityId, double range);
+void set_target_range(tt::EntityId, double range);
 
-bool has(TTEntityId entity);
+bool has(tt::EntityId entity);
 
-double get_target_range(TTEntityId entity);
+double get_target_range(tt::EntityId entity);
 
-void remove(TTEntityId entity);
+void remove(tt::EntityId entity);
 
 }  /* namespace tt */
 }  /* namespace component_move_to_target */

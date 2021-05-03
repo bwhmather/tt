@@ -2,4 +2,8 @@
 
 #include <stddef.h>
 
-typedef size_t TTEntityId;
+namespace tt {
+
+typedef size_t EntityId;
+
+}

@@ -122,7 +122,7 @@ void startup(void) {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-    state::spritesheet = tt_load_texture("spritesheet.png");
+    state::spritesheet = tt::load_texture("spritesheet.png");
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);

@@ -10,13 +10,13 @@ namespace component_target {
 
 namespace state {
     static bool initialised = false;
-    static TTStorageSparseVector<TTEntityId> *storage = NULL;
+    static tt::StorageSparseVector<tt::EntityId> *storage = NULL;
 }  /* namespace state */
 
 void startup(void) {
     tt_assert(state::initialised == false);
 
-    state::storage = new TTStorageSparseVector<TTEntityId>();
+    state::storage = new tt::StorageSparseVector<tt::EntityId>();
 
     state::initialised = true;
 }
@@ -30,25 +30,25 @@ void shutdown(void) {
     state::initialised = false;
 }
 
-void set(TTEntityId entity_id, TTEntityId target) {
+void set(tt::EntityId entity_id, tt::EntityId target) {
     tt_assert(state::initialised == true);
 
     return state::storage->add(entity_id, target);
 }
 
-bool has(TTEntityId entity_id) {
+bool has(tt::EntityId entity_id) {
     tt_assert(state::initialised == true);
 
     return state::storage->has(entity_id);
 }
 
-TTEntityId get(TTEntityId entity_id) {
+tt::EntityId get(tt::EntityId entity_id) {
     tt_assert(state::initialised == true);
 
     return state::storage->get(entity_id);
 }
 
-void remove(TTEntityId entity_id) {
+void remove(tt::EntityId entity_id) {
     tt_assert(state::initialised == true);
 
     return state::storage->remove(entity_id);

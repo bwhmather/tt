@@ -16,14 +16,14 @@ namespace component_sprite {
 void startup(void);
 void shutdown(void);
 
-void add(TTEntityId, tt::Sprite sprite);
-tt::Sprite& add(TTEntityId entity);
+void add(tt::EntityId, tt::Sprite sprite);
+tt::Sprite& add(tt::EntityId entity);
 
-bool has(TTEntityId entity);
+bool has(tt::EntityId entity);
 
-tt::Sprite& get(TTEntityId entity);
+tt::Sprite& get(tt::EntityId entity);
 
-void remove(TTEntityId entity);
+void remove(tt::EntityId entity);
 
 }  /* namespace component_sprite */
 }  /* namespace tt */
