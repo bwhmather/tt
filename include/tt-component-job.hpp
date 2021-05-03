@@ -3,19 +3,24 @@
 #include "tt-entities.hpp"
 
 namespace tt {
-enum Job {
-    attack,
-    flee
+
+enum class Job {
+    ATTACK,
+    FLEE
 };
-}
 
-void tt_component_job_startup(void);
-void tt_component_job_shutdown(void);
+namespace component_job {
 
-void tt_set_job(tt::EntityId, tt::Job job);
+void startup(void);
+void shutdown(void);
 
-bool tt_has_job(tt::EntityId entity);
+void set(tt::EntityId, tt::Job job);
 
-tt::Job tt_get_job(tt::EntityId entity);
+bool has(tt::EntityId entity);
 
-void tt_remove_job(tt::EntityId entity);
+tt::Job get(tt::EntityId entity);
+
+void remove(tt::EntityId entity);
+
+}  /* namespace component_job */
+}  /* namespace tt */
