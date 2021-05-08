@@ -166,12 +166,12 @@ int main(void) {
 
     TTEntityId tree_id = tt_entities_create();
     TTPosition &tree_position = tt_component_position_add(tree_id);
-    tree_position.x = 1.0;
-    tree_position.y = 1.0;
+    tree_position.x = 0.4;
+    tree_position.y = 0.4;
 
     TTSprite &tree_sprite = tt_component_sprite_add(tree_id);
     tree_sprite.grid_x = 0;
-    tree_sprite.grid_y = 0;
+    tree_sprite.grid_y = 3;
     tree_sprite.grid_width = 2;
     tree_sprite.grid_height = 2;
 
@@ -188,7 +188,7 @@ int main(void) {
     sprite.grid_height = 1;
 
     tt_component_target_set(entity_id, tree_id);
-    tt_component_move_to_target_set_target_range(entity_id, 0.01);
+    tt_component_move_to_target_set_target_range(entity_id, 0.02);
 
     tt_resource_camera_set_fov(glm::pi<float>() / 3.0f);
     tt_resource_camera_set_near_clipping_plane(0.1f);
