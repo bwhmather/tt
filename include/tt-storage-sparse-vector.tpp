@@ -5,13 +5,11 @@
 #include <type_traits>
 #include <vector>
 
-namespace tt {
+template<typename T>
+static void on_delete_callback(TTEntityId entity_id, void *data);
 
 template<typename T>
-static void on_delete_callback(tt::EntityId entity_id, void *data);
-
-template<typename T>
-class StorageSparseVector final {
+class TTStorageSparseVector final {
     std::vector<bool> m_mask;
 
     T* m_data;
@@ -20,17 +18,17 @@ class StorageSparseVector final {
     int delete_callback_handle;
 
   public:
-    StorageSparseVector() : m_mask(), m_data(NULL), m_data_capacity(0) {
-        delete_callback_handle = tt::entities::bind_on_delete_callback(
+    TTStorageSparseVector() : m_mask(), m_data(NULL), m_data_capacity(0) {
+        delete_callback_handle = tt_entities_bind_on_delete_callback(
             &on_delete_callback<T>, this
         );
     }
 
-    ~StorageSparseVector() {
+    ~TTStorageSparseVector() {
         assert(m_data_capacity >= m_mask.size());
 
         for (
-            tt::EntityId entity_id = 0;
+            TTEntityId entity_id = 0;
             entity_id < m_mask.size();
             entity_id++
         ) {
@@ -42,13 +40,13 @@ class StorageSparseVector final {
         std::allocator<T>().deallocate(m_data, m_data_capacity);
         m_data_capacity = 0;
 
-        tt::entities::unbind_on_delete_callback(delete_callback_handle);
+        tt_entities_unbind_on_delete_callback(delete_callback_handle);
     }
 
-    StorageSparseVector(const StorageSparseVector &) = delete;
-    StorageSparseVector(StorageSparseVector &&) = delete;
+    TTStorageSparseVector(const TTStorageSparseVector &) = delete;
+    TTStorageSparseVector(TTStorageSparseVector &&) = delete;
 
-    void add(tt::EntityId entity_id, T value) {
+    void add(TTEntityId entity_id, T value) {
         if (entity_id >= m_mask.size()) {
             m_mask.resize(entity_id + 1, false);
         }
@@ -67,7 +65,7 @@ class StorageSparseVector final {
             T* new_data = std::allocator<T>().allocate(new_capacity);
 
             for (
-                tt::EntityId move_id = 0;
+                TTEntityId move_id = 0;
                 move_id < m_mask.size();
                 move_id++
             ) {
@@ -78,7 +76,7 @@ class StorageSparseVector final {
             // TODO call destructors on new array values on exception.
 
             for (
-                tt::EntityId free_id = 0;
+                TTEntityId free_id = 0;
                 free_id < m_mask.size();
                 free_id++
             ) {
@@ -103,7 +101,7 @@ class StorageSparseVector final {
         m_mask[entity_id] = true;
     }
 
-    bool has(tt::EntityId entity_id) {
+    bool has(TTEntityId entity_id) {
         if (entity_id >= m_mask.size()) {
             return false;
         }
@@ -111,12 +109,12 @@ class StorageSparseVector final {
         return m_mask.at(entity_id);
     }
 
-    T& get(tt::EntityId entity_id) {
+    T& get(TTEntityId entity_id) {
         assert(has(entity_id));
         return m_data[entity_id];
     }
 
-    void remove(tt::EntityId entity_id) {
+    void remove(TTEntityId entity_id) {
         assert(has(entity_id));
         m_mask[entity_id] = false;
         m_data[entity_id].~T();
@@ -124,12 +122,10 @@ class StorageSparseVector final {
 };
 
 template<typename T>
-static void on_delete_callback(tt::EntityId entity_id, void *data) {
-    StorageSparseVector<T>& storage = *((StorageSparseVector<T> *) data);
+static void on_delete_callback(TTEntityId entity_id, void *data) {
+    TTStorageSparseVector<T>& storage = *((TTStorageSparseVector<T> *) data);
 
     if (storage.has(entity_id)) {
         storage.remove(entity_id);
     }
 }
-
-}  /* namespace tt */

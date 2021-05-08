@@ -4,23 +4,20 @@
 
 #include "tt-storage-sparse-vector.tpp"
 
-namespace tt{
-namespace component_position {
-
 namespace state {
     static bool initialised = false;
-    static tt::StorageSparseVector<Position> *storage = NULL;
-}  /* namespace state */
+    static TTStorageSparseVector<TTPosition> *storage = NULL;
+}
 
-void startup(void) {
+void tt_component_position_startup(void) {
     assert(state::initialised == false);
 
-    state::storage = new tt::StorageSparseVector<Position>();
+    state::storage = new TTStorageSparseVector<TTPosition>();
 
     state::initialised = true;
 }
 
-void shutdown(void) {
+void tt_component_position_shutdown(void) {
     assert(state::initialised == true);
 
     delete state::storage;
@@ -29,38 +26,35 @@ void shutdown(void) {
     state::initialised = false;
 }
 
-void add(tt::EntityId entity_id, Position position) {
+void tt_component_position_add(TTEntityId entity_id, TTPosition position) {
     assert(state::initialised == true);
 
     return state::storage->add(entity_id, position);
 }
 
-Position &add(tt::EntityId entity_id) {
+TTPosition &tt_component_position_add(TTEntityId entity_id) {
     assert(state::initialised == true);
 
-    Position position = { 0, 0 };
+    TTPosition position = { 0, 0 };
     state::storage->add(entity_id, position);
 
     return state::storage->get(entity_id);
 }
 
-bool has(tt::EntityId entity_id) {
+bool tt_component_position_has(TTEntityId entity_id) {
     assert(state::initialised == true);
 
     return state::storage->has(entity_id);
 }
 
-Position& get(tt::EntityId entity_id) {
+TTPosition& tt_component_position_get(TTEntityId entity_id) {
     assert(state::initialised == true);
 
     return state::storage->get(entity_id);
 }
 
-void remove(tt::EntityId entity_id) {
+void tt_component_position_remove(TTEntityId entity_id) {
     assert(state::initialised == true);
 
     return state::storage->remove(entity_id);
 }
-
-}  /* namespace component_position */
-}  /* namespace tt */

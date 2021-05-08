@@ -10,41 +10,38 @@
 #include "tt-entities.hpp"
 #include "tt-error.hpp"
 
-namespace tt {
-namespace system_move_to_target {
-
 namespace state {
     static bool initialised = false;
-}  /* namespace state */
+}
 
-void startup(void) {
+void tt_system_move_to_target_startup(void) {
     tt_assert(state::initialised == false);
 
     state::initialised = true;
 }
 
-void shutdown(void) {
+void tt_system_move_to_target_shutdown(void) {
     tt_assert(state::initialised == true);
 
     state::initialised = false;
 }
 
-void run(void) {
-    tt::EntityIter iter;
+void tt_system_move_to_target_run(void) {
+    TTEntityIter iter;
 
     tt_assert(state::initialised == true);
 
-    tt::entities::iter_begin(&iter);
+    tt_entities_iter_begin(&iter);
 
-    while (tt::entities::iter_has_next(&iter)) {
-        tt::EntityId entity_id = tt::entities::iter_next(&iter);
+    while (tt_entities_iter_has_next(&iter)) {
+        TTEntityId entity_id = tt_entities_iter_next(&iter);
 
-        if (!tt::component_move_to_target::has(entity_id)) continue;
-        if (!tt::component_target::has(entity_id)) {
+        if (!tt_component_move_to_target_has(entity_id)) continue;
+        if (!tt_component_target_has(entity_id)) {
             // warn();
             continue;
         }
-        if (!tt::component_position::has(entity_id)) {
+        if (!tt_component_position_has(entity_id)) {
             // warn()
             continue;
         }
@@ -54,16 +51,16 @@ void run(void) {
         //}
         double speed = 0.2;
 
-        tt::EntityId target_id = tt::component_target::get(entity_id);
-        if (!tt::component_position::has(target_id)) {
+        TTEntityId target_id = tt_component_target_get(entity_id);
+        if (!tt_component_position_has(target_id)) {
             // warn()
             continue;
         }
 
-        tt::Position &target_position = tt::component_position::get(target_id);
-        tt::Position &position = tt::component_position::get(entity_id);
+        TTPosition &target_position = tt_component_position_get(target_id);
+        TTPosition &position = tt_component_position_get(entity_id);
 
-        double min_range = tt::component_move_to_target::get_target_range(
+        double min_range = tt_component_move_to_target_get_target_range(
             entity_id
         );
         double current_range = std::sqrt(
@@ -72,7 +69,7 @@ void run(void) {
         );
 
         if (current_range < min_range) {
-            tt::component_move_to_target::remove(entity_id);
+            tt_component_move_to_target_remove(entity_id);
         }
 
         double step = std::min(speed * 1 / 60, current_range);  // TODO
@@ -81,6 +78,3 @@ void run(void) {
         position.y += (target_position.y - position.y) * step / current_range;
     }
 }
-
-}  /* namespace system_move_to_target */
-}  /* namespace tt */

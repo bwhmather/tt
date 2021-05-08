@@ -152,48 +152,48 @@ int main(void) {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-    tt::entities::startup();
-    tt::component_position::startup();
-    tt::component_sprite::startup();
-    tt::component_target::startup();
-    tt::component_move_to_target::startup();
+    tt_entities_startup();
+    tt_component_position_startup();
+    tt_component_sprite_startup();
+    tt_component_target_startup();
+    tt_component_move_to_target_startup();
 
-    tt::resource_camera::startup();
-    tt::renderer::startup();
+    tt_resource_camera_startup();
+    tt_renderer_startup();
 
-    tt::system_sprites::startup();
-    tt::system_move_to_target::startup();
+    tt_system_sprites_startup();
+    tt_system_move_to_target_startup();
 
-    tt::EntityId tree_id = tt::entities::create();
-    tt::Position &tree_position = tt::component_position::add(tree_id);
+    TTEntityId tree_id = tt_entities_create();
+    TTPosition &tree_position = tt_component_position_add(tree_id);
     tree_position.x = 1.0;
     tree_position.y = 1.0;
 
-    tt::Sprite &tree_sprite = tt::component_sprite::add(tree_id);
+    TTSprite &tree_sprite = tt_component_sprite_add(tree_id);
     tree_sprite.grid_x = 0;
     tree_sprite.grid_y = 0;
     tree_sprite.grid_width = 2;
     tree_sprite.grid_height = 2;
 
-    tt::EntityId entity_id = tt::entities::create();
+    TTEntityId entity_id = tt_entities_create();
 
-    tt::Position& position = tt::component_position::add(entity_id);
+    TTPosition& position = tt_component_position_add(entity_id);
     position.x = 0.0;
     position.y = 0.0;
 
-    tt::Sprite& sprite = tt::component_sprite::add(entity_id);
+    TTSprite& sprite = tt_component_sprite_add(entity_id);
     sprite.grid_x = 0;
     sprite.grid_y = 0;
     sprite.grid_width = 1;
     sprite.grid_height = 1;
 
-    tt::component_target::set(entity_id, tree_id);
-    tt::component_move_to_target::set_target_range(entity_id, 0.01);
+    tt_component_target_set(entity_id, tree_id);
+    tt_component_move_to_target_set_target_range(entity_id, 0.01);
 
-    tt::resource_camera::set_fov(glm::pi<float>() / 3.0f);
-    tt::resource_camera::set_near_clipping_plane(0.1f);
-    tt::resource_camera::set_far_clipping_plane(4.0f);
-    tt::resource_camera::look_at(
+    tt_resource_camera_set_fov(glm::pi<float>() / 3.0f);
+    tt_resource_camera_set_near_clipping_plane(0.1f);
+    tt_resource_camera_set_far_clipping_plane(4.0f);
+    tt_resource_camera_look_at(
         glm::vec3(1.0f, -2.0f, 1.0f),  // Eye vector.
         glm::vec3(0.0f, 0.0f, 0.0f),  // Centre vector.
         glm::vec3(0.0f, 0.0f, 1.0f)  // Up vector.
@@ -205,9 +205,9 @@ int main(void) {
 
         glfwGetFramebufferSize(window, &width, &height);
         aspect_ratio = (float) width / (float) height;
-        tt::resource_camera::set_aspect_ratio(aspect_ratio);
+        tt_resource_camera_set_aspect_ratio(aspect_ratio);
 
-        glm::mat4 camera_matrix = tt::resource_camera::get_matrix();
+        glm::mat4 camera_matrix = tt_resource_camera_get_matrix();
 
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -229,18 +229,18 @@ int main(void) {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
-        tt::entities::maintain();
+        tt_entities_maintain();
 
-        tt::system_move_to_target::run();
+        tt_system_move_to_target_run();
 
-        tt::system_sprites::run();
-        tt::renderer::do_render();
+        tt_system_sprites_run();
+        tt_renderer_do_render();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
-    tt::renderer::shutdown();
+    tt_renderer_shutdown();
 
     glfwDestroyWindow(window);
 

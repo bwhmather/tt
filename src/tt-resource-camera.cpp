@@ -6,10 +6,11 @@
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 
-namespace tt {
-namespace resource_camera {
+#include "tt-error.hpp"
 
 namespace state {
+    static bool initialised = false;
+
     static float fov;
     static float aspect_ratio;
 
@@ -19,9 +20,11 @@ namespace state {
     static glm::vec3 eye_vector;
     static glm::vec3 centre_vector;
     static glm::vec3 up_vector;
-}  /* namespace state */
+}
 
-void startup() {
+void tt_resource_camera_startup() {
+    tt_assert(state::initialised == false);
+
     state::fov = glm::pi<float>() / 3.0f;
     state::aspect_ratio = 1.0f;
 
@@ -31,35 +34,53 @@ void startup() {
     state::eye_vector = glm::vec3(0.0f, -1.0f, 0.0f);
     state::centre_vector = glm::vec3(0.0f, 0.0f, 0.0f);
     state::up_vector = glm::vec3(0.0, 0.0, 1.0f);
+
+    state::initialised = true;
 }
 
-void shutdown() {}
+void tt_resource_camera_shutdown() {
+    tt_assert(state::initialised == true);
 
-void set_fov(float fov) {
+    state::initialised = false;
+}
+
+void tt_resource_camera_set_fov(float fov) {
+    tt_assert(state::initialised == true);
+
     state::fov = fov;
 }
 
-void set_aspect_ratio(float aspect_ratio) {
+void tt_resource_camera_set_aspect_ratio(float aspect_ratio) {
+    tt_assert(state::initialised == true);
+
     state::aspect_ratio = aspect_ratio;
 }
 
-void set_near_clipping_plane(float near) {
+void tt_resource_camera_set_near_clipping_plane(float near) {
+    tt_assert(state::initialised == true);
+
     state::near_clipping_plane = near;
 }
 
-void set_far_clipping_plane(float far) {
+void tt_resource_camera_set_far_clipping_plane(float far) {
+    tt_assert(state::initialised == true);
+
     state::far_clipping_plane = far;
 }
 
-void look_at(
+void tt_resource_camera_look_at(
     glm::vec3 eye_vector, glm::vec3 centre_vector, glm::vec3 up_vector
 ) {
+    tt_assert(state::initialised == true);
+
     state::eye_vector = eye_vector;
     state::centre_vector = centre_vector;
     state::up_vector = up_vector;
 }
 
-glm::mat4 get_matrix(void) {
+glm::mat4 tt_resource_camera_get_matrix(void) {
+    tt_assert(state::initialised == true);
+
     glm::mat4 model_matrix = glm::identity<glm::mat4>();
 
     glm::mat4 view_matrix = glm::lookAt(
@@ -73,6 +94,3 @@ glm::mat4 get_matrix(void) {
 
     return projection_matrix * view_matrix * model_matrix;
 }
-
-}  /* namespace resource_camera */
-}  /* namespace tt */

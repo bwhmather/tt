@@ -5,20 +5,18 @@
 #include <type_traits>
 #include <vector>
 
-namespace tt {
-
 template<typename T>
-struct StorageMapEntry {
+struct TTStorageMapEntry {
   private:
-    tt::EntityId m_entity_id;
+    TTEntityId m_entity_id;
     union {T m_value};
 
   public:
-    tt::StorageMapEntry() : m_entity_id(0) {}
+    TTStorageMapEntry() : m_entity_id(0) {}
 
-    tt::StorageMapEntry(const tt::StorageMapEntry &) = delete;
+    TTStorageMapEntry(const TTStorageMapEntry &) = delete;
 
-    tt::StorageMapEntry(tt::StorageMapEntity &&src) {
+    TTStorageMapEntry(TTStorageMapEntity &&src) {
         unset();
         m_entity_id = src.m_entity_id;
         if (m_entity_id) {
@@ -27,11 +25,11 @@ struct StorageMapEntry {
         }
     }
 
-    ~tt::StorageMapEntry() {
+    ~TTStorageMapEntry() {
         unset();
     }
 
-    void set(tt::EntityId entity_id, T value) {
+    void set(TTEntityId entity_id, T value) {
         unset();
         m_entity_id = entity_id;
         m_value = value;
@@ -44,7 +42,7 @@ struct StorageMapEntry {
         m_entity_id = 0;
     }
 
-    tt::EntityId entity_id() {
+    TTEntityId entity_id() {
         return m_entity_id;
     }
 
@@ -55,25 +53,25 @@ struct StorageMapEntry {
 }
 
 template<typename T>
-static void on_delete_callback(tt::EntityId entity_id, void *data);
+static void on_delete_callback(TTEntityId entity_id, void *data);
 
 template<typename T>
-class tt::StorageVector final {
-    std::vector<tt::StorageMapEntry> m;
+class TTStorageMap final {
+    std::vector<TTStorageMapEntry> m;
 
     int delete_callback_handle;
 
   public:
-    tt::StorageVector() : m_mask(), m_data(NULL), m_data_capacity(0) {
-        delete_callback_handle = tt::entities::bind_on_delete_callback(
+    TTStorageMap() : m_mask(), m_data(NULL), m_data_capacity(0) {
+        delete_callback_handle = tt_entities_bind_on_delete_callback(
             &on_delete_callback<T>, this
         );
     }
 
-    ~tt::StorageVector() {
+    ~TTStorageMap() {
         assert(m_data_capacity >= m_mask.size());
 
-        for (tt::EntityId entity_id = 0;  entity_id < m_mask.size(); entity_id++) {
+        for (TTEntityId entity_id = 0;  entity_id < m_mask.size(); entity_id++) {
             if (m_mask[entity_id]) {
                 m_data[entity_id].~T();
             }
@@ -82,13 +80,13 @@ class tt::StorageVector final {
         std::allocator<T>().deallocate(m_data, m_data_capacity);
         m_data_capacity = 0;
 
-        tt::entities::unbind_on_delete_callback(delete_callback_handle);
+        tt_entities_unbind_on_delete_callback(delete_callback_handle);
     }
 
-    tt::StorageVector(const tt::StorageVector &) = delete;
-    tt::StorageVector(tt::StorageVector &&) = delete;
+    TTStorageMap(const TTStorageMap &) = delete;
+    TTStorageMap(TTStorageMap &&) = delete;
 
-    void add(tt::EntityId entity_id, T value) {
+    void add(TTEntityId entity_id, T value) {
         if (entity_id >= m_mask.size()) {
             m_mask.resize(entity_id + 1, false);
         }
@@ -107,7 +105,7 @@ class tt::StorageVector final {
             T* new_data = std::allocator<T>().allocate(new_capacity);
 
             for (
-                tt::EntityId move_id = 0;
+                TTEntityId move_id = 0;
                 move_id < m_mask.size();
                 move_id++
             ) {
@@ -118,7 +116,7 @@ class tt::StorageVector final {
             // TODO call destructors on new array values on exception.
 
             for (
-                tt::EntityId free_id = 0;
+                TTEntityId free_id = 0;
                 free_id < m_mask.size();
                 free_id++
             ) {
@@ -143,7 +141,7 @@ class tt::StorageVector final {
         m_mask[entity_id] = true;
     }
 
-    bool has(tt::EntityId entity_id) {
+    bool has(TTEntityId entity_id) {
         if (entity_id >= m_mask.size()) {
             return false;
         }
@@ -151,12 +149,12 @@ class tt::StorageVector final {
         return m_mask.at(entity_id);
     }
 
-    T& get(tt::EntityId entity_id) {
+    T& get(TTEntityId entity_id) {
         assert(has(entity_id));
         return m_data[entity_id];
     }
 
-    void remove(tt::EntityId entity_id) {
+    void remove(TTEntityId entity_id) {
         assert(has(entity_id));
         m_mask[entity_id] = false;
         m_data[entity_id].~T();
@@ -164,8 +162,8 @@ class tt::StorageVector final {
 };
 
 template<typename T>
-static void on_delete_callback(tt::EntityId entity_id, void *data) {
-    tt::StorageVector<T>& storage = *((tt::StorageVector<T> *) data);
+static void on_delete_callback(TTEntityId entity_id, void *data) {
+    TTStorageMap<T>& storage = *((TTStorageMap<T> *) data);
 
     if (storage.has(entity_id)) {
         storage.remove(entity_id);

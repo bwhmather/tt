@@ -1,6 +1,5 @@
 #include "tt-renderer.hpp"
 
-#include <cassert>
 #include <cstdlib>
 #include <cstring>
 
@@ -8,11 +7,9 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/mat4x4.hpp>
 
+#include "tt-error.hpp"
 #include "tt-resource-camera.hpp"
 #include "tt-texture.hpp"
-
-namespace tt {
-namespace renderer {
 
 static const char* VERTEX_SHADER_TEXT =
     "#version 110\n"
@@ -44,11 +41,13 @@ static const char* FRAGMENT_SHADER_TEXT =
     "}\n";
 
 namespace state {
+    static bool initialised = false;
+
     static GLuint vertex_array = 0;
 
     static size_t buffer_size = 0;
     static size_t buffer_capacity = 0;
-    static vertex *buffer_data = NULL;
+    static TTVertex *buffer_data = NULL;
     static GLuint buffer = 0;
 
     static GLuint shader_program = 0;
@@ -58,17 +57,19 @@ namespace state {
     static GLint spritesheet_location = 0;
     static GLint position_location = 0;
     static GLint tex_coord_location = 0;
-} /* namespace state */
+}
 
-void startup(void) {
+void tt_renderer_startup(void) {
+    tt_assert(state::initialised == false);
+
     GLuint vertex_shader, fragment_shader;
 
     assert(state::buffer_data == NULL);
 
     state::buffer_capacity = 256;
     state::buffer_size = 0;
-    state::buffer_data = (vertex *) malloc(
-        sizeof(vertex) * state::buffer_capacity
+    state::buffer_data = (TTVertex *) malloc(
+        sizeof(TTVertex) * state::buffer_capacity
     );
     assert(state::buffer_data != NULL);
 
@@ -111,57 +112,63 @@ void startup(void) {
     glEnableVertexAttribArray(state::position_location);
     glVertexAttribPointer(
         state::position_location, 3, GL_FLOAT, GL_FALSE,
-        sizeof(vertex), (void*) 0
+        sizeof(TTVertex), (void*) 0
     );
     glEnableVertexAttribArray(state::tex_coord_location);
     glVertexAttribPointer(
         state::tex_coord_location, 2, GL_FLOAT, GL_FALSE,
-        sizeof(vertex), (void*) (sizeof(float) * 3)
+        sizeof(TTVertex), (void*) (sizeof(float) * 3)
     );
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-    state::spritesheet = tt::load_texture("spritesheet.png");
+    state::spritesheet = tt_load_texture("spritesheet.png");
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    state::initialised = true;
 }
 
-
-void shutdown(void) {
-    assert(state::buffer_data != NULL);
+void tt_renderer_shutdown(void) {
+    tt_assert(state::initialised == true);
 
     free(state::buffer_data);
 
     glDeleteVertexArrays(1, &state::vertex_array);
     glDeleteBuffers(1, &state::buffer);
+
+    state::initialised = false;
 }
 
+void tt_renderer_push_vertex(TTVertex *v) {
+    tt_assert(state::initialised == true);
 
-void push_vertex(vertex *v) {
     if (state::buffer_size >= state::buffer_capacity) {
         state::buffer_capacity += state::buffer_capacity / 2;
 
-        state::buffer_data = (vertex *) realloc(
+        state::buffer_data = (TTVertex *) realloc(
             state::buffer_data,
-            sizeof(vertex) * state::buffer_capacity
+            sizeof(TTVertex) * state::buffer_capacity
         );
         assert(state::buffer_data == NULL);
     }
 
     memcpy(
         &state::buffer_data[state::buffer_size],
-        v, sizeof(vertex)
+        v, sizeof(TTVertex)
     );
 
     state::buffer_size++;
 }
 
 
-void do_render(void) {
-    glm::mat4 camera_matrix = tt::resource_camera::get_matrix();
+void tt_renderer_do_render(void) {
+    tt_assert(state::initialised == true);
+
+    glm::mat4 camera_matrix = tt_resource_camera_get_matrix();
 
     glUseProgram(state::shader_program);
 
@@ -179,7 +186,7 @@ void do_render(void) {
 
     glBufferData(
         GL_ARRAY_BUFFER,
-        sizeof(vertex) * state::buffer_size, state::buffer_data,
+        sizeof(TTVertex) * state::buffer_size, state::buffer_data,
         GL_STREAM_DRAW
     );
 
@@ -193,6 +200,3 @@ void do_render(void) {
     // Empty the render buffer, but don't free the memory..
     state::buffer_size = 0;
 }
-
-} /* namespace renderer */
-} /* namespace tt */

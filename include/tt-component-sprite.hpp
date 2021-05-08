@@ -2,28 +2,21 @@
 
 #include "tt-entities.hpp"
 
-namespace tt {
-
 typedef struct {
     int grid_x;
     int grid_y;
     int grid_width;
     int grid_height;
-} Sprite;
+} TTSprite;
 
-namespace component_sprite {
+void tt_component_sprite_startup(void);
+void tt_component_sprite_shutdown(void);
 
-void startup(void);
-void shutdown(void);
+void tt_component_sprite_add(TTEntityId, TTSprite sprite);
+TTSprite& tt_component_sprite_add(TTEntityId entity);
 
-void add(tt::EntityId, tt::Sprite sprite);
-tt::Sprite& add(tt::EntityId entity);
+bool tt_component_sprite_has(TTEntityId entity);
 
-bool has(tt::EntityId entity);
+TTSprite& tt_component_sprite_get(TTEntityId entity);
 
-tt::Sprite& get(tt::EntityId entity);
-
-void remove(tt::EntityId entity);
-
-}  /* namespace component_sprite */
-}  /* namespace tt */
+void tt_component_sprite_remove(TTEntityId entity);

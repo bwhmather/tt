@@ -2,26 +2,19 @@
 
 #include "tt-entities.hpp"
 
-namespace tt {
-
 typedef struct {
     double x;
     double y;
-} Position;
+} TTPosition;
 
-namespace component_position {
+void tt_component_position_startup(void);
+void tt_component_position_shutdown(void);
 
-void startup(void);
-void shutdown(void);
+void tt_component_position_add(TTEntityId entity, TTPosition position);
+TTPosition& tt_component_position_add(TTEntityId entity);
 
-void add(tt::EntityId entity, Position position);
-Position& add(tt::EntityId entity);
+bool tt_component_position_has(TTEntityId entity);
 
-bool has(tt::EntityId entity);
+TTPosition& tt_component_position_get(TTEntityId entity);
 
-Position& get(tt::EntityId entity);
-
-void remove(tt::EntityId entity);
-
-}  /* namespace component_position */
-}  /* namespace tt */
+void tt_component_position_remove(TTEntityId entity);

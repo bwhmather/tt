@@ -3,24 +3,21 @@
 #include "tt-error.hpp"
 #include "tt-storage-sparse-vector.tpp"
 
-namespace tt {
-namespace component_move_to_target {
-
 namespace state {
     static bool initialised = false;
-    static tt::StorageSparseVector<double> *storage = NULL;
-}  /* namespace state */
+    static TTStorageSparseVector<double> *storage = NULL;
+}
 
-void startup(void) {
+void tt_component_move_to_target_startup(void) {
     tt_assert(state::initialised == false);
 
-    state::storage = new tt::StorageSparseVector<double>();
+    state::storage = new TTStorageSparseVector<double>();
     tt_assert(state::storage != NULL);
 
     state::initialised = true;
 }
 
-void shutdown(void) {
+void tt_component_move_to_target_shutdown(void) {
     tt_assert(state::initialised == true);
 
     delete state::storage;
@@ -29,30 +26,28 @@ void shutdown(void) {
     state::initialised = false;
 }
 
-void set_target_range(tt::EntityId entity_id, double range) {
+void tt_component_move_to_target_set_target_range(
+    TTEntityId entity_id, double range
+) {
     tt_assert(state::initialised == true);
 
     state::storage->add(entity_id, range);
 }
 
-bool has(tt::EntityId entity_id) {
+bool tt_component_move_to_target_has(TTEntityId entity_id) {
     tt_assert(state::initialised == true);
 
     return state::storage->has(entity_id);
 }
 
-double get_target_range(tt::EntityId entity_id) {
+double tt_component_move_to_target_get_target_range(TTEntityId entity_id) {
     tt_assert(state::initialised == true);
 
     return state::storage->get(entity_id);
 }
 
-void remove(tt::EntityId entity_id) {
+void tt_component_move_to_target_remove(TTEntityId entity_id) {
     tt_assert(state::initialised == true);
 
     state::storage->remove(entity_id);
 }
-
-}  /* namespace component_move_to_storage */
-}  /* namespace tt */
-

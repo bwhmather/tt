@@ -4,9 +4,4 @@
 
 #include <GL/glew.h>
 
-
-namespace tt {
-
-GLuint load_texture(const std::string& filename);
-
-}  /* namespace tt */
+GLuint tt_load_texture(const std::string& filename);

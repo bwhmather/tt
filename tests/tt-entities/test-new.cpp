@@ -1,5 +1,5 @@
 /**
- * Checks that `tt::entities::new_id` will return sequential ids.
+ * Checks that `tt_entities_new_id` will return sequential ids.
  */
 #include "tt-entities.hpp"
 
@@ -7,14 +7,14 @@
 
 
 int main(void) {
-    tt::entities::startup();
+    tt_entities_startup();
 
-    tt_assert(tt::entities::create() == 1);
-    tt_assert(tt::entities::create() == 2);
-    tt_assert(tt::entities::create() == 3);
-    tt_assert(tt::entities::create() == 4);
+    tt_assert(tt_entities_create() == 1);
+    tt_assert(tt_entities_create() == 2);
+    tt_assert(tt_entities_create() == 3);
+    tt_assert(tt_entities_create() == 4);
 
-    tt::entities::shutdown();
+    tt_entities_shutdown();
 
     return 0;
 }

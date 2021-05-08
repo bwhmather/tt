@@ -2,19 +2,13 @@
 
 #include "tt-entities.hpp"
 
-namespace tt {
-namespace component_target {
+void tt_component_target_startup(void);
+void tt_component_target_shutdown(void);
 
-void startup(void);
-void shutdown(void);
+void tt_component_target_set(TTEntityId, TTEntityId target);
 
-void set(tt::EntityId, tt::EntityId target);
+bool tt_component_target_has(TTEntityId entity);
 
-bool has(tt::EntityId entity);
+TTEntityId tt_component_target_get(TTEntityId entity);
 
-tt::EntityId get(tt::EntityId entity);
-
-void remove(tt::EntityId entity);
-
-}  /* namespace component_target */
-}  /* namespace tt */
+void tt_component_target_remove(TTEntityId entity);

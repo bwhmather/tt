@@ -2,14 +2,7 @@
 
 #include "tt-entities.hpp"
 
+void tt_system_sprites_startup(void);
+void tt_system_sprites_shutdown(void);
 
-namespace tt {
-namespace system_sprites {
-
-void startup(void);
-void shutdown(void);
-
-void run(void);
-
-}  /* namespace system_sprites */
-}  /* namespace tt */
+void tt_system_sprites_run(void);
