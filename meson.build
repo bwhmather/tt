@@ -28,11 +28,13 @@ lib_sources = [
   'src/tt-texture.cpp',
   'src/tt-error.cpp',
   'src/tt-resource-camera.cpp',
+  'src/tt-component-harvestable.cpp',
   'src/tt-component-job.cpp',
   'src/tt-component-move-to-target.cpp',
   'src/tt-component-position.cpp',
   'src/tt-component-sprite.cpp',
   'src/tt-component-target.cpp',
+  'src/tt-component-wood.cpp',
   'src/tt-system-move-to-target.cpp',
   'src/tt-system-sprites.cpp',
 ]

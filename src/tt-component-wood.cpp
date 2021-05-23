@@ -1,34 +1,50 @@
 #include "tt-component-wood.hpp"
 
-#include <assert.h>
+#include "tt-error.hpp"
+#include "tt-storage-sparse-vector.tpp"
 
-#include "tt-storage-vector.tpp"
-
-
-static TTStorageVector<TTEntityId> *storage = NULL;
+namespace state {
+    static bool initialised = false;
+    static TTStorageSparseVector<int> *storage = NULL;
+}
 
 void tt_component_wood_startup(void) {
-    assert(storage == NULL);
-    storage = new TTStorageVector<TTEntityId>();
+    tt_assert(state::initialised == false);
+
+    state::storage = new TTStorageSparseVector<int>();
+
+    state::initialised = true;
 }
 
 void tt_component_wood_shutdown(void) {
-    assert(storage != NULL);
-    delete storage;
-    storage = NULL;
+    tt_assert(state::initialised == true);
+
+    delete state::storage;
+    state::storage = NULL;
+
+    state::initialised = false;
 }
 
-void tt_set_wood(TTEntityId entity_id, int wood) {
-    assert(storage != NULL);
-    return storage->set(entity_id, wood);
+void tt_component_wood_set(TTEntityId entity_id, int wood) {
+    tt_assert(state::initialised == true);
+
+    return state::storage->add(entity_id, wood);
 }
 
-bool tt_has_wood(TTEntityId entity_id) {
-    assert(storage != NULL);
-    return storage->get(entity_id) != 0;
+bool tt_component_wood_has(TTEntityId entity_id) {
+    tt_assert(state::initialised == true);
+
+    return state::storage->has(entity_id);
 }
 
-int tt_get_wood(TTEntityId entity_id) {
-    assert(storage != NULL);
-    return storage->get(entity_id);
+int tt_component_wood_get(TTEntityId entity_id) {
+    tt_assert(state::initialised == true);
+
+    return state::storage->get(entity_id);
+}
+
+void tt_component_wood_remove(TTEntityId entity_id) {
+    tt_assert(state::initialised == true);
+
+    return state::storage->remove(entity_id);
 }
