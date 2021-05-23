@@ -1,4 +1,4 @@
-#include "tt-renderer.hpp"
+#include "tt-system-ai.hpp"
 
 #include <cassert>
 #include <cstdio>
@@ -6,10 +6,26 @@
 #include "tt-component-position.hpp"
 #include "tt-component-job.hpp"
 #include "tt-entities.hpp"
+#include "tt-error.hpp"
 
+namespace state {
+    static bool initialised = false;
+}
 
-void tt_system_sprites_run(void) {
+void tt_system_ai_startup(void) {
+    tt_assert(state::initialised == false);
+    state::initialised = true;
+}
+
+void tt_system_ai_shutdown(void) {
+    tt_assert(state::initialised == true);
+    state::initialised = false;
+}
+
+void tt_system_ai_run(void) {
     TTEntityIter iter;
+
+    tt_assert(state::initialised == true);
 
     tt_entities_iter_begin(&iter);
 
@@ -35,4 +51,7 @@ void tt_system_sprites_run(void) {
         }
     }
 }
+
+
+
 
