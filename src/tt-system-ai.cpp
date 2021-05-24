@@ -54,7 +54,7 @@ choose_goal {
 
     score = tt_ai_harvest_crops_score(entity_id)
     if (score > best_score) {
-        new_goal = TTGoal::COLLECT_WOOD;
+        new_goal = TTGoal::HARVEST_CROPS;
         best_score = score;
     }
 
