@@ -1,22 +1,22 @@
-#include "tt-component-job.hpp"
+#include "tt-component-goal.hpp"
 
 #include "tt-error.hpp"
 #include "tt-storage-sparse-vector.tpp"
 
 namespace state {
     static bool initialised = false;
-    static TTStorageSparseVector<TTJob> *storage = NULL;
+    static TTStorageSparseVector<TTGoal> *storage = NULL;
 }
 
-void tt_component_job_startup(void) {
+void tt_component_goal_startup(void) {
     tt_assert(state::initialised == false);
 
-    state::storage = new TTStorageSparseVector<TTJob>();
+    state::storage = new TTStorageSparseVector<TTGoal>();
 
     state::initialised = true;
 }
 
-void tt_component_job_shutdown(void) {
+void tt_component_goal_shutdown(void) {
     tt_assert(state::initialised == true);
 
     delete state::storage;
@@ -25,25 +25,25 @@ void tt_component_job_shutdown(void) {
     state::initialised = false;
 }
 
-void tt_component_job_set(TTEntityId entity_id, TTJob job) {
+void tt_component_goal_set(TTEntityId entity_id, TTGoal goal) {
     tt_assert(state::initialised == true);
 
-    return state::storage->add(entity_id, job);
+    return state::storage->add(entity_id, goal);
 }
 
-bool tt_component_job_has(TTEntityId entity_id) {
+bool tt_component_goal_has(TTEntityId entity_id) {
     tt_assert(state::initialised == true);
 
     return state::storage->has(entity_id);
 }
 
-TTJob tt_component_job_get(TTEntityId entity_id) {
+TTGoal tt_component_goal_get(TTEntityId entity_id) {
     tt_assert(state::initialised == true);
 
     return state::storage->get(entity_id);
 }
 
-void tt_component_job_remove(TTEntityId entity_id) {
+void tt_component_goal_remove(TTEntityId entity_id) {
     tt_assert(state::initialised == true);
 
     return state::storage->remove(entity_id);
