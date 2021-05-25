@@ -4,6 +4,7 @@
 #include <cmath>
 #include <cstdio>
 
+#include "tt-behaviour.hpp"
 #include "tt-component-behaviour.hpp"
 #include "tt-entities.hpp"
 #include "tt-error.hpp"
@@ -36,14 +37,30 @@ void tt_system_behaviour_run(void) {
 
         if (!tt_component_behaviour_has(entity_id)) continue;
 
-        TTBehaviourComponent component = tt_behaviour_component_get(entity_id);
+        TTBehaviour *prev = tt_component_behaviour_get_prev(entity_id);
+        TTBehaviour *next = tt_component_behaviour_get_next(entity_id);
+        void *stack = tt_component_behaviour_get_stack(entity_id);
 
-        TTBehaviourResult result = tt_behaviour_run(
-            component.behaviour, component.stack
-        );
+        if (prev != next && prev != NULL) {
+            tt_behaviour_interrupt(prev, stack);
+        }
 
-        if (result != RUNNING) {
+        if (next == NULL) {
             tt_component_behaviour_remove(entity_id);
         }
+
+        TTBehaviourResult result;
+        if (prev != next) {
+            result = tt_behaviour_call(next, stack);
+        } else {
+            result = tt_behaviour_resume(next, stack);
+        }
+
+        if (result != TTBehaviourResult::RUNNING) {
+            next = NULL;
+        }
+
+        tt_component_behaviour_set_prev(entity_id, next);
+        tt_component_behaviour_set_next(entity_id, next);
     }
 }
