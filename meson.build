@@ -23,6 +23,7 @@ includes = include_directories('include')
 ### Library ###
 
 lib_sources = [
+  'src/tt-behaviour.cpp',
   'src/tt-entities.cpp',
   'src/tt-renderer.cpp',
   'src/tt-texture.cpp',
