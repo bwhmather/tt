@@ -42,7 +42,7 @@ void tt_system_behaviour_run(void) {
         void *stack = tt_component_behaviour_get_stack(entity_id);
 
         if (prev != next && prev != NULL) {
-            tt_behaviour_interrupt(prev, stack);
+            tt_behaviour_interrupt(prev, entity_id, stack);
         }
 
         if (next == NULL) {
@@ -51,9 +51,9 @@ void tt_system_behaviour_run(void) {
 
         TTBehaviourResult result;
         if (prev != next) {
-            result = tt_behaviour_call(next, stack);
+            result = tt_behaviour_call(next, entity_id, stack);
         } else {
-            result = tt_behaviour_resume(next, stack);
+            result = tt_behaviour_resume(next, entity_id, stack);
         }
 
         if (result != TTBehaviourResult::RUNNING) {

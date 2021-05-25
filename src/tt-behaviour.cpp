@@ -2,26 +2,28 @@
 
 #include <cstddef>
 
+#include "tt-entities.hpp"
+
 
 TTBehaviourResult tt_behaviour_call(
-    TTBehaviour *behaviour, void *calling_fp
+    TTBehaviour *behaviour, TTEntityId entity_id, void *calling_fp
 ) {
     void *this_fp = calling_fp - behaviour->frame_size();
-    return behaviour->do_call(this_fp);
+    return behaviour->do_call(entity_id, this_fp);
 }
 
 TTBehaviourResult tt_behaviour_resume(
-    TTBehaviour *behaviour, void *calling_fp
+    TTBehaviour *behaviour, TTEntityId entity_id, void *calling_fp
 ) {
     void *this_fp = calling_fp - behaviour->frame_size();
-    return behaviour->do_resume(this_fp);
+    return behaviour->do_resume(entity_id, this_fp);
 }
 
 TTBehaviourResult tt_behaviour_interrupt(
-    TTBehaviour *behaviour, void *calling_fp
+    TTBehaviour *behaviour, TTEntityId entity_id, void *calling_fp
 ) {
     void *this_fp = calling_fp - behaviour->frame_size();
-    behaviour->do_interrupt(this_fp);
+    behaviour->do_interrupt(entity_id, this_fp);
 }
 
 
