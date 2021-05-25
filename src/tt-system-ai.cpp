@@ -3,180 +3,93 @@
 #include <cassert>
 #include <cstdio>
 
-#include "tt-component-position.hpp"
-#include "tt-component-job.hpp"
+#include "tt-behaviour.hpp"
+#include "tt-behaviour-harvest-target.hpp"
+#include "tt-behaviour-inventory-full.hpp"
+#include "tt-behaviour-selector.hpp"
+#include "tt-behaviour-selector-until.hpp"
+#include "tt-behaviour-select-stockpile.hpp"
+#include "tt-behaviour-select-tree.hpp"
+#include "tt-behaviour-sequence.hpp"
+#include "tt-behaviour-walk-to-target.hpp"
+#include "tt-component-brain.hpp"
+#include "tt-component-behaviour.hpp"
 #include "tt-entities.hpp"
 #include "tt-error.hpp"
 
 namespace state {
     static bool initialised = false;
+
+    TTBehaviour *collect_wood_behaviour;
+    TTBehaviour *harvest_crops_behaviour;
+    TTBehaviour *construct_buildings_behaviour;
+    TTBehaviour *attack_behaviour;
+    TTBehaviour *flee_behaviour;
 }
-
-
-typedef struct {
-    TTBehaviourBeginFn *begin_fn;
-    TTBehaviourInterruptFn *interrupt_fn;
-    TTBehaviourTickFn *tick_fn;
-
-    size_t stack_frame_size;
-
-    size_t nchildren;
-    TTBehaviour *children[];
-} TTBehaviour;
-
-
-
-
-
-
-
-
-
-
-float tt_ai_get_wood_score(TTEntityId) {
-
-
-}
-
-
-
-choose_goal {
-    float score;
-
-    TTGoal new_goal = TTGoal::NONE;
-    best_score = 0.0f;
-
-    score = tt_ai_collect_wood_score(entity_id)
-    if (score > best_score) {
-        new_goal = TTGoal::COLLECT_WOOD;
-        best_score = score;
-    }
-
-    score = tt_ai_harvest_crops_score(entity_id)
-    if (score > best_score) {
-        new_goal = TTGoal::HARVEST_CROPS;
-        best_score = score;
-    }
-
-    score = tt_ai_construct_building_score(entity_id)
-    if (score > best_score) {
-        new_goal = TTGoal::CONSTRUCT_BUILDING;
-        best_score = score;
-    }
-
-    score = tt_ai_attack_score(entity_id)
-    if (score > best_score) {
-        new_goal = TTGoal::ATTACK;
-        best_score = score;
-    }
-
-    score = tt_ai_flee_score(entity_id)
-    if (score > best_score) {
-        new_goal = TTGoal::FLEE;
-        best_score = score;
-    }
-}
-
-
-
-run() {
-
-    for entity_id in entities {
-
-    }
-
-}
-
-
-
-
-
-
-
-typedef struct {
-    size_t active_child;
-} TTBehaviorSelectorState;
-
-void tt_behaviour_selector_begin(TTBehaviourState state) {
-    reserve(sizeof(TTBehaviourSelectorState));
-
-
-
-    tt_behavior_push(children[0]);
-}
-
-bool tt_behaviour_selector_interupt(TTBehaviorState state) {
-    return tt_behaviour_interupt
-}
-
-TTBehaviourResult tt_behaviour_selector_tick(TTBehaviourState state) {
-
-}
-
-
-TTBehaviourResult tt_behaviour_open_door_tick(TTBehaviourState) {
-    assert not children;
-
-
-}
-
 
 
 void tt_system_ai_startup(void) {
     tt_assert(state::initialised == false);
 
+    state::collect_wood_behaviour = tt_behaviour_sequence(
+        tt_behaviour_selector_until(
+            tt_behaviour_inventory_full(),
 
-    // Enter door.
-    begin_sequence();
-        push_behaviour(walk_to_door);
-        begin_selector();
-            push_behaviour(open_door);
-            begin_sequence();
-                push_behaviour(unlock_door);
-                push_behaviour(open_door);
-            end_sequence();
-        push_behaviour(smash_door);
-        end_selector();
-        push_behaviour(walk_through_door);
-        push_behaviour(close_door);
-    end_sequence();
+            // Get wood by chopping down tree.
+            tt_behaviour_sequence(
+                tt_behaviour_select_tree(),
+                tt_behaviour_walk_to_target(),
+                tt_behaviour_harvest_target(),
+                NULL
+            ),
+            NULL
+        ),
 
-
-
-
-
-
-
-
-
-
+        // Drop wood at stockpile.
+        tt_behaviour_select_stockpile(),
+        tt_behaviour_walk_to_target(),
+        NULL
+    );
+    state::harvest_crops_behaviour = NULL;
+    state::construct_buildings_behaviour = NULL;
+    state::attack_behaviour = NULL;
+    state::flee_behaviour = NULL;
 
     state::initialised = true;
 }
 
 void tt_system_ai_shutdown(void) {
     tt_assert(state::initialised == true);
+
+    delete state::collect_wood_behaviour;
+    delete state::harvest_crops_behaviour;
+    delete state::construct_buildings_behaviour;
+    delete state::attack_behaviour;
+    delete state::flee_behaviour;
+
     state::initialised = false;
 }
 
 
+static float tt_ai_collect_wood_score(TTEntityId) {
+    return 1.0f;
+}
 
+static float tt_ai_harvest_crops_score(TTEntityId) {
+    return 0.0f;
+}
 
+static float tt_ai_construct_buildings_score(TTEntityId) {
+    return 0.0f;
+}
 
+static float tt_ai_attack_score(TTEntityId) {
+    return 0.0f;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+static float tt_ai_flee_score(TTEntityId) {
+    return 0.0f;
+}
 
 void tt_system_ai_run(void) {
     TTEntityIter iter;
@@ -188,22 +101,42 @@ void tt_system_ai_run(void) {
     while (tt_entities_iter_has_next(&iter)) {
         TTEntityId entity_id = tt_entities_iter_next(&iter);
 
-        TTGoal old_goal = tt_component_goal_get(entity_id);
-        TTGoal new_goal = tt_system_ai_choose_goal(entity_id);
+        if (!tt_component_brain_get(entity_id)) continue;
 
-        if (new_goal != old_goal) {
-            tt_behaviour_interrupt(entity_id);
-            tt_component_goal_set(new_goal);
+        TTBehaviour *new_behaviour = NULL;
+        float best_score = 0.0f;
+
+        float score;
+        score = tt_ai_collect_wood_score(entity_id);
+        if (score > best_score) {
+            new_behaviour = state::collect_wood_behaviour;
+            best_score = score;
         }
 
-        tt_behaviour_run(entity_id);
+        score = tt_ai_harvest_crops_score(entity_id);
+        if (score > best_score) {
+            new_behaviour = state::harvest_crops_behaviour;
+            best_score = score;
+        }
 
+        score = tt_ai_construct_buildings_score(entity_id);
+        if (score > best_score) {
+            new_behaviour = state::construct_buildings_behaviour;
+            best_score = score;
+        }
 
+        score = tt_ai_attack_score(entity_id);
+        if (score > best_score) {
+            new_behaviour = state::attack_behaviour;
+            best_score = score;
+        }
 
+        score = tt_ai_flee_score(entity_id);
+        if (score > best_score) {
+            new_behaviour = state::flee_behaviour;
+            best_score = score;
+        }
 
+        tt_component_behaviour_set_next(entity_id, new_behaviour);
     }
 }
-
-
-
-
