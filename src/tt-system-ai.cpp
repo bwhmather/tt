@@ -6,6 +6,7 @@
 #include "tt-behaviour.hpp"
 #include "tt-behaviour-harvest-target.hpp"
 #include "tt-behaviour-inventory-full.hpp"
+#include "tt-behaviour-loop.hpp"
 #include "tt-behaviour-selector.hpp"
 #include "tt-behaviour-selector-until.hpp"
 #include "tt-behaviour-select-stockpile.hpp"
@@ -32,7 +33,7 @@ void tt_system_ai_startup(void) {
     tt_assert(state::initialised == false);
 
     state::collect_wood_behaviour = tt_behaviour_sequence(
-        tt_behaviour_selector_until(
+        tt_behaviour_loop(
             tt_behaviour_inventory_full(),
 
             // Get wood by chopping down tree.

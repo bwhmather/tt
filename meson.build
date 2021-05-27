@@ -26,6 +26,7 @@ lib_sources = [
   'src/tt-behaviour.cpp',
   'src/tt-behaviour-harvest-target.cpp',
   'src/tt-behaviour-inventory-full.cpp',
+  'src/tt-behaviour-loop.cpp',
   'src/tt-behaviour-selector.cpp',
   'src/tt-behaviour-selector-until.cpp',
   'src/tt-behaviour-select-stockpile.cpp',

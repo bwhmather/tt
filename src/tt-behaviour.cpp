@@ -5,25 +5,33 @@
 #include "tt-entities.hpp"
 
 
+static void *tt_behaviour_next_fp(TTBehaviour *behaviour, void *calling_fp) {
+    return (void *) (((char *) calling_fp) - behaviour->frame_size());
+}
+
+
 TTBehaviourResult tt_behaviour_call(
     TTBehaviour *behaviour, TTEntityId entity_id, void *calling_fp
 ) {
-    void *this_fp = calling_fp - behaviour->frame_size();
-    return behaviour->do_call(entity_id, this_fp);
+    return behaviour->do_call(
+        entity_id, tt_behaviour_next_fp(behaviour, calling_fp)
+    );
 }
 
 TTBehaviourResult tt_behaviour_resume(
     TTBehaviour *behaviour, TTEntityId entity_id, void *calling_fp
 ) {
-    void *this_fp = calling_fp - behaviour->frame_size();
-    return behaviour->do_resume(entity_id, this_fp);
+    return behaviour->do_resume(
+        entity_id, tt_behaviour_next_fp(behaviour, calling_fp)
+    );
 }
 
-TTBehaviourResult tt_behaviour_interrupt(
+void tt_behaviour_interrupt(
     TTBehaviour *behaviour, TTEntityId entity_id, void *calling_fp
 ) {
-    void *this_fp = calling_fp - behaviour->frame_size();
-    behaviour->do_interrupt(entity_id, this_fp);
+    behaviour->do_interrupt(
+        entity_id, tt_behaviour_next_fp(behaviour, calling_fp)
+    );
 }
 
 

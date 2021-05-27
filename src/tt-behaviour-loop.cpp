@@ -1,4 +1,4 @@
-#include "tt-behaviour-sequence.hpp"
+#include "tt-behaviour-loop.hpp"
 
 #include <algorithm>
 #include <cstdarg>
@@ -10,11 +10,11 @@
 #include "tt-entities.hpp"
 
 
-class TTBehaviourSequence : public TTBehaviour {
+class TTBehaviourLoop : public TTBehaviour {
     std::vector<TTBehaviour *> m_children;
 
 public:
-    TTBehaviourSequence(
+    TTBehaviourLoop(
         std::vector<TTBehaviour *> children
     ) : m_children(std::move(children)) {};
 
@@ -27,22 +27,23 @@ public:
 };
 
 
-struct TTBehaviourSequenceState {
+struct TTBehaviourLoopState {
     size_t active_child;
 };
 
 
-TTBehaviourResult TTBehaviourSequence::do_call(
+TTBehaviourResult TTBehaviourLoop::do_call(
     TTEntityId entity_id, void *fp
 ) {
-    TTBehaviourSequenceState *state = (TTBehaviourSequenceState *) fp;
+    TTBehaviourLoopState *state = (TTBehaviourLoopState *) fp;
 
     state->active_child = 0;
-    while (state->active_child < this->m_children.size()) {
+    while (true) {
         TTBehaviour *active_child = this->m_children.at(state->active_child);
         TTBehaviourResult result = tt_behaviour_call(
             active_child, entity_id, fp
         );
+
         if (result == TTBehaviourResult::RUNNING) {
             return result;
         }
@@ -51,19 +52,21 @@ TTBehaviourResult TTBehaviourSequence::do_call(
         }
 
         state->active_child++;
+        if (state->active_child >= this->m_children.size()) {
+            state->active_child = 0;
+        }
     }
-
-    return TTBehaviourResult::SUCCEEDED;
 }
 
-TTBehaviourResult TTBehaviourSequence::do_resume(
+TTBehaviourResult TTBehaviourLoop::do_resume(
     TTEntityId entity_id, void *fp
 ) {
-    TTBehaviourSequenceState *state = (TTBehaviourSequenceState *) fp;
+    TTBehaviourLoopState *state = (TTBehaviourLoopState *) fp;
 
     TTBehaviour *active_child = this->m_children.at(state->active_child);
     TTBehaviourResult result = tt_behaviour_resume(active_child, entity_id, fp);
-    while (state->active_child < this->m_children.size()) {
+
+    while (true) {
         if (result == TTBehaviourResult::RUNNING) {
             return result;
         }
@@ -72,24 +75,26 @@ TTBehaviourResult TTBehaviourSequence::do_resume(
         }
 
         state->active_child++;
+        if (state->active_child >= this->m_children.size()) {
+            state->active_child = 0;
+        }
+
         TTBehaviour *active_child = this->m_children.at(state->active_child);
         result = tt_behaviour_call(active_child, entity_id, fp);
     }
-
-    return TTBehaviourResult::SUCCEEDED;
 }
 
-void TTBehaviourSequence::do_interrupt(
+void TTBehaviourLoop::do_interrupt(
     TTEntityId entity_id, void *fp
 ) {
-    TTBehaviourSequenceState *state = (TTBehaviourSequenceState *) fp;
+    TTBehaviourLoopState *state = (TTBehaviourLoopState *) fp;
 
     TTBehaviour *active_child = this->m_children.at(state->active_child);
     tt_behaviour_interrupt(active_child, entity_id, fp);
 }
 
 
-std::size_t TTBehaviourSequence::max_stack_size(void) {
+std::size_t TTBehaviourLoop::max_stack_size(void) {
     std::size_t max_child_stack_size = 0;
 
     for (TTBehaviour *child : this->m_children) {
@@ -103,12 +108,12 @@ std::size_t TTBehaviourSequence::max_stack_size(void) {
 
 }
 
-std::size_t TTBehaviourSequence::frame_size() {
-    return sizeof(TTBehaviourSequenceState);
+std::size_t TTBehaviourLoop::frame_size() {
+    return sizeof(TTBehaviourLoopState);
 }
 
 
-TTBehaviour *tt_behaviour_sequence(TTBehaviour *first, ...) {
+TTBehaviour *tt_behaviour_loop(TTBehaviour *first, ...) {
     va_list args;
     va_start(args, first);
 
@@ -124,7 +129,8 @@ TTBehaviour *tt_behaviour_sequence(TTBehaviour *first, ...) {
 
     va_end(args);
 
-    return new TTBehaviourSequence(children);
+    return new TTBehaviourLoop(children);
 }
+
 
 

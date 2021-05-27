@@ -1,34 +1,33 @@
-#include "tt-behaviour-entity-full.hpp"
+#include "tt-behaviour-inventory-full.hpp"
 
 #include <cstddef>
 
 #include "tt-behaviour.hpp"
-#include "tt-errors.hpp"
+#include "tt-error.hpp"
 
-class TTBehaviourInventoryFull : TTBehaviour {
-    ~TTBehaviourInventoryFull();
 
+class TTBehaviourInventoryFull : public TTBehaviour {
+public:
     TTBehaviourResult do_call(TTEntityId, void *fp) final;
     TTBehaviourResult do_resume(TTEntityId, void *fp) final;
     void do_interrupt(TTEntityId, void *fp) final;
 
     std::size_t max_stack_size(void) final;
     std::size_t frame_size(void) final;
-}
+};
 
 
-
-TTBehaviourResult TTBehaviourInventoryFull::do_call(TTEntityId, void *fp) {
+TTBehaviourResult TTBehaviourInventoryFull::do_call(TTEntityId, void *) {
     // TODO
     return TTBehaviourResult::SUCCEEDED;
 }
 
-TTBehaviourResult TTBehaviourInventoryFull::do_resume(TTEntityId, void *fp) {
+TTBehaviourResult TTBehaviourInventoryFull::do_resume(TTEntityId, void *) {
     // TODO
     tt_assert(false);
 }
 
-void TTBehaviourInventoryFull::do_interrupt(TTEntityId, void *fp) {
+void TTBehaviourInventoryFull::do_interrupt(TTEntityId, void *) {
     return;
 }
 

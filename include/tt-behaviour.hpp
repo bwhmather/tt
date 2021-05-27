@@ -11,14 +11,14 @@ enum class TTBehaviourResult {
 };
 
 struct TTBehaviour {
-    virtual ~TTBehaviour();
+    virtual ~TTBehaviour() {};
 
-    virtual TTBehaviourResult do_call(TTEntityId, void *fp);
-    virtual TTBehaviourResult do_resume(TTEntityId, void *fp);
-    virtual void do_interrupt(TTEntityId, void *fp);
+    virtual TTBehaviourResult do_call(TTEntityId, void *fp) = 0;
+    virtual TTBehaviourResult do_resume(TTEntityId, void *fp) = 0;
+    virtual void do_interrupt(TTEntityId, void *fp) = 0;
 
-    virtual std::size_t max_stack_size();
-    virtual std::size_t frame_size();
+    virtual std::size_t max_stack_size() = 0;
+    virtual std::size_t frame_size() = 0;
 };
 
 TTBehaviourResult tt_behaviour_call(
@@ -27,7 +27,7 @@ TTBehaviourResult tt_behaviour_call(
 TTBehaviourResult tt_behaviour_resume(
     TTBehaviour *behaviour, TTEntityId entity_id, void *calling_fp
 );
-TTBehaviourResult tt_behaviour_interrupt(
+void tt_behaviour_interrupt(
     TTBehaviour *behaviour, TTEntityId entity_id, void *calling_fp
 );
 
