@@ -1,10 +1,13 @@
 #include "tt-renderer.hpp"
 #include "tt-entities.hpp"
+#include "tt-component-brain.hpp"
+#include "tt-component-behaviour.hpp"
 #include "tt-component-move-to-target.hpp"
 #include "tt-component-position.hpp"
 #include "tt-component-sprite.hpp"
 #include "tt-component-target.hpp"
 #include "tt-resource-camera.hpp"
+#include "tt-system-ai.hpp"
 #include "tt-system-move-to-target.hpp"
 #include "tt-system-sprites.hpp"
 #include "tt-error.hpp"
@@ -153,6 +156,8 @@ int main(void) {
     glBindVertexArray(0);
 
     tt_entities_startup();
+    tt_component_brain_startup();
+    tt_component_behaviour_startup();
     tt_component_position_startup();
     tt_component_sprite_startup();
     tt_component_target_startup();
@@ -161,6 +166,7 @@ int main(void) {
     tt_resource_camera_startup();
     tt_renderer_startup();
 
+    tt_system_ai_startup();
     tt_system_sprites_startup();
     tt_system_move_to_target_startup();
 
@@ -187,6 +193,7 @@ int main(void) {
     sprite.grid_width = 1;
     sprite.grid_height = 1;
 
+    tt_component_brain_set(entity_id, true);
     tt_component_target_set(entity_id, tree_id);
     tt_component_move_to_target_set_target_range(entity_id, 0.02);
 
@@ -231,6 +238,7 @@ int main(void) {
 
         tt_entities_maintain();
 
+        tt_system_ai_run();
         tt_system_move_to_target_run();
 
         tt_system_sprites_run();
