@@ -4,9 +4,9 @@
 #include <cmath>
 #include <cstdio>
 
-#include "tt-component-behaviour.hpp"
 extern "C" {
 #include "tt-behaviour.h"
+#include "tt-component-behaviour.h"
 #include "tt-entities.h"
 #include "tt-error.h"
 }

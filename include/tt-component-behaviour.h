@@ -1,9 +1,8 @@
 #pragma once
 
-extern "C" {
 #include "tt-behaviour.h"
 #include "tt-entities.h"
-}
+
 
 void tt_component_behaviour_startup(void);
 void tt_component_behaviour_shutdown(void);

@@ -1,7 +1,7 @@
 #pragma once
-extern "C" {
+
 #include "tt-entities.h"
-}
+
 
 void tt_component_wood_startup(void);
 void tt_component_wood_shutdown(void);

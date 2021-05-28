@@ -1,8 +1,6 @@
 #pragma once
 
-extern "C" {
 #include "tt-entities.h"
-}
 
 
 void tt_component_harvestable_startup(void);

@@ -14,12 +14,11 @@ extern "C" {
 #include "tt-behaviour-select-tree.h"
 #include "tt-behaviour-sequence.h"
 #include "tt-behaviour-walk-to-target.h"
+#include "tt-component-brain.h"
+#include "tt-component-behaviour.h"
 #include "tt-entities.h"
 #include "tt-error.h"
 }
-
-#include "tt-component-brain.hpp"
-#include "tt-component-behaviour.hpp"
 
 namespace state {
     static bool initialised = false;

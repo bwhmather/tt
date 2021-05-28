@@ -1,7 +1,8 @@
 #pragma once
-extern "C" {
+
 #include "tt-entities.h"
-}
+
+
 typedef struct {
     double x;
     double y;
@@ -10,11 +11,10 @@ typedef struct {
 void tt_component_position_startup(void);
 void tt_component_position_shutdown(void);
 
-void tt_component_position_add(TTEntityId entity, TTPosition position);
-TTPosition& tt_component_position_add(TTEntityId entity);
+TTPosition *tt_component_position_add(TTEntityId entity);
 
 bool tt_component_position_has(TTEntityId entity);
 
-TTPosition& tt_component_position_get(TTEntityId entity);
+TTPosition *tt_component_position_get(TTEntityId entity);
 
 void tt_component_position_remove(TTEntityId entity);

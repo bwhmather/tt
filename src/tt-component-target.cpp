@@ -1,17 +1,20 @@
-#include "tt-component-target.hpp"
+extern "C" {
+#include "tt-component-target.h"
+}
 
-#include <assert.h>
+#include "tt-storage-sparse-vector.tpp"
+
 extern "C" {
 #include "tt-error.h"
 }
-#include "tt-storage-sparse-vector.tpp"
+
 
 namespace state {
     static bool initialised = false;
     static TTStorageSparseVector<TTEntityId> *storage = NULL;
 }
 
-void tt_component_target_startup(void) {
+extern "C" void tt_component_target_startup(void) {
     tt_assert(state::initialised == false);
 
     state::storage = new TTStorageSparseVector<TTEntityId>();
@@ -19,7 +22,7 @@ void tt_component_target_startup(void) {
     state::initialised = true;
 }
 
-void tt_component_target_shutdown(void) {
+extern "C" void tt_component_target_shutdown(void) {
     tt_assert(state::initialised == true);
 
     delete state::storage;
@@ -28,25 +31,27 @@ void tt_component_target_shutdown(void) {
     state::initialised = false;
 }
 
-void tt_component_target_set(TTEntityId entity_id, TTEntityId target) {
+extern "C" void tt_component_target_set(
+    TTEntityId entity_id, TTEntityId target
+) {
     tt_assert(state::initialised == true);
 
     return state::storage->add(entity_id, target);
 }
 
-bool tt_component_target_has(TTEntityId entity_id) {
+extern "C" bool tt_component_target_has(TTEntityId entity_id) {
     tt_assert(state::initialised == true);
 
     return state::storage->has(entity_id);
 }
 
-TTEntityId tt_component_target_get(TTEntityId entity_id) {
+extern "C" TTEntityId tt_component_target_get(TTEntityId entity_id) {
     tt_assert(state::initialised == true);
 
     return state::storage->get(entity_id);
 }
 
-void tt_component_target_remove(TTEntityId entity_id) {
+extern "C" void tt_component_target_remove(TTEntityId entity_id) {
     tt_assert(state::initialised == true);
 
     return state::storage->remove(entity_id);

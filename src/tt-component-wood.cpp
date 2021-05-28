@@ -1,15 +1,19 @@
-#include "tt-component-wood.hpp"
+extern "C" {
+#include "tt-component-wood.h"
+}
+
+#include "tt-storage-sparse-vector.tpp"
+
 extern "C" {
 #include "tt-error.h"
 }
-#include "tt-storage-sparse-vector.tpp"
 
 namespace state {
     static bool initialised = false;
     static TTStorageSparseVector<int> *storage = NULL;
 }
 
-void tt_component_wood_startup(void) {
+extern "C" void tt_component_wood_startup(void) {
     tt_assert(state::initialised == false);
 
     state::storage = new TTStorageSparseVector<int>();
@@ -17,7 +21,7 @@ void tt_component_wood_startup(void) {
     state::initialised = true;
 }
 
-void tt_component_wood_shutdown(void) {
+extern "C" void tt_component_wood_shutdown(void) {
     tt_assert(state::initialised == true);
 
     delete state::storage;
@@ -26,25 +30,25 @@ void tt_component_wood_shutdown(void) {
     state::initialised = false;
 }
 
-void tt_component_wood_set(TTEntityId entity_id, int wood) {
+extern "C" void tt_component_wood_set(TTEntityId entity_id, int wood) {
     tt_assert(state::initialised == true);
 
     return state::storage->add(entity_id, wood);
 }
 
-bool tt_component_wood_has(TTEntityId entity_id) {
+extern "C" bool tt_component_wood_has(TTEntityId entity_id) {
     tt_assert(state::initialised == true);
 
     return state::storage->has(entity_id);
 }
 
-int tt_component_wood_get(TTEntityId entity_id) {
+extern "C" int tt_component_wood_get(TTEntityId entity_id) {
     tt_assert(state::initialised == true);
 
     return state::storage->get(entity_id);
 }
 
-void tt_component_wood_remove(TTEntityId entity_id) {
+extern "C" void tt_component_wood_remove(TTEntityId entity_id) {
     tt_assert(state::initialised == true);
 
     return state::storage->remove(entity_id);

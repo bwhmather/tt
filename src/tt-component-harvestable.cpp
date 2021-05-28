@@ -1,16 +1,19 @@
-#include "tt-component-harvestable.hpp"
+extern "C" {
+#include "tt-component-harvestable.h"
+}
+
+#include "tt-storage-bitset.tpp"
 
 extern "C" {
 #include "tt-error.h"
 }
-#include "tt-storage-bitset.tpp"
 
 namespace state {
     static bool initialised = false;
     static TTStorageBitset *storage = NULL;
 }
 
-void tt_component_harvestable_startup(void) {
+extern "C" void tt_component_harvestable_startup(void) {
     tt_assert(state::initialised == false);
 
     state::storage = new TTStorageBitset();
@@ -18,7 +21,7 @@ void tt_component_harvestable_startup(void) {
     state::initialised = true;
 }
 
-void tt_component_harvestable_shutdown(void) {
+extern "C" void tt_component_harvestable_shutdown(void) {
     tt_assert(state::initialised == true);
 
     delete state::storage;
@@ -27,13 +30,15 @@ void tt_component_harvestable_shutdown(void) {
     state::initialised = false;
 }
 
-void tt_component_harvestable_set(TTEntityId entity_id, bool harvestable) {
+extern "C" void tt_component_harvestable_set(
+    TTEntityId entity_id, bool harvestable
+) {
     tt_assert(state::initialised == true);
 
     return state::storage->set(entity_id, harvestable);
 }
 
-bool tt_component_harvestable_get(TTEntityId entity_id) {
+extern "C" bool tt_component_harvestable_get(TTEntityId entity_id) {
     tt_assert(state::initialised == true);
 
     return state::storage->get(entity_id);
