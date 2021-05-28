@@ -2,8 +2,10 @@
 
 #include <cstddef>
 
-#include "tt-behaviour.hpp"
-#include "tt-error.hpp"
+extern "C" {
+#include "tt-behaviour.h"
+#include "tt-error.h"
+}
 #include "tt-storage-sparse-vector.tpp"
 
 const std::size_t MAX_STACK = 128;

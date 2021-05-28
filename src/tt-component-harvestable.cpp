@@ -1,6 +1,8 @@
 #include "tt-component-harvestable.hpp"
 
-#include "tt-error.hpp"
+extern "C" {
+#include "tt-error.h"
+}
 #include "tt-storage-bitset.tpp"
 
 namespace state {

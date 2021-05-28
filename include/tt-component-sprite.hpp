@@ -1,6 +1,8 @@
 #pragma once
 
-#include "tt-entities.hpp"
+extern "C" {
+#include "tt-entities.h"
+}
 
 typedef struct {
     int grid_x;

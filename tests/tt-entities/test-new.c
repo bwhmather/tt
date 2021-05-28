@@ -1,9 +1,9 @@
 /**
  * Checks that `tt_entities_new_id` will return sequential ids.
  */
-#include "tt-entities.hpp"
+#include "tt-entities.h"
 
-#include "tt-test.hpp"
+#include "tt-test.h"
 
 
 int main(void) {

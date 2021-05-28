@@ -1,9 +1,9 @@
 /**
  * Checks that `tt_entities_release_id` will make an id available for reuse.
  */
-#include "tt-entities.hpp"
+#include "tt-entities.h"
 
-#include "tt-test.hpp"
+#include "tt-test.h"
 
 
 int main(void) {

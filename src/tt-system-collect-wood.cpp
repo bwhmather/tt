@@ -9,7 +9,9 @@
 #include "tt-component-move-to-target.hpp"
 #include "tt-component-position.hpp"
 #include "tt-component-target.hpp"
-#include "tt-entities.hpp"
+extern "C" {
+#include "tt-entities.h"
+}
 #include "tt-utils.hpp"
 
 

@@ -1,5 +1,5 @@
 project(
-  'tt', 'cpp',
+  'tt', 'cpp', 'c',
   default_options: [
     'cpp_std=c++17',
     'cpp_eh=none',
@@ -23,20 +23,20 @@ includes = include_directories('include')
 ### Library ###
 
 lib_sources = [
-  'src/tt-behaviour.cpp',
-  'src/tt-behaviour-harvest-target.cpp',
-  'src/tt-behaviour-inventory-full.cpp',
-  'src/tt-behaviour-loop.cpp',
-  'src/tt-behaviour-selector.cpp',
-  'src/tt-behaviour-selector-until.cpp',
-  'src/tt-behaviour-select-stockpile.cpp',
-  'src/tt-behaviour-select-tree.cpp',
-  'src/tt-behaviour-sequence.cpp',
-  'src/tt-behaviour-walk-to-target.cpp',
+  'src/tt-behaviour.c',
+  'src/tt-behaviour-harvest-target.c',
+  'src/tt-behaviour-inventory-full.c',
+  'src/tt-behaviour-loop.c',
+  'src/tt-behaviour-selector.c',
+  'src/tt-behaviour-selector-until.c',
+  'src/tt-behaviour-select-stockpile.c',
+  'src/tt-behaviour-select-tree.c',
+  'src/tt-behaviour-sequence.c',
+  'src/tt-behaviour-walk-to-target.c',
   'src/tt-entities.cpp',
   'src/tt-renderer.cpp',
   'src/tt-texture.cpp',
-  'src/tt-error.cpp',
+  'src/tt-error.c',
   'src/tt-resource-camera.cpp',
   'src/tt-component-behaviour.cpp',
   'src/tt-component-brain.cpp',
@@ -78,17 +78,11 @@ test_exe = executable(
 test_includes = include_directories('include', 'tests')
 
 test_suites = {
-  'tt-storage-vector': [
-    'no-default-constructor',
-  ],
   'tt-entities': [
     'new',
     'release',
     'realloc-free-list',
     'iterate',
-  ],
-  'tt-component-sprite': [
-    'basic',
   ],
 }
 
@@ -96,7 +90,7 @@ foreach suite, tests : test_suites
   foreach test_name : tests
     test_exe = executable(
       'test-' + suite + '-' + test_name,
-      'tests/' + suite + '/test-' + test_name + '.cpp',
+      'tests/' + suite + '/test-' + test_name + '.c',
       include_directories : test_includes,
       link_with : lib,
       install : false,

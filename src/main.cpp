@@ -1,5 +1,4 @@
 #include "tt-renderer.hpp"
-#include "tt-entities.hpp"
 #include "tt-component-brain.hpp"
 #include "tt-component-behaviour.hpp"
 #include "tt-component-move-to-target.hpp"
@@ -10,7 +9,11 @@
 #include "tt-system-ai.hpp"
 #include "tt-system-move-to-target.hpp"
 #include "tt-system-sprites.hpp"
-#include "tt-error.hpp"
+
+extern "C" {
+#include "tt-error.h"
+#include "tt-entities.h"
+}
 
 #include <GL/glew.h>
 #define GLFW_INCLUDE_NONE

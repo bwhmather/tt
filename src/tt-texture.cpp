@@ -8,8 +8,9 @@
 
 #include <GL/glew.h>
 #include <png.h>
-
-#include "tt-error.hpp"
+extern "C" {
+#include "tt-error.h"
+}
 
 GLuint tt_load_texture(const std::string& filename) {
     FILE *fp = NULL;

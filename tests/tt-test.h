@@ -1,13 +1,13 @@
 #pragma once
 
-#include <csetjmp>
-#include <csignal>
-#include <cstdint>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
+#include <setjmp.h>
+#include <signal.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-#include "tt-error.hpp"
+#include "tt-error.h"
 
 static jmp_buf tt_test_on_sigabrt_jump_target;
 static inline void tt_test_on_sigabrt(int signal) {

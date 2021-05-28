@@ -1,6 +1,7 @@
 #include "tt-component-wood.hpp"
-
-#include "tt-error.hpp"
+extern "C" {
+#include "tt-error.h"
+}
 #include "tt-storage-sparse-vector.tpp"
 
 namespace state {

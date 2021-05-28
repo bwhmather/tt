@@ -7,8 +7,10 @@
 #include "tt-component-move-to-target.hpp"
 #include "tt-component-position.hpp"
 #include "tt-component-target.hpp"
-#include "tt-entities.hpp"
-#include "tt-error.hpp"
+extern "C" {
+#include "tt-entities.h"
+#include "tt-error.h"
+}
 
 namespace state {
     static bool initialised = false;

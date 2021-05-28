@@ -1,22 +1,22 @@
-#include "tt-error.hpp"
+#include "tt-error.h"
 
-#include <cstdarg>
-#include <cerrno>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
+#include <stdarg.h>
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include <GL/glew.h>
 
 static const char *tt_error_level_str(TTLogLevel level) {
     switch (level) {
-      case TTLogLevel::INFO:
+      case TT_LOG_LEVEL_INFO:
         return "INFO";
-      case TTLogLevel::DEBUG:
+      case TT_LOG_LEVEL_DEBUG:
         return "DEBUG";
-      case TTLogLevel::WARNING:
+      case TT_LOG_LEVEL_WARNING:
         return "WARNING";
-      case TTLogLevel::ERROR:
+      case TT_LOG_LEVEL_ERROR:
         return "ERROR";
       default:
         return "LOG";
@@ -74,7 +74,7 @@ void tt_log_impl(
 ) {
     va_list args;
     va_start(args, format);
-    tt_log_impl_v(file, line, func, TTLogLevel::ERROR, format, args);
+    tt_log_impl_v(file, line, func, TT_LOG_LEVEL_ERROR, format, args);
     va_end(args);
 
     abort();
@@ -87,7 +87,7 @@ void tt_abort_errno_impl(
     int errno_saved = errno;
     fprintf(
         stderr, "%s:%i %s: %s: ",
-        file, line, func, tt_error_level_str(TTLogLevel::ERROR)
+        file, line, func, tt_error_level_str(TT_LOG_LEVEL_ERROR)
     );
 
     va_list args;
@@ -111,7 +111,7 @@ void tt_abort_if_gl_error_impl(
     if (error != GL_NO_ERROR) {
         fprintf(
             stderr, "%s:%i %s: %s: ",
-            file, line, func, tt_error_level_str(TTLogLevel::ERROR)
+            file, line, func, tt_error_level_str(TT_LOG_LEVEL_ERROR)
         );
 
         va_list args;

@@ -3,20 +3,23 @@
 #include <cassert>
 #include <cstdio>
 
-#include "tt-behaviour.hpp"
-#include "tt-behaviour-harvest-target.hpp"
-#include "tt-behaviour-inventory-full.hpp"
-#include "tt-behaviour-loop.hpp"
-#include "tt-behaviour-selector.hpp"
-#include "tt-behaviour-selector-until.hpp"
-#include "tt-behaviour-select-stockpile.hpp"
-#include "tt-behaviour-select-tree.hpp"
-#include "tt-behaviour-sequence.hpp"
-#include "tt-behaviour-walk-to-target.hpp"
+extern "C" {
+#include "tt-behaviour.h"
+#include "tt-behaviour-harvest-target.h"
+#include "tt-behaviour-inventory-full.h"
+#include "tt-behaviour-loop.h"
+#include "tt-behaviour-selector.h"
+#include "tt-behaviour-selector-until.h"
+#include "tt-behaviour-select-stockpile.h"
+#include "tt-behaviour-select-tree.h"
+#include "tt-behaviour-sequence.h"
+#include "tt-behaviour-walk-to-target.h"
+#include "tt-entities.h"
+#include "tt-error.h"
+}
+
 #include "tt-component-brain.hpp"
 #include "tt-component-behaviour.hpp"
-#include "tt-entities.hpp"
-#include "tt-error.hpp"
 
 namespace state {
     static bool initialised = false;

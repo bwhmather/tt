@@ -1,6 +1,6 @@
-#include "tt-entities.hpp"
+#include "tt-entities.h"
 
-#include "tt-test.hpp"
+#include "tt-test.h"
 
 
 int main(void) {

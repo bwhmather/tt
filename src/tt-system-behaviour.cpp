@@ -4,10 +4,12 @@
 #include <cmath>
 #include <cstdio>
 
-#include "tt-behaviour.hpp"
 #include "tt-component-behaviour.hpp"
-#include "tt-entities.hpp"
-#include "tt-error.hpp"
+extern "C" {
+#include "tt-behaviour.h"
+#include "tt-entities.h"
+#include "tt-error.h"
+}
 
 namespace state {
     static bool initialised = false;
@@ -56,7 +58,7 @@ void tt_system_behaviour_run(void) {
             result = tt_behaviour_resume(next, entity_id, stack);
         }
 
-        if (result != TTBehaviourResult::RUNNING) {
+        if (result != TT_BEHAVIOUR_RUNNING) {
             next = NULL;
         }
 

@@ -5,8 +5,10 @@
 
 #include "tt-component-position.hpp"
 #include "tt-component-sprite.hpp"
-#include "tt-entities.hpp"
-#include "tt-error.hpp"
+extern "C" {
+#include "tt-entities.h"
+#include "tt-error.h"
+}
 #include "tt-renderer.hpp"
 
 namespace state {

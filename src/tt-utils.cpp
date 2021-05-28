@@ -4,7 +4,9 @@
 #include <limits>
 
 #include "tt-component-position.hpp"
-#include "tt-entities.hpp"
+extern "C" {
+#include "tt-entities.h"
+}
 
 
 double tt_entity_distance(TTEntityId a, TTEntityId b) {

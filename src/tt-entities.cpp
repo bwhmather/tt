@@ -1,11 +1,15 @@
-#include "tt-entities.hpp"
+extern "C" {
+#include "tt-entities.h"
+}
 
 #include <algorithm>
 #include <cstdint>
 #include <cstdlib>
 #include <vector>
 
-#include "tt-error.hpp"
+extern "C" {
+#include "tt-error.h"
+}
 
 typedef struct OnCreateCallbackState {
     int handle;
@@ -33,7 +37,7 @@ namespace state {
     static std::vector<OnDeleteCallbackState> on_delete_callbacks;
 }
 
-void tt_entities_startup(void) {
+extern "C" void tt_entities_startup(void) {
     tt_assert(state::initialised == false);
     tt_assert(state::maintaining == false);
 
@@ -49,7 +53,7 @@ void tt_entities_startup(void) {
     state::on_delete_callbacks.clear();
 }
 
-void tt_entities_maintain(void) {
+extern "C" void tt_entities_maintain(void) {
     tt_assert(state::initialised == true);
     tt_assert(state::maintaining == false);
 
@@ -91,7 +95,7 @@ void tt_entities_maintain(void) {
     state::maintaining = false;
 }
 
-void tt_entities_shutdown(void) {
+extern "C" void tt_entities_shutdown(void) {
     tt_assert(state::initialised == true);
     tt_assert(state::maintaining == false);
 
@@ -105,7 +109,7 @@ void tt_entities_shutdown(void) {
     state::initialised = false;
 }
 
-TTEntityId tt_entities_create(void) {
+extern "C" TTEntityId tt_entities_create(void) {
     TTEntityId entity_id;
 
     tt_assert(state::initialised == true);
@@ -123,7 +127,7 @@ TTEntityId tt_entities_create(void) {
     return entity_id;
 }
 
-void tt_entities_remove(TTEntityId entity_id) {
+extern "C" void tt_entities_remove(TTEntityId entity_id) {
     tt_assert(state::initialised == true);
     tt_assert(state::maintaining == false);
 
@@ -137,7 +141,7 @@ void tt_entities_remove(TTEntityId entity_id) {
 }
 
 
-int tt_entities_bind_on_create_callback(
+extern "C" int tt_entities_bind_on_create_callback(
     void (*callback) (TTEntityId id, void *user_data), void *user_data
 ) {
     tt_assert(state::initialised == true);
@@ -153,7 +157,7 @@ int tt_entities_bind_on_create_callback(
     return cb_state.handle;
 }
 
-void tt_entities_unbind_on_create_callback(int handle) {
+extern "C" void tt_entities_unbind_on_create_callback(int handle) {
     tt_assert(state::initialised == true);
     tt_assert(state::maintaining == false);
 
@@ -166,7 +170,7 @@ void tt_entities_unbind_on_create_callback(int handle) {
     );
 }
 
-int tt_entities_bind_on_delete_callback(
+extern "C" int tt_entities_bind_on_delete_callback(
     void (*callback) (TTEntityId id, void *user_data), void *user_data
 ) {
     tt_assert(state::initialised == true);
@@ -181,7 +185,7 @@ int tt_entities_bind_on_delete_callback(
     return cb_state.handle;
 }
 
-void tt_entities_unbind_on_delete_callback(int handle) {
+extern "C" void tt_entities_unbind_on_delete_callback(int handle) {
     tt_assert(state::initialised == true);
     tt_assert(state::maintaining == false);
 
@@ -194,21 +198,21 @@ void tt_entities_unbind_on_delete_callback(int handle) {
     );
 }
 
-void tt_entities_iter_begin(TTEntityIter *iter) {
+extern "C" void tt_entities_iter_begin(TTEntityIter *iter) {
     tt_assert(state::initialised == true);
     tt_assert(state::maintaining == false);
 
     *iter = 1;
 }
 
-bool tt_entities_iter_has_next(TTEntityIter *iter) {
+extern "C" bool tt_entities_iter_has_next(TTEntityIter *iter) {
     tt_assert(state::initialised == true);
     tt_assert(state::maintaining == false);
 
     return *iter < state::live_set.size();
 }
 
-TTEntityId tt_entities_iter_next(TTEntityIter *iter) {
+extern "C" TTEntityId tt_entities_iter_next(TTEntityIter *iter) {
     tt_assert(state::initialised == true);
     tt_assert(state::maintaining == false);
 

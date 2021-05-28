@@ -6,8 +6,9 @@
 #include <GL/glew.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/mat4x4.hpp>
-
-#include "tt-error.hpp"
+extern "C" {
+#include "tt-error.h"
+}
 #include "tt-resource-camera.hpp"
 #include "tt-texture.hpp"
 

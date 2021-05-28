@@ -1,11 +1,17 @@
 #pragma once
 
-enum class TTLogLevel {
-    DEBUG,
-    INFO,
-    WARNING,
-    ERROR
-};
+#ifdef __cplusplus
+#define NO_RETURN [[ noreturn ]]
+#else
+#define NO_RETURN _Noreturn
+#endif
+
+typedef enum {
+    TT_LOG_LEVEL_DEBUG,
+    TT_LOG_LEVEL_INFO,
+    TT_LOG_LEVEL_WARNING,
+    TT_LOG_LEVEL_ERROR
+} TTLogLevel;
 
 void tt_log_impl(
     const char *file, int line, const char *func,
@@ -20,28 +26,28 @@ void tt_log_impl(
 #define tt_debug(...)                                                       \
     tt_log_impl(                                                            \
         __FILE__, __LINE__, __func__,                                       \
-        TTLogLevel::DEBUG, __VA_ARGS__                                      \
+        TT_LOG_LEVEL_DEBUG, __VA_ARGS__                                      \
     );
 
 #define tt_info(...) do {                                                   \
     tt_log_impl(                                                            \
         __FILE__, __LINE__, __func__,                                       \
-        TTLogLevel::INFO, __VA_ARGS__                                       \
+        TT_LOG_LEVEL_INFO, __VA_ARGS__                                       \
     );
 
 #define tt_warning(...) do {                                                \
     tt_log_impl(                                                            \
         __FILE__, __LINE__, __func__,                                       \
-        TTLogLevel::WARNING, __VA_ARGS__                                    \
+        TT_LOG_LEVEL_WARNING, __VA_ARGS__                                    \
     );
 
 #define tt_error(...) do {                                                  \
     tt_log_impl(                                                            \
         __FILE__, __LINE__, __func__,                                       \
-        TTLogLevel::ERROR, __VA_ARGS__                                      \
+        TT_LOG_LEVEL_ERROR, __VA_ARGS__                                      \
     );
 
-[[ noreturn ]] void tt_abort_impl(
+NO_RETURN void tt_abort_impl(
     const char *file, int line, const char *func,
     const char *format, ...
 );
@@ -51,7 +57,7 @@ void tt_log_impl(
         __FILE__, __LINE__, __func__, __VA_ARGS__                           \
     );
 
-[[ noreturn ]] void tt_abort_errno_impl(
+NO_RETURN void tt_abort_errno_impl(
     const char *file, int line, const char *func,
     const char *format, ...
 );

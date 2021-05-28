@@ -1,7 +1,8 @@
 #pragma once
 
-#include "tt-entities.hpp"
-
+extern "C" {
+#include "tt-entities.h"
+}
 
 void tt_component_brain_startup(void);
 void tt_component_brain_shutdown(void);

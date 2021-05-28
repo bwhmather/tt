@@ -1,6 +1,7 @@
 #pragma once
-
-#include "tt-entities.hpp"
+extern "C" {
+#include "tt-entities.h"
+}
 
 void tt_system_untarget_dead_startup(void);
 void tt_system_untarget_dead_shutdown(void);

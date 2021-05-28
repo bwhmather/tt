@@ -1,6 +1,7 @@
 #pragma once
-
-#include "tt-entities.hpp"
+extern "C" {
+#include "tt-entities.h"
+}
 
 void tt_component_target_startup(void);
 void tt_component_target_shutdown(void);
