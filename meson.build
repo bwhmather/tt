@@ -46,7 +46,7 @@ lib_sources = [
   'src/tt-component-target.cpp',
   'src/tt-component-wood.cpp',
   'src/tt-system-ai.c',
-  'src/tt-system-behaviour.cpp',
+  'src/tt-system-behaviour.c',
   'src/tt-system-sprites.cpp',
 ]
 

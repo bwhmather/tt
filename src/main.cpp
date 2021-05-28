@@ -23,6 +23,7 @@ extern "C" {
 #include "tt-error.h"
 #include "tt-entities.h"
 #include "tt-system-ai.h"
+#include "tt-system-behaviour.h"
 }
 
 static const struct {
@@ -166,6 +167,7 @@ int main(void) {
     tt_renderer_startup();
 
     tt_system_ai_startup();
+    tt_system_behaviour_startup();
     tt_system_sprites_startup();
 
     TTEntityId tree_id = tt_entities_create();
@@ -236,6 +238,7 @@ int main(void) {
         tt_entities_maintain();
 
         tt_system_ai_run();
+        tt_system_behaviour_run();
 
         tt_system_sprites_run();
         tt_renderer_do_render();

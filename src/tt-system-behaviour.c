@@ -1,36 +1,36 @@
-#include "tt-system-behaviour.hpp"
+#include "tt-system-behaviour.h"
 
-#include <cassert>
-#include <cmath>
-#include <cstdio>
+#include <assert.h>
+#include <math.h>
+#include <stdio.h>
 
-extern "C" {
 #include "tt-behaviour.h"
 #include "tt-component-behaviour.h"
 #include "tt-entities.h"
 #include "tt-error.h"
-}
 
-namespace state {
-    static bool initialised = false;
-}
+
+static struct TTSystemBehaviourState {
+    bool initialised;
+} state = { .initialised = false };
+
 
 void tt_system_behaviour_startup(void) {
-    tt_assert(state::initialised == false);
+    tt_assert(state.initialised == false);
 
-    state::initialised = true;
+    state.initialised = true;
 }
 
 void tt_system_behaviour_shutdown(void) {
-    tt_assert(state::initialised == true);
+    tt_assert(state.initialised == true);
 
-    state::initialised = false;
+    state.initialised = false;
 }
 
 void tt_system_behaviour_run(void) {
     TTEntityIter iter;
 
-    tt_assert(state::initialised == true);
+    tt_assert(state.initialised == true);
 
     tt_entities_iter_begin(&iter);
 
