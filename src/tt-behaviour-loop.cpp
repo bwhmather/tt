@@ -133,4 +133,32 @@ TTBehaviour *tt_behaviour_loop(TTBehaviour *first, ...) {
 }
 
 
+#define tt_behaviour_loop(...)                                              \
+    tt_behaviour_loop_from_array((TTBehaviour *[]){__VA_ARGS__, NULL})
+
+TTBehaviour *tt_behaviour_loop_from_array(TTBehaviour *children[]) {
+    size_t num_children;
+    for (num_children = 0; children[num_children] != NULL; num_children++) {}
+
+    TTBehaviourLoop *behaviour = (TTBehaviourLoop *) malloc(
+        sizeof(TTBehaviourLoop) +
+        sizeof(TTBehaviour *) * (num_children + 1)
+    );
+    tt_assert(first != NULL);
+
+    behaviour->behaviour = (TTBehaviour) {
+        .on_call = tt_behaviour_loop_on_call;
+        .on_resume = tt_behaviour_loop_on_resume;
+        .on_interrupt = tt_behaviour_loop_on_interrupt;
+    }
+
+    behaviour->num_children = num_children;
+    memcpy(
+        &behaviour->children, children,
+        num_children * sizeof(TTBehaviour *)
+    );
+}
+
+
+
 
