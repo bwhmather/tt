@@ -43,3 +43,8 @@ size_t tt_behaviour_max_stack_size(TTBehaviour *behaviour) {
     return behaviour->compute_max_stack_size(behaviour);
 }
 
+
+void tt_behaviour_free(TTBehaviour *behaviour) {
+    behaviour->free(behaviour);
+}
+

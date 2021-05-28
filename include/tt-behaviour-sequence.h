@@ -3,4 +3,7 @@
 #include "tt-behaviour.h"
 
 
-TTBehaviour *tt_behaviour_sequence(TTBehaviour *, ...);
+#define tt_behaviour_sequence(...)                                          \
+    tt_behaviour_sequence_from_array((TTBehaviour *[]){__VA_ARGS__, NULL})
+
+TTBehaviour *tt_behaviour_sequence_from_array(TTBehaviour *children[]);
