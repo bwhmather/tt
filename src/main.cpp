@@ -12,7 +12,6 @@
 
 #include "tt-renderer.hpp"
 #include "tt-resource-camera.hpp"
-#include "tt-system-ai.hpp"
 #include "tt-system-sprites.hpp"
 
 extern "C" {
@@ -23,6 +22,7 @@ extern "C" {
 #include "tt-component-target.h"
 #include "tt-error.h"
 #include "tt-entities.h"
+#include "tt-system-ai.h"
 }
 
 static const struct {
