@@ -40,16 +40,13 @@ lib_sources = [
   'src/tt-resource-camera.cpp',
   'src/tt-component-behaviour.cpp',
   'src/tt-component-brain.cpp',
-  'src/tt-component-goal.cpp',
   'src/tt-component-harvestable.cpp',
-  'src/tt-component-move-to-target.cpp',
   'src/tt-component-position.cpp',
   'src/tt-component-sprite.cpp',
   'src/tt-component-target.cpp',
   'src/tt-component-wood.cpp',
   'src/tt-system-ai.cpp',
   'src/tt-system-behaviour.cpp',
-  'src/tt-system-move-to-target.cpp',
   'src/tt-system-sprites.cpp',
 ]
 
