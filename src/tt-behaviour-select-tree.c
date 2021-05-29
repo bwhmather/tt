@@ -28,7 +28,7 @@ static void tt_behaviour_select_tree_do_interrupt(
 
 
 static size_t tt_behaviour_select_tree_max_stack_size(TTBehaviour *behaviour) {
-    (void *) behaviour;
+    (void) behaviour;
     return 0;
 }
 
