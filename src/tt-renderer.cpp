@@ -10,8 +10,8 @@
 extern "C" {
 #include "tt-error.h"
 #include "tt-resource-camera.h"
+#include "tt-texture.h"
 }
-#include "tt-texture.hpp"
 
 static const char* VERTEX_SHADER_TEXT =
     "#version 110\n"

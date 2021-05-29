@@ -1,18 +1,17 @@
-#include "tt-texture.hpp"
+#include "tt-texture.h"
 
-#include <csetjmp>
-#include <cstdio>
-#include <cstring>
-#include <memory>
-#include <string>
+#include <setjmp.h>
+#include <stdio.h>
+#include <string.h>
+#include <malloc.h>
 
 #include <GL/glew.h>
 #include <png.h>
-extern "C" {
-#include "tt-error.h"
-}
 
-GLuint tt_load_texture(const std::string& filename) {
+#include "tt-error.h"
+
+
+GLuint tt_load_texture(char const *filename) {
     FILE *fp = NULL;
     png_structp png_ptr = NULL;
     png_infop info_ptr = NULL;
@@ -26,11 +25,11 @@ GLuint tt_load_texture(const std::string& filename) {
     unsigned long row_bytes;
     unsigned char* data = NULL;
 
-    tt_debug("loading %s", filename.c_str());
+    tt_debug("loading %s", filename);
 
     png_bytepp row_pointers = NULL;
 
-    fp = fopen(filename.c_str(), "r");
+    fp = fopen(filename, "r");
     if (!fp) {
         tt_abort_errno("could not open image");
     }
@@ -74,7 +73,7 @@ GLuint tt_load_texture(const std::string& filename) {
 
     // Align bytes as OpenGL expects them.
     for (unsigned int i = 0; i < height; i++) {
-        std::memcpy(data + (row_bytes * i), row_pointers[i], row_bytes);
+        memcpy(data + (row_bytes * i), row_pointers[i], row_bytes);
     }
 
     png_destroy_info_struct(png_ptr, &info_ptr);
