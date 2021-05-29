@@ -140,6 +140,8 @@ void tt_renderer_shutdown(void) {
 
     glDeleteVertexArrays(1, &state.vertex_array);
     glDeleteBuffers(1, &state.buffer);
+    glDeleteProgram(state.shader_program);
+    glDeleteTextures(1, &state.spritesheet);
 
     state.initialised = false;
 }
@@ -169,7 +171,7 @@ void tt_renderer_push_vertex(TTVertex *v) {
 void tt_renderer_do_render(void) {
     tt_assert(state.initialised == true);
 
-    mat4 camera_matrix[4 * 4];
+    mat4 camera_matrix;
     tt_resource_camera_get_matrix(camera_matrix);
 
     glUseProgram(state.shader_program);
