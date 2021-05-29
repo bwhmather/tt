@@ -95,6 +95,6 @@ foreach suite, tests : test_suites
       link_with : lib,
       install : false,
     )
-    test(suite + '-' + test_name, test_exe, timeout: 120)
+    test(suite + '-' + test_name, test_exe, timeout: 10)
   endforeach
 endforeach
