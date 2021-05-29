@@ -1,17 +1,13 @@
 #include <cerrno>
+#include <cmath>
 #include <stdlib.h>
 #include <stdio.h>
 
 #include <GL/glew.h>
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
-#include <glm/ext/scalar_constants.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/mat4x4.hpp>
-#include <glm/vec3.hpp>
 
 #include "tt-renderer.hpp"
-#include "tt-resource-camera.hpp"
 #include "tt-system-sprites.hpp"
 
 extern "C" {
@@ -22,6 +18,7 @@ extern "C" {
 #include "tt-component-target.h"
 #include "tt-error.h"
 #include "tt-entities.h"
+#include "tt-resource-camera.h"
 #include "tt-system-ai.h"
 #include "tt-system-behaviour.h"
 }
@@ -196,14 +193,15 @@ int main(void) {
     tt_component_brain_set(entity_id, true);
     tt_component_target_set(entity_id, tree_id);
 
-    tt_resource_camera_set_fov(glm::pi<float>() / 3.0f);
+    tt_resource_camera_set_fov(M_PI / 3.0f);
     tt_resource_camera_set_near_clipping_plane(0.1f);
     tt_resource_camera_set_far_clipping_plane(4.0f);
-    tt_resource_camera_look_at(
-        glm::vec3(1.0f, -2.0f, 1.0f),  // Eye vector.
-        glm::vec3(0.0f, 0.0f, 0.0f),  // Centre vector.
-        glm::vec3(0.0f, 0.0f, 1.0f)  // Up vector.
-    );
+
+    // TODO glmc vec3
+    float eye_vector[3] = {1.0f, -2.0f, 1.0f};
+    float centre_vector[3] = {0.0f, 0.0f, 0.0f};
+    float up_vector[3] = {0.0f, 0.0f, 1.0f};
+    tt_resource_camera_look_at(eye_vector, centre_vector, up_vector);
 
     while (!glfwWindowShouldClose(window)) {
         float aspect_ratio;
@@ -213,14 +211,15 @@ int main(void) {
         aspect_ratio = (float) width / (float) height;
         tt_resource_camera_set_aspect_ratio(aspect_ratio);
 
-        glm::mat4 camera_matrix = tt_resource_camera_get_matrix();
+        float camera_matrix[16];
+        tt_resource_camera_get_matrix(camera_matrix);
 
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glUseProgram(program);
         glUniformMatrix4fv(
-            mvp_location, 1, GL_FALSE, glm::value_ptr(camera_matrix)
+            mvp_location, 1, GL_FALSE, camera_matrix
         );
 
         glBindVertexArray(vertex_array);

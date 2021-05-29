@@ -6,10 +6,11 @@
 #include <GL/glew.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/mat4x4.hpp>
+
 extern "C" {
 #include "tt-error.h"
+#include "tt-resource-camera.h"
 }
-#include "tt-resource-camera.hpp"
 #include "tt-texture.hpp"
 
 static const char* VERTEX_SHADER_TEXT =
@@ -169,13 +170,15 @@ void tt_renderer_push_vertex(TTVertex *v) {
 void tt_renderer_do_render(void) {
     tt_assert(state::initialised == true);
 
-    glm::mat4 camera_matrix = tt_resource_camera_get_matrix();
+    // TODO glmc mat4
+    float camera_matrix[4 * 4];
+    tt_resource_camera_get_matrix(camera_matrix);
 
     glUseProgram(state::shader_program);
 
     glUniformMatrix4fv(
         state::camera_matrix_location,
-        1, GL_FALSE, glm::value_ptr(camera_matrix)
+        1, GL_FALSE, camera_matrix
     );
 
     glActiveTexture(GL_TEXTURE0);
