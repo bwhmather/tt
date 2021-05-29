@@ -68,7 +68,7 @@ void tt_log_impl(
     va_end(args);
 }
 
-[[ noreturn ]] void tt_abort_impl(
+_Noreturn void tt_abort_impl(
     const char *file, int line, const char *func,
     const char *format, ...
 ) {
