@@ -9,6 +9,7 @@
 #include "tt-behaviour-select-stockpile.h"
 #include "tt-behaviour-select-tree.h"
 #include "tt-behaviour-sequence.h"
+#include "tt-behaviour-succeed.h"
 #include "tt-behaviour-walk-to-target.h"
 #include "tt-component-brain.h"
 #include "tt-component-behaviour.h"
@@ -46,10 +47,10 @@ void tt_system_ai_startup(void) {
         tt_behaviour_select_stockpile(),
         tt_behaviour_walk_to_target()
     );
-    state.harvest_crops_behaviour = NULL;
-    state.construct_buildings_behaviour = NULL;
-    state.attack_behaviour = NULL;
-    state.flee_behaviour = NULL;
+    state.harvest_crops_behaviour = tt_behaviour_succeed();
+    state.construct_buildings_behaviour = tt_behaviour_succeed();
+    state.attack_behaviour = tt_behaviour_succeed();
+    state.flee_behaviour = tt_behaviour_succeed();
 
     state.initialised = true;
 }
