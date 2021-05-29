@@ -33,11 +33,6 @@ lib_sources = [
   'src/tt-behaviour-select-tree.c',
   'src/tt-behaviour-sequence.c',
   'src/tt-behaviour-walk-to-target.c',
-  'src/tt-entities.cpp',
-  'src/tt-renderer.c',
-  'src/tt-texture.c',
-  'src/tt-error.c',
-  'src/tt-resource-camera.c',
   'src/tt-component-behaviour.cpp',
   'src/tt-component-brain.cpp',
   'src/tt-component-harvestable.cpp',
@@ -45,9 +40,14 @@ lib_sources = [
   'src/tt-component-sprite.cpp',
   'src/tt-component-target.cpp',
   'src/tt-component-wood.cpp',
+  'src/tt-entities.cpp',
+  'src/tt-error.c',
+  'src/tt-renderer.c',
+  'src/tt-resource-camera.c',
   'src/tt-system-ai.c',
   'src/tt-system-behaviour.c',
   'src/tt-system-sprites.c',
+  'src/tt-texture.c',
 ]
 
 lib = both_libraries(
