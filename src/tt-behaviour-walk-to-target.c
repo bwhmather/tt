@@ -82,7 +82,7 @@ static void tt_behaviour_walk_to_target_do_interrupt(
 
 
 static size_t tt_behaviour_walk_to_target_max_stack_size(TTBehaviour *behaviour) {
-    (void *) behaviour;
+    (void) behaviour;
     return 0;
 }
 
