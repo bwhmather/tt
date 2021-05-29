@@ -52,29 +52,92 @@ static const char* fragment_shader_text =
     "    gl_FragColor = vec4(color, 1.0);\n"
     "}\n";
 
-static void error_callback(int error, const char* description) {
-    fprintf(stderr, "Error: %s\n", description);
+
+static void tt_main_glfw_error_callback(int error, const char* description) {
+    fprintf(stderr, "GLFW ERROR: %s (%i)\n", description, error);
 }
 
-static void key_callback(
+static void tt_main_glfw_key_callback(
     GLFWwindow* window, int key, int scancode, int action, int mods
 ) {
+    (void) scancode;
+    (void) mods;
+
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
 }
 
-static void GLAPIENTRY debug_callback(
+
+static const char *tt_gl_error_source_str(GLenum source) {
+    switch(source) {
+      case GL_DEBUG_SOURCE_API:
+        return "GL API";
+      case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
+        return "GL Window System";
+      case GL_DEBUG_SOURCE_SHADER_COMPILER:
+        return "GL Shader Compiler";
+      case GL_DEBUG_SOURCE_THIRD_PARTY:
+        return "GL Third-Party";
+      case GL_DEBUG_SOURCE_APPLICATION:
+        return "GL Application";
+      default:
+        return "GL";
+    }
+}
+
+static const char *tt_gl_error_level_str(GLenum level) {
+    switch (level) {
+      case GL_DEBUG_SEVERITY_LOW:
+        return "DEBUG";
+      case GL_DEBUG_SEVERITY_MEDIUM:
+        return "INFO";
+      case GL_DEBUG_SEVERITY_HIGH:
+        return "ERROR";
+      default:
+        return "ERROR";
+    }
+}
+
+static const char *tt_gl_error_type_str(GLenum type) {
+    switch (type) {
+      case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
+        return "deprecated behaviour: ";
+      case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
+        return "undefined behaviour: ";
+      case GL_DEBUG_TYPE_PORTABILITY:
+        return "portability: ";
+      case GL_DEBUG_TYPE_PERFORMANCE:
+        return "performance: ";
+      case GL_DEBUG_TYPE_MARKER:
+        return "marker: ";
+      case GL_DEBUG_TYPE_PUSH_GROUP:
+        return "push group: ";
+      case GL_DEBUG_TYPE_POP_GROUP:
+        return "pop group: ";
+      default:
+        return "";
+    }
+}
+
+static void GLAPIENTRY tt_main_gl_debug_callback(
     GLenum source, GLenum type, GLuint id,
     GLenum severity, GLsizei length,
     const GLchar* message, const void* userParam
 ) {
+    (void) id;
+    (void) length;
+    (void) userParam;
+
     fprintf(
-        stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
-        (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
-        type, severity, message
+        stderr, "%s: %s:%s %s\n",
+        tt_gl_error_source_str(source),
+        tt_gl_error_level_str(severity),
+        tt_gl_error_type_str(type),
+        message
     );
 }
+
 
 int main(void) {
     GLFWwindow* window;
@@ -82,7 +145,7 @@ int main(void) {
     GLuint vertex_shader, fragment_shader, program;
     GLint mvp_location, vpos_location, vcol_location;
 
-    glfwSetErrorCallback(error_callback);
+    glfwSetErrorCallback(tt_main_glfw_error_callback);
 
     if (!glfwInit()) {
         exit(EXIT_FAILURE);
@@ -98,10 +161,9 @@ int main(void) {
         exit(EXIT_FAILURE);
     }
 
-    glfwSetKeyCallback(window, key_callback);
+    glfwSetKeyCallback(window, tt_main_glfw_key_callback);
 
     glfwMakeContextCurrent(window);
-    // gladLoadGL(glfwGetProcAddress);
 
     if (glewInit() != GLEW_OK) {
         exit(EXIT_FAILURE);
@@ -110,7 +172,8 @@ int main(void) {
     glDebugMessageControl(
         GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE
     );
-    glDebugMessageCallback(debug_callback, 0);
+    glDebugMessageCallback(tt_main_gl_debug_callback, 0);
+    tt_abort_if_gl_error("failed to configure debug output");
 
     glfwSwapInterval(1);
 
@@ -127,6 +190,7 @@ int main(void) {
     glAttachShader(program, vertex_shader);
     glAttachShader(program, fragment_shader);
     glLinkProgram(program);
+    tt_abort_if_gl_error("failed to compile terrain shader program");
 
     mvp_location = glGetUniformLocation(program, "MVP");
     vpos_location = glGetAttribLocation(program, "vPos");
@@ -151,6 +215,7 @@ int main(void) {
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
+    tt_abort_if_gl_error("failed to bind terrain shader objects");
 
     tt_entities_startup();
     tt_component_brain_startup();
@@ -217,7 +282,7 @@ int main(void) {
 
         glUseProgram(program);
         glUniformMatrix4fv(
-            mvp_location, 1, GL_FALSE, camera_matrix
+            mvp_location, 1, GL_FALSE, (float *) camera_matrix
         );
 
         glBindVertexArray(vertex_array);
@@ -234,8 +299,8 @@ int main(void) {
 
         tt_entities_maintain();
 
-        tt_system_ai_run();
-        tt_system_behaviour_run();
+        //tt_system_ai_run();
+        //tt_system_behaviour_run();
 
         tt_system_sprites_run();
         tt_renderer_do_render();
