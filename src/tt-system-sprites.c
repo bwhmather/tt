@@ -1,34 +1,32 @@
-#include "tt-system-sprites.hpp"
+#include "tt-system-sprites.h"
 
-#include <cassert>
-#include <cstdio>
+#include <stdbool.h>
 
-extern "C" {
 #include "tt-component-position.h"
 #include "tt-component-sprite.h"
 #include "tt-entities.h"
 #include "tt-error.h"
 #include "tt-renderer.h"
-}
 
-namespace state {
-    static bool initialised = false;
-}
+
+static struct TTSystemSpritesState {
+    bool initialised;
+} state = { .initialised = false };
 
 void tt_system_sprites_startup(void) {
-    tt_assert(state::initialised == false);
-    state::initialised = true;
+    tt_assert(state.initialised == false);
+    state.initialised = true;
 }
 
 void tt_system_sprites_shutdown(void) {
-    tt_assert(state::initialised == true);
-    state::initialised = false;
+    tt_assert(state.initialised == true);
+    state.initialised = false;
 }
 
 void tt_system_sprites_run(void) {
     TTEntityIter iter;
 
-    tt_assert(state::initialised == true);
+    tt_assert(state.initialised == true);
 
     tt_entities_iter_begin(&iter);
 

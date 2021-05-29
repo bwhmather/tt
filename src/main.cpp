@@ -7,7 +7,6 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
-#include "tt-system-sprites.hpp"
 
 extern "C" {
 #include "tt-component-brain.h"
@@ -21,6 +20,7 @@ extern "C" {
 #include "tt-resource-camera.h"
 #include "tt-system-ai.h"
 #include "tt-system-behaviour.h"
+#include "tt-system-sprites.h"
 }
 
 static const struct {

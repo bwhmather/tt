@@ -48,7 +48,7 @@ lib_sources = [
   'src/tt-component-wood.cpp',
   'src/tt-system-ai.c',
   'src/tt-system-behaviour.c',
-  'src/tt-system-sprites.cpp',
+  'src/tt-system-sprites.c',
 ]
 
 lib = both_libraries(
