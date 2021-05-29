@@ -299,8 +299,8 @@ int main(void) {
 
         tt_entities_maintain();
 
-        //tt_system_ai_run();
-        //tt_system_behaviour_run();
+        tt_system_ai_run();
+        tt_system_behaviour_run();
 
         tt_system_sprites_run();
         tt_renderer_do_render();
@@ -310,6 +310,18 @@ int main(void) {
     }
 
     tt_renderer_shutdown();
+    tt_resource_camera_shutdown();
+
+    tt_system_sprites_shutdown();
+    tt_system_behaviour_shutdown();
+    tt_system_ai_shutdown();
+
+    tt_component_target_shutdown();
+    tt_component_sprite_shutdown();
+    tt_component_position_shutdown();
+    tt_component_behaviour_shutdown();
+    tt_component_brain_shutdown();
+    tt_entities_shutdown();
 
     glfwDestroyWindow(window);
 
