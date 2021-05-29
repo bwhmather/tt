@@ -24,6 +24,7 @@ includes = include_directories('include')
 
 lib_sources = [
   'src/tt-behaviour.c',
+  'src/tt-behaviour-fail.c',
   'src/tt-behaviour-harvest-target.c',
   'src/tt-behaviour-inventory-full.c',
   'src/tt-behaviour-loop.c',
@@ -32,6 +33,7 @@ lib_sources = [
   'src/tt-behaviour-select-stockpile.c',
   'src/tt-behaviour-select-tree.c',
   'src/tt-behaviour-sequence.c',
+  'src/tt-behaviour-succeed.c',
   'src/tt-behaviour-walk-to-target.c',
   'src/tt-component-behaviour.cpp',
   'src/tt-component-brain.cpp',
