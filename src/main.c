@@ -1,5 +1,5 @@
-#include <cerrno>
-#include <cmath>
+#include <errno.h>
+#include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -7,8 +7,6 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
-
-extern "C" {
 #include "tt-component-brain.h"
 #include "tt-component-behaviour.h"
 #include "tt-component-position.h"
@@ -21,7 +19,7 @@ extern "C" {
 #include "tt-system-ai.h"
 #include "tt-system-behaviour.h"
 #include "tt-system-sprites.h"
-}
+
 
 static const struct {
     float x, y, z;

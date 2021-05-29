@@ -63,7 +63,7 @@ lib = both_libraries(
 
 test_exe = executable(
   'tt',
-  'src/main.cpp',
+  'src/main.c',
   include_directories : includes,
   dependencies : dependencies,
   link_with : lib,
