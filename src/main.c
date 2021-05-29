@@ -6,6 +6,7 @@
 #include <GL/glew.h>
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
+#include <cglm/cglm.h>
 
 #include "tt-component-brain.h"
 #include "tt-component-behaviour.h"
@@ -195,10 +196,9 @@ int main(void) {
     tt_resource_camera_set_near_clipping_plane(0.1f);
     tt_resource_camera_set_far_clipping_plane(4.0f);
 
-    // TODO glmc vec3
-    float eye_vector[3] = {1.0f, -2.0f, 1.0f};
-    float centre_vector[3] = {0.0f, 0.0f, 0.0f};
-    float up_vector[3] = {0.0f, 0.0f, 1.0f};
+    vec3 eye_vector = { 1.0f, -2.0f, 1.0f };
+    vec3 centre_vector = { 0.0f, 0.0f, 0.0f };
+    vec3 up_vector = { 0.0f, 0.0f, 1.0f };
     tt_resource_camera_look_at(eye_vector, centre_vector, up_vector);
 
     while (!glfwWindowShouldClose(window)) {
@@ -209,7 +209,7 @@ int main(void) {
         aspect_ratio = (float) width / (float) height;
         tt_resource_camera_set_aspect_ratio(aspect_ratio);
 
-        float camera_matrix[16];
+        mat4 camera_matrix;
         tt_resource_camera_get_matrix(camera_matrix);
 
         glViewport(0, 0, width, height);

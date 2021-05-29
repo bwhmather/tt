@@ -16,7 +16,7 @@ glm_dep = dependency('glm')
 cglm_dep = dependency('cglm', fallback : ['cglm', 'cglm_dep'])
 libpng_dep = dependency('libpng')
 
-dependencies = [m_dep, glfw_dep, glew_dep, glm_dep, libpng_dep]
+dependencies = [m_dep, glfw_dep, glew_dep, glm_dep, cglm_dep, libpng_dep]
 
 includes = include_directories('include')
 
@@ -38,7 +38,7 @@ lib_sources = [
   'src/tt-renderer.c',
   'src/tt-texture.c',
   'src/tt-error.c',
-  'src/tt-resource-camera.cpp',
+  'src/tt-resource-camera.c',
   'src/tt-component-behaviour.cpp',
   'src/tt-component-brain.cpp',
   'src/tt-component-harvestable.cpp',

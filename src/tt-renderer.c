@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include <GL/glew.h>
+#include <cglm/cglm.h>
 
 #include "tt-error.h"
 #include "tt-resource-camera.h"
@@ -168,15 +169,14 @@ void tt_renderer_push_vertex(TTVertex *v) {
 void tt_renderer_do_render(void) {
     tt_assert(state.initialised == true);
 
-    // TODO glmc mat4
-    float camera_matrix[4 * 4];
+    mat4 camera_matrix[4 * 4];
     tt_resource_camera_get_matrix(camera_matrix);
 
     glUseProgram(state.shader_program);
 
     glUniformMatrix4fv(
         state.camera_matrix_location,
-        1, GL_FALSE, camera_matrix
+        1, GL_FALSE, (float *) camera_matrix
     );
 
     glActiveTexture(GL_TEXTURE0);
