@@ -51,7 +51,7 @@ static TTBehaviourResult tt_behaviour_idle_do_call(
     TTBehaviour *behaviour, TTEntityId entity_id, void *fp
 ) {
     (void) behaviour;
-    TTBehaviourIdleState *state = (TTBehaviourIdleState *) state;
+    TTBehaviourIdleState *state = (TTBehaviourIdleState *) fp;
 
     // Choose target.
     state->target_x = 2 * ((double) rand())/((double) RAND_MAX) - 1;
