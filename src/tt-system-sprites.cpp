@@ -8,8 +8,8 @@ extern "C" {
 #include "tt-component-sprite.h"
 #include "tt-entities.h"
 #include "tt-error.h"
+#include "tt-renderer.h"
 }
-#include "tt-renderer.hpp"
 
 namespace state {
     static bool initialised = false;

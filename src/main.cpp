@@ -7,7 +7,6 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
-#include "tt-renderer.hpp"
 #include "tt-system-sprites.hpp"
 
 extern "C" {
@@ -18,6 +17,7 @@ extern "C" {
 #include "tt-component-target.h"
 #include "tt-error.h"
 #include "tt-entities.h"
+#include "tt-renderer.h"
 #include "tt-resource-camera.h"
 #include "tt-system-ai.h"
 #include "tt-system-behaviour.h"

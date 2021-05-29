@@ -35,7 +35,7 @@ lib_sources = [
   'src/tt-behaviour-sequence.c',
   'src/tt-behaviour-walk-to-target.c',
   'src/tt-entities.cpp',
-  'src/tt-renderer.cpp',
+  'src/tt-renderer.c',
   'src/tt-texture.c',
   'src/tt-error.c',
   'src/tt-resource-camera.cpp',
