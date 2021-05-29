@@ -2,6 +2,7 @@
 
 #include "tt-behaviour.h"
 #include "tt-behaviour-harvest-target.h"
+#include "tt-behaviour-idle.h"
 #include "tt-behaviour-inventory-full.h"
 #include "tt-behaviour-loop.h"
 #include "tt-behaviour-selector.h"
@@ -20,6 +21,7 @@
 static struct TTSystemAIState {
     bool initialised;
 
+    TTBehaviour *idle_behaviour;
     TTBehaviour *collect_wood_behaviour;
     TTBehaviour *harvest_crops_behaviour;
     TTBehaviour *construct_buildings_behaviour;
@@ -30,6 +32,8 @@ static struct TTSystemAIState {
 
 void tt_system_ai_startup(void) {
     tt_assert(state.initialised == false);
+
+    state.idle_behaviour = tt_behaviour_loop(tt_behaviour_idle());
 
     state.collect_wood_behaviour = tt_behaviour_sequence(
         tt_behaviour_loop(
@@ -58,6 +62,7 @@ void tt_system_ai_startup(void) {
 void tt_system_ai_shutdown(void) {
     tt_assert(state.initialised == true);
 
+    tt_behaviour_free(state.idle_behaviour);
     tt_behaviour_free(state.collect_wood_behaviour);
     tt_behaviour_free(state.harvest_crops_behaviour);
     tt_behaviour_free(state.construct_buildings_behaviour);
@@ -67,9 +72,14 @@ void tt_system_ai_shutdown(void) {
     state.initialised = false;
 }
 
+static float tt_ai_idle_score(TTEntityId entity_id) {
+    (void) entity_id;
+
+    return 0.1f;
+}
 
 static float tt_ai_collect_wood_score(TTEntityId entity_id) {
-    return 1.0f;
+    return 0.0f;
 }
 
 static float tt_ai_harvest_crops_score(TTEntityId entity_id) {
@@ -104,6 +114,12 @@ void tt_system_ai_run(void) {
         float best_score = 0.0f;
 
         float score;
+        score = tt_ai_idle_score(entity_id);
+        if (score > best_score) {
+            new_behaviour = state.idle_behaviour;
+            best_score = score;
+        }
+
         score = tt_ai_collect_wood_score(entity_id);
         if (score > best_score) {
             new_behaviour = state.collect_wood_behaviour;

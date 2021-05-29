@@ -26,6 +26,7 @@ lib_sources = [
   'src/tt-behaviour.c',
   'src/tt-behaviour-fail.c',
   'src/tt-behaviour-harvest-target.c',
+  'src/tt-behaviour-idle.c',
   'src/tt-behaviour-inventory-full.c',
   'src/tt-behaviour-loop.c',
   'src/tt-behaviour-selector.c',
