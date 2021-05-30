@@ -85,6 +85,9 @@ test_suites = {
     'realloc-free-list',
     'iterate',
   ],
+  'tt-behaviours': [
+    'loop-sleep',
+  ],
 }
 
 foreach suite, tests : test_suites
