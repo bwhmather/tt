@@ -34,6 +34,7 @@ lib_sources = [
   'src/tt-behaviour-select-stockpile.c',
   'src/tt-behaviour-select-tree.c',
   'src/tt-behaviour-sequence.c',
+  'src/tt-behaviour-sleep.c',
   'src/tt-behaviour-succeed.c',
   'src/tt-behaviour-walk-to-target.c',
   'src/tt-component-behaviour.cpp',
