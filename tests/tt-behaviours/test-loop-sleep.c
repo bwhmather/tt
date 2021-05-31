@@ -1,6 +1,7 @@
 /**
  * Checks that `tt_entities_release_id` will make an id available for reuse.
  */
+#include "bt.h"
 #include "tt-behaviour-loop.h"
 #include "tt-behaviour-sleep.h"
 
@@ -8,18 +9,18 @@
 
 
 int main(void) {
-    TTBehaviour *behaviour = tt_behaviour_loop(
+    BTBehaviour *behaviour = tt_behaviour_loop(
         tt_behaviour_sleep(2)
     );
 
-    void *stack = malloc(tt_behaviour_max_stack_size(behaviour));
-    void *fp = (void *) &((char *) stack)[tt_behaviour_max_stack_size(behaviour)];
+    BTContext *context = (BTContext *) malloc(5000);
+    bt_init_context(context, 128);
 
-    tt_assert(tt_behaviour_call(behaviour, 0, fp) == TT_BEHAVIOUR_RUNNING);
-    tt_assert(tt_behaviour_call(behaviour, 0, fp) == TT_BEHAVIOUR_RUNNING);
-    tt_assert(tt_behaviour_call(behaviour, 0, fp) == TT_BEHAVIOUR_RUNNING);
+    tt_assert(bt_run(behaviour, context, NULL) == BT_RUNNING);
+    tt_assert(bt_run(behaviour, context, NULL) == BT_RUNNING);
+    tt_assert(bt_run(behaviour, context, NULL) == BT_RUNNING);
 
-    tt_behaviour_free(behaviour);
+    bt_behaviour_free(behaviour);
 
     return 0;
 }

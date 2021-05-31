@@ -4,6 +4,11 @@
 
 #include "tt-entities.h"
 
+
+typedef struct {
+    TTEntityId entity_id;
+} TTBehaviourContext;
+
 typedef enum {
     TT_BEHAVIOUR_RUNNING,
     TT_BEHAVIOUR_SUCCEEDED,

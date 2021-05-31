@@ -4,13 +4,14 @@
 #include <stddef.h>
 #include <string.h>
 
+#include "bt.h"
 #include "tt-behaviour.h"
 #include "tt-error.h"
 #include "tt-entities.h"
 
 
 typedef struct {
-    TTBehaviour behaviour;
+    BTBehaviour behaviour;
     unsigned int num_frames;
 } TTBehaviourSleep;
 
@@ -20,78 +21,58 @@ typedef struct {
 } TTBehaviourSleepState;
 
 
-static TTBehaviourResult tt_behaviour_sleep_do_call(
-    TTBehaviour *base, TTEntityId entity_id, void *fp
+static void tt_behaviour_sleep_init(
+    TTBehaviourSleep *behaviour,
+    TTBehaviourSleepState *state,
+    TTBehaviourContext *context
 ) {
-    TTBehaviourSleep *behaviour = (TTBehaviourSleep *) base;
-    TTBehaviourSleepState *state = (TTBehaviourSleepState *) fp;
+    (void) context;
 
     state->remaining_frames = behaviour->num_frames;
-
-    if (state->remaining_frames == 0) {
-        return TT_BEHAVIOUR_SUCCEEDED;
-    }
-
-    return TT_BEHAVIOUR_RUNNING;
 }
 
-static TTBehaviourResult tt_behaviour_sleep_do_resume(
-    TTBehaviour *base, TTEntityId entity_id, void *fp
+static BTResult tt_behaviour_sleep_tick(
+    TTBehaviourSleep *behaviour,
+    TTBehaviourSleepState *state,
+    TTBehaviourContext *context
 ) {
-    TTBehaviourSleep *behaviour = (TTBehaviourSleep *) base;
-    TTBehaviourSleepState *state = (TTBehaviourSleepState *) fp;
-
     (void) behaviour;
+    (void) context;
 
     tt_assert(state->remaining_frames > 0);
 
     state->remaining_frames--;
 
     if (state->remaining_frames == 0) {
-        return TT_BEHAVIOUR_SUCCEEDED;
+        return BT_SUCCEEDED;
     }
 
-    return TT_BEHAVIOUR_RUNNING;
-}
-
-static void tt_behaviour_sleep_do_interrupt(
-    TTBehaviour *base, TTEntityId entity_id, void *fp
-) {
-    (void) base;
-    (void) entity_id;
-    (void) fp;
+    return BT_RUNNING;
 }
 
 
-static size_t tt_behaviour_sleep_max_stack_size(TTBehaviour *base) {
-    return sizeof(TTBehaviourSleepState);
-}
-
-
-static void tt_behaviour_sleep_free(TTBehaviour *base) {
-    TTBehaviourSleep *behaviour = (TTBehaviourSleep *) base;
+static void tt_behaviour_sleep_free(TTBehaviourSleep *behaviour) {
     free(behaviour);
 }
 
 
-TTBehaviour *tt_behaviour_sleep(unsigned int num_frames) {
+BTBehaviour *tt_behaviour_sleep(unsigned int num_frames) {
     TTBehaviourSleep *behaviour = (TTBehaviourSleep *) malloc(
         sizeof(TTBehaviourSleep)
     );
     tt_assert(behaviour != NULL);
 
-    behaviour->behaviour = (TTBehaviour) {
-        .do_call = tt_behaviour_sleep_do_call,
-        .do_resume = tt_behaviour_sleep_do_resume,
-        .do_interrupt = tt_behaviour_sleep_do_interrupt,
+    behaviour->behaviour = (BTBehaviour) {
+        .init = (BTInitFn) tt_behaviour_sleep_init,
+        .tick = (BTTickFn) tt_behaviour_sleep_tick,
+        .interrupt = NULL,
 
         .frame_size = sizeof(TTBehaviourSleepState),
-        .compute_max_stack_size = tt_behaviour_sleep_max_stack_size,
 
-        .free = tt_behaviour_sleep_free
+        .free = (BTFreeFn) tt_behaviour_sleep_free
     };
 
     behaviour->num_frames = num_frames;
 
-    return (TTBehaviour *) behaviour;
+    return (BTBehaviour *) behaviour;
 }
