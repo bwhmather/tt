@@ -1,98 +1,118 @@
-
-
-typedef enum {
-    BT_RUNNING,
-    BT_SUCCEEDED,
-    BT_FAILED
-} BTResult;
-
-typedef struct BTBehaviour BTBehaviour;
-typedef struct BTContext BTContext;
-
-typedef void (*BTInitFn)(BTBehaviour *, BTContext *, void *);
-typedef BTResult (*BTRunFn)(BTBehaviour *, BTContext *, void *);
-typedef void (*BTInterruptFn)(BTBehaviour *, BTContext *, void *);
-typedef void (*BTFreeFn)(BTBehaviour *);
-
-struct TTBehaviour {
-    BTInitFun init;
-    BTRunFn run;
-    BTInterruptFn interrupt;
-
-    size_t frame_size;
-
-    BTFreeFn free;
-};
-
-
-
-#include "tt-behaviour.h"
+#include "bt.h"
 
 #include <stddef.h>
+#include <stdalign.h>
 
-#include "tt-entities.h"
+#include "tt-error.h"
 
 
-typedef struct {
+struct BTContext{
     size_t size;
-    alignas(max_align_t) char stack[];
-} BTContext;
+    alignas(void *) char stack[];
+};
 
 typedef struct {
     BTBehaviour *behaviour;
-    alignas(max_align_t) char state[];
+    alignas(void *) char data[];
 } BTFrame;
 
 
 static struct BTState {
     BTContext *current_context;
-    BTFrame *current_frame;
+    BTFrame *next_frame;
     void *user_data;
 } state = { .current_context = NULL };
 
 
-void bt_init_context(
-    BTContext *context, size_t size
-) {
+void bt_init_context(BTContext *context, size_t size) {
+    // Must have at least enough space for a single stateless frame so that we
+    // can use it as an immediate terminating null.
+    tt_assert(size > sizeof(BTContext) + sizeof(BTFrame));
 
+    context->size = size;
+
+    BTFrame *frame = (BTFrame *) context->stack;
+    frame->behaviour = NULL;
 }
 
-bt_run(BTBehaviour *behaviour, BTContext *context, void *user_data) {
+BTResult bt_run(BTBehaviour *behaviour, BTContext *context, void *user_data) {
     tt_assert(state.current_context == NULL);
 
     state.current_context = context;
-    state.current_frame = context->state;
+    state.next_frame = (BTFrame *) context->stack;
     state.user_data = user_data;
 
-    bt_delegate(behaviour);
+    return bt_delegate(behaviour);
+}
+
+
+static BTFrame *bt_next_frame(BTFrame *current_frame) {
+    // TODO alignment.
+    BTFrame *next_frame = (BTFrame *) (
+        ((char *) current_frame) +
+        sizeof(BTFrame) +
+        current_frame->behaviour->frame_size
+    );
+
+    tt_assert(
+        ((char *) next_frame) + sizeof(BTFrame) <
+        ((char *) state.current_context) + state.current_context->size
+    );
+
+    return next_frame;
+}
+
+
+static void bt_interrupt(BTFrame *frame) {
+    if (frame->behaviour == NULL) {
+        return;
+    }
+
+    bt_interrupt(bt_next_frame(frame));
+
+    if (frame->behaviour->interrupt) {
+        frame->behaviour->interrupt(
+            frame->behaviour, (void *) frame->data, state.user_data
+        );
+    }
+
+    frame->behaviour = NULL;
 }
 
 
 BTResult bt_delegate(BTBehaviour *behaviour) {
     tt_assert(state.current_context != NULL);
 
-    current_frame = state.next_frame;
-    state.next_frame = (
-        current_frame + sizeof(BTFrame) + current_frame->behaviour->frame_size
-    );
-    tt_assert(frame_ptr < state.current_context.something);
+    BTFrame *current_frame = state.next_frame;
 
     // If there is already a different behaviour running at this level in the
     // stack then interrupt and clear it and all of its children.
-    if (frame->behaviour != behaviour && frame->behaviour != NULL) {
-        // TODO interrupt
+    if (
+        current_frame->behaviour != behaviour &&
+        current_frame->behaviour != NULL
+    ) {
+        bt_interrupt(current_frame);
     }
 
-    if (frame->behaviour == NULL); {
-        // Attempt to allocate enough stack space for the new behaviour.
+    if (current_frame->behaviour == NULL) {
+        current_frame->behaviour = behaviour;
+
+        state.next_frame = bt_next_frame(current_frame);
+
+        // Clear header of next frame so that we don't mistake it for active.
+        state.next_frame->behaviour = NULL;
 
         // Call init function (if set).
-
-    // Bump a pointer or counter or something so that the next call will work.
+        if (behaviour->init != NULL) {
+            behaviour->init(
+                behaviour, (void *) current_frame->data, state.user_data
+            );
+        }
+    }
 
     // Call run function and return result.
-    result = frame->behaviour->run(
-        frame->behaviour, current_frame->data, state.user_data
+    BTResult result = behaviour->tick(
+        behaviour, (void *) current_frame->data, state.user_data
     );
 
     if (result != BT_RUNNING) {
@@ -104,35 +124,6 @@ BTResult bt_delegate(BTBehaviour *behaviour) {
     return result;
 }
 
-
-
-
-
-bt_sequence_init(behaviour, void *context, void *state) {
-    state->active_child = 0;
+void bt_behaviour_free(BTBehaviour *behaviour) {
+    behaviour->free(behaviour);
 }
-
-bt_sequence_run(behaviour, void *context, void *state) {
-    while (state->active_child < behaviour->num_children) {
-        BTResult result = bt_call(
-            behaviour->children[state->active_child]
-        );
-
-        if (result == BT_RUNNING) {
-            return result;
-        }
-        if (result == BT_FAILED) {
-            return result;
-        }
-
-        state->active_child++;
-    }
-
-    return BT_SUCCEEDED;
-}
-
-
-
-
-
-

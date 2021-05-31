@@ -23,6 +23,7 @@ includes = include_directories('include')
 ### Library ###
 
 lib_sources = [
+  'src/bt.c',
   'src/tt-behaviour.c',
   'src/tt-behaviour-fail.c',
   'src/tt-behaviour-harvest-target.c',
