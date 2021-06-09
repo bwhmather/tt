@@ -1,5 +1,5 @@
 /**
- * Checks that `tt_entities_release_id` will make an id available for reuse.
+ * Checks that loop will repeat after the wrapped behaviour finishes.
  */
 #include "bt.h"
 #include "tt-behaviour-loop.h"
@@ -21,6 +21,7 @@ int main(void) {
     tt_assert(bt_run(behaviour, context, NULL) == BT_RUNNING);
 
     bt_behaviour_free(behaviour);
+    free(context);
 
     return 0;
 }
