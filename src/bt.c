@@ -61,6 +61,12 @@ static BTFrame *bt_next_frame(BTFrame *current_frame) {
         current_frame->behaviour->frame_size
     );
 
+    next_frame = (BTFrame *) (
+        ((char *) next_frame) +
+        alignof(void *) -
+        ((size_t) next_frame % alignof(void *))
+    );
+
     tt_assert(
         ((char *) next_frame) + sizeof(BTFrame) <
         ((char *) state.current_context) + state.current_context->size
