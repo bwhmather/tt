@@ -35,6 +35,7 @@ void bt_init_context(BTContext *context, size_t size) {
     frame->behaviour = NULL;
 }
 
+
 BTResult bt_run(BTBehaviour *behaviour, BTContext *context, void *user_data) {
     tt_assert(state.current_context == NULL);
 
@@ -42,7 +43,13 @@ BTResult bt_run(BTBehaviour *behaviour, BTContext *context, void *user_data) {
     state.next_frame = (BTFrame *) context->stack;
     state.user_data = user_data;
 
-    return bt_delegate(behaviour);
+    BTResult result = bt_delegate(behaviour);
+
+    state.current_context = NULL;
+    state.next_frame = NULL;
+    state.user_data = NULL;
+
+    return result;
 }
 
 
