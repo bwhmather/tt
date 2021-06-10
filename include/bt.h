@@ -28,6 +28,9 @@ struct BTBehaviour {
 };
 
 void bt_stack_init(BTStack *stack, size_t size);
+void bt_stack_shutdown(BTStack *stack, size_t size);
+
 BTResult bt_run(BTBehaviour *behaviour, BTStack *stack, void *user_data);
 BTResult bt_delegate(BTBehaviour *behaviour);
+
 void bt_behaviour_free(BTBehaviour *behaviour);
