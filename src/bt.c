@@ -7,7 +7,7 @@
 #include "tt-error.h"
 
 
-struct BTContext{
+struct BTStack{
     size_t size;
     alignas(void *) char stack[];
 };
@@ -19,41 +19,41 @@ typedef struct {
 
 
 static struct BTState {
-    BTContext *current_context;
+    BTStack *current_stack;
     BTFrame *next_frame;
     void *user_data;
-} state = { .current_context = NULL };
+} state = { .current_stack = NULL };
 
 
-void bt_context_init(BTContext *context, size_t size) {
+void bt_stack_init(BTStack *stack, size_t size) {
     // Must have at least enough space for a single stateless frame so that we
     // can use it as an immediate terminating null.
-    tt_assert(size > sizeof(BTContext) + sizeof(BTFrame));
+    tt_assert(size > sizeof(BTStack) + sizeof(BTFrame));
 
-    context->size = size;
+    stack->size = size;
 
-    BTFrame *frame = (BTFrame *) context->stack;
+    BTFrame *frame = (BTFrame *) stack->stack;
     frame->behaviour = NULL;
 }
 
-void bt_context_shutdown(BTContext *context, size_t size) {
-    tt_assert(context->size == size);
+void bt_stack_shutdown(BTStack *stack, size_t size) {
+    tt_assert(stack->size == size);
 
-    BTFrame *frame = (BTFrame *) context->stack;
+    BTFrame *frame = (BTFrame *) stack->stack;
     tt_assert(frame->behaviour == NULL);
 }
 
 
-BTResult bt_run(BTBehaviour *behaviour, BTContext *context, void *user_data) {
-    tt_assert(state.current_context == NULL);
+BTResult bt_run(BTBehaviour *behaviour, BTStack *stack, void *user_data) {
+    tt_assert(state.current_stack == NULL);
 
-    state.current_context = context;
-    state.next_frame = (BTFrame *) context->stack;
+    state.current_stack = stack;
+    state.next_frame = (BTFrame *) stack->stack;
     state.user_data = user_data;
 
     BTResult result = bt_delegate(behaviour);
 
-    state.current_context = NULL;
+    state.current_stack = NULL;
     state.next_frame = NULL;
     state.user_data = NULL;
 
@@ -95,7 +95,7 @@ static void bt_interrupt(BTFrame *frame) {
 
 
 BTResult bt_delegate(BTBehaviour *behaviour) {
-    tt_assert(state.current_context != NULL);
+    tt_assert(state.current_stack != NULL);
 
     BTFrame *current_frame = state.next_frame;
 

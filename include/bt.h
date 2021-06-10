@@ -10,7 +10,7 @@ typedef enum {
 } BTResult;
 
 typedef struct BTBehaviour BTBehaviour;
-typedef struct BTContext BTContext;
+typedef struct BTStack BTStack;
 
 typedef void (*BTInitFn)(BTBehaviour *, void *, void *);
 typedef BTResult (*BTTickFn)(BTBehaviour *, void *, void *);
@@ -27,7 +27,7 @@ struct BTBehaviour {
     BTFreeFn free;
 };
 
-void bt_context_init(BTContext *context, size_t size);
-BTResult bt_run(BTBehaviour *behaviour, BTContext *context, void *user_data);
+void bt_stack_init(BTStack *stack, size_t size);
+BTResult bt_run(BTBehaviour *behaviour, BTStack *stack, void *user_data);
 BTResult bt_delegate(BTBehaviour *behaviour);
 void bt_behaviour_free(BTBehaviour *behaviour);

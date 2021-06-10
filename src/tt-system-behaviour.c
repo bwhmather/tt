@@ -41,7 +41,7 @@ void tt_system_behaviour_run(void) {
             }
 
             BTBehaviour *behaviour = tt_component_behaviour_get(entity_id);
-            BTContext *stack = tt_component_behaviour_stack_get(entity_id);
+            BTStack *stack = tt_component_behaviour_stack_get(entity_id);
 
             TTBehaviourContext context = {
                 .entity_id=entity_id,
