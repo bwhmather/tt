@@ -1,13 +1,17 @@
+
 #include "tt-behaviour-idle.h"
 
 #include <malloc.h>
 #include <math.h>
 #include <stddef.h>
+#include <string.h>
 #include <stdlib.h>
 
+#include "bt.h"
 #include "tt-behaviour.h"
 #include "tt-component-position.h"
 #include "tt-error.h"
+#include "tt-entities.h"
 
 
 typedef struct {
@@ -16,14 +20,30 @@ typedef struct {
 } TTBehaviourIdleState;
 
 
-static TTBehaviourResult tt_behaviour_idle_move_towards_target(
-    TTEntityId entity_id, TTBehaviourIdleState *state
+static void tt_behaviour_idle_init(
+    BTBehaviour *behaviour,
+    TTBehaviourIdleState *state,
+    TTBehaviourContext *context
 ) {
-    if (!tt_component_position_has(entity_id)) {
-        return TT_BEHAVIOUR_FAILED;
+    (void) behaviour;
+    (void) context;
+
+    // Choose target.
+    state->target_x = 2 * ((double) rand())/((double) RAND_MAX) - 1;
+    state->target_y = 2 * ((double) rand())/((double) RAND_MAX) - 1;
+
+}
+
+static BTResult tt_behaviour_idle_tick(
+    BTBehaviour *behaviour,
+    TTBehaviourIdleState *state,
+    TTBehaviourContext *context
+) {
+    if (!tt_component_position_has(context->entity_id)) {
+        return BT_FAILED;
     }
 
-    TTPosition *position = tt_component_position_get(entity_id);
+    TTPosition *position = tt_component_position_get(context->entity_id);
 
     double min_range = 0.01;
     double current_range = sqrt(
@@ -32,7 +52,7 @@ static TTBehaviourResult tt_behaviour_idle_move_towards_target(
     );
 
     if (current_range < min_range) {
-        return TT_BEHAVIOUR_SUCCEEDED;
+        return BT_SUCCEEDED;
     }
 
     double speed = 0.2;
@@ -44,64 +64,24 @@ static TTBehaviourResult tt_behaviour_idle_move_towards_target(
     position->x += (state->target_x - position->x) * step / current_range;
     position->y += (state->target_y - position->y) * step / current_range;
 
-    return TT_BEHAVIOUR_RUNNING;
+    return BT_RUNNING;
 }
 
-static TTBehaviourResult tt_behaviour_idle_do_call(
-    TTBehaviour *behaviour, TTEntityId entity_id, void *fp
-) {
-    (void) behaviour;
-    TTBehaviourIdleState *state = (TTBehaviourIdleState *) fp;
-
-    // Choose target.
-    state->target_x = 2 * ((double) rand())/((double) RAND_MAX) - 1;
-    state->target_y = 2 * ((double) rand())/((double) RAND_MAX) - 1;
-
-    // Move towards it.
-    return tt_behaviour_idle_move_towards_target(entity_id, fp);
-}
-
-static TTBehaviourResult tt_behaviour_idle_do_resume(
-    TTBehaviour *behaviour, TTEntityId entity_id, void *fp
-) {
-    (void) behaviour;
-    TTBehaviourIdleState *state = (TTBehaviourIdleState *) fp;
-
-    return tt_behaviour_idle_move_towards_target(entity_id, state);
-}
-
-static void tt_behaviour_idle_do_interrupt(
-    TTBehaviour *behaviour, TTEntityId entity_id, void *fp
-) {
-    (void) behaviour;
-    (void) entity_id;
-    (void) fp;
-
-    return;
-}
-
-
-static size_t tt_behaviour_idle_max_stack_size(TTBehaviour *behaviour) {
-    (void) behaviour;
-    return 0;
-}
-
-
-static void tt_behaviour_idle_free(TTBehaviour *behaviour) {
+static void tt_behaviour_idle_free(BTBehaviour* behaviour) {
     free(behaviour);
 }
 
 
-TTBehaviour *tt_behaviour_idle(void) {
-    TTBehaviour *behaviour = (TTBehaviour *) malloc(sizeof(TTBehaviour));
+BTBehaviour *tt_behaviour_idle(void) {
+    BTBehaviour *behaviour = (BTBehaviour *) malloc(sizeof(BTBehaviour));
     tt_assert(behaviour != NULL);
-    *behaviour = (TTBehaviour) {
-        .do_call = tt_behaviour_idle_do_call,
-        .do_resume = tt_behaviour_idle_do_resume,
-        .do_interrupt = tt_behaviour_idle_do_interrupt,
 
-        .frame_size = 0,
-        .compute_max_stack_size = tt_behaviour_idle_max_stack_size,
+    *behaviour = (BTBehaviour) {
+        .init = (BTInitFn) tt_behaviour_idle_init,
+        .tick = (BTTickFn) tt_behaviour_idle_tick,
+        .interrupt = NULL,
+
+        .frame_size = sizeof(TTBehaviourIdleState),
 
         .free = tt_behaviour_idle_free
     };

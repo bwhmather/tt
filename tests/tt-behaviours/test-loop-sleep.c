@@ -14,12 +14,13 @@ int main(void) {
     );
 
     BTContext *context = (BTContext *) malloc(5000);
-    bt_init_context(context, 128);
+    bt_context_init(context, 128);
 
     tt_assert(bt_run(behaviour, context, NULL) == BT_RUNNING);
     tt_assert(bt_run(behaviour, context, NULL) == BT_RUNNING);
     tt_assert(bt_run(behaviour, context, NULL) == BT_RUNNING);
 
+    bt_run(NULL, context, NULL);
     bt_behaviour_free(behaviour);
     free(context);
 

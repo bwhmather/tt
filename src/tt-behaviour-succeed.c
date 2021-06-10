@@ -3,38 +3,42 @@
 #include <malloc.h>
 #include <stddef.h>
 
+#include "bt.h"
 #include "tt-behaviour.h"
 #include "tt-error.h"
 
 
-static TTBehaviourResult tt_behaviour_succeed_do_call(
-    TTBehaviour *behaviour, TTEntityId entity_id, void *fp
+static BTResult tt_behaviour_succeed_init(
+    BTBehaviour *behaviour,
+    TTBehaviourContext *context,
+    void *state
 ) {
     (void) behaviour;
-    (void) entity_id;
-    (void) fp;
+    (void) context;
 
-    return TT_BEHAVIOUR_SUCCEEDED;
+    return BT_SUCCEEDED;
 }
 
-static TTBehaviourResult tt_behaviour_succeed_do_resume(
-    TTBehaviour *behaviour, TTEntityId entity_id, void *fp
+static BTResult tt_behaviour_succeed_tick(
+    BTBehaviour *behaviour,
+    TTBehaviourContext *context,
+    void *state
 ) {
     (void) behaviour;
-    (void) entity_id;
-    (void) fp;
+    (void) context;
 
     // This should never be called as call will never indicate that the
     // behaviour is still running.
     tt_assert(false);
 }
 
-static void tt_behaviour_succeed_do_interrupt(
-    TTBehaviour *behaviour, TTEntityId entity_id, void *fp
+static void tt_behaviour_succeed_interrupt(
+    BTBehaviour *behaviour,
+    TTBehaviourContext *context,
+    void *state
 ) {
     (void) behaviour;
-    (void) entity_id;
-    (void) fp;
+    (void) context;
 
     // This should never be called as call will never indicate that the
     // behaviour is still running.
@@ -42,32 +46,24 @@ static void tt_behaviour_succeed_do_interrupt(
 }
 
 
-static size_t tt_behaviour_succeed_max_stack_size(TTBehaviour *behaviour) {
-    (void) behaviour;
-
-    return 0;
-}
-
-
-static void tt_behaviour_succeed_free(TTBehaviour *behaviour) {
+static void tt_behaviour_succeed_free(BTBehaviour *behaviour) {
     free(behaviour);
 }
 
 
-TTBehaviour *tt_behaviour_succeed(void) {
-    TTBehaviour *behaviour = (TTBehaviour *) malloc(sizeof(TTBehaviour));
+BTBehaviour *tt_behaviour_succeed(void) {
+    BTBehaviour *behaviour = (BTBehaviour *) malloc(sizeof(BTBehaviour));
     tt_assert(behaviour != NULL);
-    *behaviour = (TTBehaviour) {
-        .do_call = tt_behaviour_succeed_do_call,
-        .do_resume = tt_behaviour_succeed_do_resume,
-        .do_interrupt = tt_behaviour_succeed_do_interrupt,
+
+    *behaviour = (BTBehaviour) {
+        .init = (BTInitFn) tt_behaviour_succeed_init,
+        .tick = (BTTickFn) tt_behaviour_succeed_tick,
+        .interrupt = (BTInterruptFn) tt_behaviour_succeed_interrupt,
 
         .frame_size = 0,
-        .compute_max_stack_size = tt_behaviour_succeed_max_stack_size,
 
         .free = tt_behaviour_succeed_free
     };
 
     return behaviour;
 }
-

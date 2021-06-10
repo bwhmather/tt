@@ -1,11 +1,9 @@
 #include "tt-system-behaviour.h"
 
-#include <assert.h>
-#include <math.h>
-#include <stdio.h>
-
+#include "bt.h"
 #include "tt-behaviour.h"
 #include "tt-component-behaviour.h"
+#include "tt-component-behaviour-stack.h"
 #include "tt-entities.h"
 #include "tt-error.h"
 
@@ -37,32 +35,30 @@ void tt_system_behaviour_run(void) {
     while (tt_entities_iter_has_next(&iter)) {
         TTEntityId entity_id = tt_entities_iter_next(&iter);
 
-        if (!tt_component_behaviour_has(entity_id)) continue;
+        if (tt_component_behaviour_has(entity_id)) {
+            if (!tt_component_behaviour_stack_has(entity_id)) {
+                tt_component_behaviour_stack_init(entity_id);
+            }
 
-        TTBehaviour *prev = tt_component_behaviour_get_prev(entity_id);
-        TTBehaviour *next = tt_component_behaviour_get_next(entity_id);
-        void *stack = tt_component_behaviour_get_stack(entity_id);
+            BTBehaviour *behaviour = tt_component_behaviour_get(entity_id);
+            BTContext *stack = tt_component_behaviour_stack_get(entity_id);
 
-        if (prev != next && prev != NULL) {
-            tt_behaviour_interrupt(prev, entity_id, stack);
+            TTBehaviourContext context = {
+                .entity_id=entity_id,
+            };
+
+            BTResult result = bt_run(behaviour, stack, &context);
+
+            if (result != BT_RUNNING) {
+                tt_component_behaviour_remove(entity_id);
+            }
         }
 
-        if (next == NULL) {
-            tt_component_behaviour_remove(entity_id);
+        if (
+            tt_component_behaviour_stack_has(entity_id) &&
+            !tt_component_behaviour_has(entity_id)
+        ) {
+            tt_component_behaviour_stack_remove(entity_id);
         }
-
-        TTBehaviourResult result;
-        if (prev != next) {
-            result = tt_behaviour_call(next, entity_id, stack);
-        } else {
-            result = tt_behaviour_resume(next, entity_id, stack);
-        }
-
-        if (result != TT_BEHAVIOUR_RUNNING) {
-            next = NULL;
-        }
-
-        tt_component_behaviour_set_prev(entity_id, next);
-        tt_component_behaviour_set_next(entity_id, next);
     }
 }

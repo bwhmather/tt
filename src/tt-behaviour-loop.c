@@ -5,14 +5,9 @@
 #include <string.h>
 
 #include "bt.h"
+#include "tt-behaviour.h"
 #include "tt-error.h"
 #include "tt-entities.h"
-
-
-typedef struct {
-    TTEntityId entity_id;
-} TTBehaviourContext;
-
 
 typedef struct {
     BTBehaviour behaviour;

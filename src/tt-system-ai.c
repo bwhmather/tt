@@ -1,6 +1,6 @@
 #include "tt-system-ai.h"
 
-#include "tt-behaviour.h"
+#include "bt.h"
 #include "tt-behaviour-harvest-target.h"
 #include "tt-behaviour-idle.h"
 #include "tt-behaviour-inventory-full.h"
@@ -21,12 +21,12 @@
 static struct TTSystemAIState {
     bool initialised;
 
-    TTBehaviour *idle_behaviour;
-    TTBehaviour *collect_wood_behaviour;
-    TTBehaviour *harvest_crops_behaviour;
-    TTBehaviour *construct_buildings_behaviour;
-    TTBehaviour *attack_behaviour;
-    TTBehaviour *flee_behaviour;
+    BTBehaviour *idle_behaviour;
+    BTBehaviour *collect_wood_behaviour;
+    BTBehaviour *harvest_crops_behaviour;
+    BTBehaviour *construct_buildings_behaviour;
+    BTBehaviour *attack_behaviour;
+    BTBehaviour *flee_behaviour;
 } state = { .initialised = false };
 
 
@@ -35,7 +35,9 @@ void tt_system_ai_startup(void) {
 
     state.idle_behaviour = tt_behaviour_loop(tt_behaviour_idle());
 
-    state.collect_wood_behaviour = tt_behaviour_sequence(
+    state.collect_wood_behaviour = tt_behaviour_succeed();
+
+    /*tt_behaviour_sequence(
         tt_behaviour_loop(
             tt_behaviour_inventory_full(),
 
@@ -50,7 +52,7 @@ void tt_system_ai_startup(void) {
         // Drop wood at stockpile.
         tt_behaviour_select_stockpile(),
         tt_behaviour_walk_to_target()
-    );
+    );*/
     state.harvest_crops_behaviour = tt_behaviour_succeed();
     state.construct_buildings_behaviour = tt_behaviour_succeed();
     state.attack_behaviour = tt_behaviour_succeed();
@@ -62,12 +64,12 @@ void tt_system_ai_startup(void) {
 void tt_system_ai_shutdown(void) {
     tt_assert(state.initialised == true);
 
-    tt_behaviour_free(state.idle_behaviour);
-    tt_behaviour_free(state.collect_wood_behaviour);
-    tt_behaviour_free(state.harvest_crops_behaviour);
-    tt_behaviour_free(state.construct_buildings_behaviour);
-    tt_behaviour_free(state.attack_behaviour);
-    tt_behaviour_free(state.flee_behaviour);
+    bt_behaviour_free(state.idle_behaviour);
+    bt_behaviour_free(state.collect_wood_behaviour);
+    bt_behaviour_free(state.harvest_crops_behaviour);
+    bt_behaviour_free(state.construct_buildings_behaviour);
+    bt_behaviour_free(state.attack_behaviour);
+    bt_behaviour_free(state.flee_behaviour);
 
     state.initialised = false;
 }
@@ -110,7 +112,7 @@ void tt_system_ai_run(void) {
 
         if (!tt_component_brain_get(entity_id)) continue;
 
-        TTBehaviour *new_behaviour = NULL;
+        BTBehaviour *new_behaviour = NULL;
         float best_score = 0.0f;
 
         float score;
@@ -150,6 +152,6 @@ void tt_system_ai_run(void) {
             best_score = score;
         }
 
-        tt_component_behaviour_set_next(entity_id, new_behaviour);
+        tt_component_behaviour_set(entity_id, new_behaviour);
     }
 }

@@ -1,7 +1,8 @@
 #include "bt.h"
 
-#include <stddef.h>
 #include <stdalign.h>
+#include <stddef.h>
+#include <stdint.h>
 
 #include "tt-error.h"
 
@@ -24,7 +25,7 @@ static struct BTState {
 } state = { .current_context = NULL };
 
 
-void bt_init_context(BTContext *context, size_t size) {
+void bt_context_init(BTContext *context, size_t size) {
     // Must have at least enough space for a single stateless frame so that we
     // can use it as an immediate terminating null.
     tt_assert(size > sizeof(BTContext) + sizeof(BTFrame));
@@ -33,6 +34,13 @@ void bt_init_context(BTContext *context, size_t size) {
 
     BTFrame *frame = (BTFrame *) context->stack;
     frame->behaviour = NULL;
+}
+
+void bt_context_shutdown(BTContext *context, size_t size) {
+    tt_assert(context->size == size);
+
+    BTFrame *frame = (BTFrame *) context->stack;
+    tt_assert(frame->behaviour == NULL);
 }
 
 
@@ -54,25 +62,18 @@ BTResult bt_run(BTBehaviour *behaviour, BTContext *context, void *user_data) {
 
 
 static BTFrame *bt_next_frame(BTFrame *current_frame) {
-    // TODO alignment.
-    BTFrame *next_frame = (BTFrame *) (
-        ((char *) current_frame) +
-        sizeof(BTFrame) +
-        current_frame->behaviour->frame_size
-    );
+    uintptr_t fp = (uintptr_t) current_frame;
 
-    next_frame = (BTFrame *) (
-        ((char *) next_frame) +
-        alignof(void *) -
-        ((size_t) next_frame % alignof(void *))
-    );
+    // Frame header of the current frame.
+    fp += sizeof(BTFrame);
 
-    tt_assert(
-        ((char *) next_frame) + sizeof(BTFrame) <
-        ((char *) state.current_context) + state.current_context->size
-    );
+    // Frame data of the current frame.
+    fp += current_frame->behaviour->frame_size;
 
-    return next_frame;
+    // Align to minimum alignment of a void pointer.
+    fp += alignof(void *) - fp % alignof(void *);
+
+    return (BTFrame *) fp;
 }
 
 
@@ -107,7 +108,12 @@ BTResult bt_delegate(BTBehaviour *behaviour) {
         bt_interrupt(current_frame);
     }
 
+    if (behaviour == NULL) {
+        return BT_SUCCEEDED;
+    }
+
     if (current_frame->behaviour == NULL) {
+        // The target behaviour was not previously running.  Initialise it.
         current_frame->behaviour = behaviour;
 
         state.next_frame = bt_next_frame(current_frame);

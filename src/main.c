@@ -8,8 +8,10 @@
 #include <GLFW/glfw3.h>
 #include <cglm/cglm.h>
 
+#include "bt.h"
 #include "tt-component-brain.h"
 #include "tt-component-behaviour.h"
+#include "tt-component-behaviour-stack.h"
 #include "tt-component-position.h"
 #include "tt-component-sprite.h"
 #include "tt-component-target.h"
@@ -220,6 +222,7 @@ int main(void) {
     tt_entities_startup();
     tt_component_brain_startup();
     tt_component_behaviour_startup();
+    tt_component_behaviour_stack_startup();
     tt_component_position_startup();
     tt_component_sprite_startup();
     tt_component_target_startup();
@@ -319,6 +322,7 @@ int main(void) {
     tt_component_target_shutdown();
     tt_component_sprite_shutdown();
     tt_component_position_shutdown();
+    tt_component_behaviour_stack_shutdown();
     tt_component_behaviour_shutdown();
     tt_component_brain_shutdown();
     tt_entities_shutdown();

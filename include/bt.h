@@ -12,9 +12,9 @@ typedef enum {
 typedef struct BTBehaviour BTBehaviour;
 typedef struct BTContext BTContext;
 
-typedef void (*BTInitFn)(BTBehaviour *, BTContext *, void *);
-typedef BTResult (*BTTickFn)(BTBehaviour *, BTContext *, void *);
-typedef void (*BTInterruptFn)(BTBehaviour *, BTContext *, void *);
+typedef void (*BTInitFn)(BTBehaviour *, void *, void *);
+typedef BTResult (*BTTickFn)(BTBehaviour *, void *, void *);
+typedef void (*BTInterruptFn)(BTBehaviour *, void *, void *);
 typedef void (*BTFreeFn)(BTBehaviour *);
 
 struct BTBehaviour {
@@ -27,7 +27,7 @@ struct BTBehaviour {
     BTFreeFn free;
 };
 
-void bt_init_context(BTContext *context, size_t size);
+void bt_context_init(BTContext *context, size_t size);
 BTResult bt_run(BTBehaviour *behaviour, BTContext *context, void *user_data);
 BTResult bt_delegate(BTBehaviour *behaviour);
 void bt_behaviour_free(BTBehaviour *behaviour);

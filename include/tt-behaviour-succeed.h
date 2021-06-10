@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tt-behaviour.h"
+#include "bt.h"
 
 
-TTBehaviour *tt_behaviour_succeed(void);
+BTBehaviour *tt_behaviour_succeed(void);
