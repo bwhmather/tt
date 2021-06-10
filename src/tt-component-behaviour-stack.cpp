@@ -70,7 +70,9 @@ extern "C" void tt_component_behaviour_stack_remove(TTEntityId entity_id) {
 
     tt_assert(state::storage->has(entity_id));
 
-    // TODO check that we aren't destroying any running behaviours.
+    // TODO we also need to do this when we shutdown the component.
+    BTStack *stack = (BTStack *) state::storage->get(entity_id).data;
+    bt_stack_shutdown(stack, STACK_SIZE);
 
     return state::storage->remove(entity_id);
 }
