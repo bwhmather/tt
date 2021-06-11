@@ -89,6 +89,11 @@ test_suites = {
   'tt-behaviours': [
     'loop-sleep',
   ],
+  'tt-storage-vector': [
+  	'basic',
+	'realloc',
+	'removal',
+  ]
 }
 
 foreach suite, tests : test_suites
