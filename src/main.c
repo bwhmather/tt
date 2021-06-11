@@ -141,6 +141,23 @@ static void GLAPIENTRY tt_main_gl_debug_callback(
 }
 
 
+static void spawn_villager(void) {
+    TTEntityId entity_id = tt_entities_create();
+
+    TTPosition *position = tt_component_position_add(entity_id);
+    position->x = 0.0;
+    position->y = 0.0;
+
+    TTSprite *sprite = tt_component_sprite_add(entity_id);
+    sprite->grid_x = 0;
+    sprite->grid_y = 0;
+    sprite->grid_width = 1;
+    sprite->grid_height = 1;
+
+    tt_component_brain_set(entity_id, true);
+}
+
+
 int main(void) {
     GLFWwindow* window;
     GLuint vertex_buffer, vertex_array;
@@ -245,20 +262,9 @@ int main(void) {
     tree_sprite->grid_width = 2;
     tree_sprite->grid_height = 2;
 
-    TTEntityId entity_id = tt_entities_create();
-
-    TTPosition *position = tt_component_position_add(entity_id);
-    position->x = 0.0;
-    position->y = 0.0;
-
-    TTSprite *sprite = tt_component_sprite_add(entity_id);
-    sprite->grid_x = 0;
-    sprite->grid_y = 0;
-    sprite->grid_width = 1;
-    sprite->grid_height = 1;
-
-    tt_component_brain_set(entity_id, true);
-    tt_component_target_set(entity_id, tree_id);
+    for (int i = 0; i< 20; i++) {
+        spawn_villager();
+    }
 
     tt_resource_camera_set_fov(M_PI / 3.0f);
     tt_resource_camera_set_near_clipping_plane(0.1f);
