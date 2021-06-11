@@ -53,10 +53,7 @@ static BTResult tt_behaviour_loop_tick(
         if (state->active_child >= behaviour->num_children) {
             state->active_child = 0;
         }
-
     }
-
-    return BT_SUCCEEDED;
 }
 
 static void tt_behaviour_loop_free(BTBehaviour*base) {
