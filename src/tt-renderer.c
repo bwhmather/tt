@@ -156,7 +156,7 @@ void tt_renderer_push_vertex(TTVertex *v) {
             state.buffer_data,
             sizeof(TTVertex) * state.buffer_capacity
         );
-        tt_assert(state.buffer_data == NULL);
+        tt_assert(state.buffer_data != NULL);
     }
 
     memcpy(
