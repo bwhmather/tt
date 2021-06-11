@@ -71,7 +71,10 @@ bool tt_storage_vector_has(TTStorageVector *storage, TTEntityId entity_id) {
         return false;
     }
 
-    if (!(storage->mask[entity_id / 64] & (1 << (entity_id % 64)))) {
+    if (
+        !(storage->mask[entity_id / 64] &
+        (((uint64_t) 1) << (entity_id % 64)))
+    ) {
         return false;
     }
 
@@ -103,7 +106,9 @@ void *tt_storage_vector_add(TTStorageVector *storage, TTEntityId entity_id) {
         );
 
         /* Reallocate buffer */
-        storage->buffer = (unsigned char *) realloc(storage->buffer, storage->size * new_count);
+        storage->buffer = (unsigned char *) realloc(
+            storage->buffer, storage->size * new_count
+        );
         tt_assert(storage->buffer);
         memset(
             &storage->buffer[storage->size * storage->count],
@@ -113,7 +118,7 @@ void *tt_storage_vector_add(TTStorageVector *storage, TTEntityId entity_id) {
         storage->count = new_count;
     }
 
-    storage->mask[entity_id / 64] |= (1 << (entity_id % 64));
+    storage->mask[entity_id / 64] |= (((uint64_t) 1) << (entity_id % 64));
 
     return (void *) &storage->buffer[storage->size * entity_id];
 }
@@ -140,7 +145,7 @@ void tt_storage_vector_remove(TTStorageVector *storage, TTEntityId entity_id) {
         return;
     }
 
-    storage->mask[entity_id / 64] &= ~(1 << (entity_id % 64));
+    storage->mask[entity_id / 64] &= ~(((uint64_t) 1) << (entity_id % 64));
     memset(&storage->buffer[storage->size * entity_id], 0xaa, storage->count);
 }
 
