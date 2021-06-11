@@ -1,13 +1,12 @@
-#include "tt-storage-vector.hpp"
-
-#include "tt-entities.hpp"
+#include "tt-storage-vector.h"
 
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include <assert.h>
 #include <string.h>
 
+#include "tt-entities.h"
+#include "tt-error.h"
 
 struct TTStorageVector {
     size_t size;
@@ -33,7 +32,7 @@ TTStorageVector *tt_storage_vector_new(size_t component_size) {
 }
 
 void tt_storage_vector_free(TTStorageVector *storage) {
-    assert(storage != NULL);
+    tt_assert(storage != NULL);
 
     free(storage->mask);
     free(storage->buffer);
@@ -42,7 +41,7 @@ void tt_storage_vector_free(TTStorageVector *storage) {
 }
 
 bool tt_storage_vector_has(TTStorageVector *storage, TTEntityId entity_id) {
-    assert(storage != NULL);
+    tt_assert(storage != NULL);
 
     if (entity_id >= storage->count) {
         return false;
@@ -56,7 +55,7 @@ bool tt_storage_vector_has(TTStorageVector *storage, TTEntityId entity_id) {
 }
 
 void *tt_storage_vector_add(TTStorageVector *storage, TTEntityId entity_id) {
-    assert(storage != NULL);
+    tt_assert(storage != NULL);
 
     if (entity_id >= storage->count) {
         size_t new_count = storage->count;
@@ -72,7 +71,7 @@ void *tt_storage_vector_add(TTStorageVector *storage, TTEntityId entity_id) {
         storage->mask = (uint64_t *) realloc(
             storage->mask, sizeof(uint64_t) * new_mask_count
         );
-        assert(storage->mask);
+        tt_assert(storage->mask);
         memset(
             &storage->mask[old_mask_count],
             0, sizeof(uint64_t) * (new_mask_count - old_mask_count)
@@ -80,7 +79,7 @@ void *tt_storage_vector_add(TTStorageVector *storage, TTEntityId entity_id) {
 
         /* Reallocate buffer */
         storage->buffer = (unsigned char *) realloc(storage->buffer, storage->size * new_count);
-        assert(storage->buffer);
+        tt_assert(storage->buffer);
         memset(
             &storage->buffer[storage->size * storage->count],
             0, storage->size * (new_count - storage->count)
@@ -95,20 +94,20 @@ void *tt_storage_vector_add(TTStorageVector *storage, TTEntityId entity_id) {
 }
 
 void *tt_storage_vector_get(TTStorageVector *storage, TTEntityId entity_id) {
-    assert(storage != NULL);
+    tt_assert(storage != NULL);
 
     if (!tt_storage_vector_has(storage, entity_id)) {
         return NULL;
     }
 
-    assert(entity_id > 0);
-    assert(entity_id < storage->count);
+    tt_assert(entity_id > 0);
+    tt_assert(entity_id < storage->count);
 
     return &storage->buffer[storage->size * entity_id];
 }
 
 void tt_storage_vector_remove(TTStorageVector *storage, TTEntityId entity_id) {
-    assert(storage != NULL);
+    tt_assert(storage != NULL);
 
     if (!tt_storage_vector_has(storage, entity_id)) {
         return;
