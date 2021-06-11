@@ -196,7 +196,6 @@ int main(void) {
 
     glfwSwapInterval(1);
 
-    // NOTE: OpenGL error checks have been omitted for brevity
     vertex_shader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex_shader, 1, &vertex_shader_text, NULL);
     glCompileShader(vertex_shader);
