@@ -99,12 +99,10 @@ BTResult bt_delegate(BTBehaviour *behaviour) {
 
     BTFrame *current_frame = state.next_frame;
 
-    // If there is already a different behaviour running at this level in the
-    // stack then interrupt and clear it and all of its children.
-    if (
-        current_frame->behaviour != behaviour &&
-        current_frame->behaviour != NULL
-    ) {
+    // If the stack doesn't already contain the state for the new behaviour,
+    // clear whatever was there instead.  If the stack is empty then this is a
+    // no-op.
+    if (current_frame->behaviour != behaviour) {
         bt_interrupt(current_frame);
     }
 
@@ -112,13 +110,24 @@ BTResult bt_delegate(BTBehaviour *behaviour) {
         return BT_SUCCEEDED;
     }
 
-    if (current_frame->behaviour == NULL) {
-        // The target behaviour was not previously running.  Initialise it.
-        current_frame->behaviour = behaviour;
+    BTBehaviour *prev_behaviour = current_frame->behaviour;
 
-        state.next_frame = bt_next_frame(current_frame);
+    current_frame->behaviour = behaviour;
+    state.next_frame = bt_next_frame(current_frame);
 
-        // Clear header of next frame so that we don't mistake it for active.
+    tt_assert(
+        state.current_stack->size >
+        (uintptr_t) state.next_frame + sizeof(BTFrame) -
+        (uintptr_t) state.current_stack
+    );
+
+    // Two possibilities:
+    //   - Previous behaviour is NULL, either because it started as null or
+    //     because it didn't match the new behaviour and was cleared.
+    //   - Previous behaviour matches the new behaviour.
+    if (prev_behaviour == NULL) {
+        // Clear header of next frame so that we don't mistake it for active and
+        // try to interrupt it when the current behaviour changes.
         state.next_frame->behaviour = NULL;
 
         // Call init function (if set).
