@@ -39,7 +39,7 @@ lib_sources = [
 #  'src/tt-behaviour-walk-to-target.c',
   'src/tt-component-behaviour.cpp',
   'src/tt-component-behaviour-stack.c',
-  'src/tt-component-brain.cpp',
+  'src/tt-component-brain.c',
   'src/tt-component-harvestable.cpp',
   'src/tt-component-position.cpp',
   'src/tt-component-sprite.cpp',
