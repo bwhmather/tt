@@ -165,8 +165,8 @@ static TTEntityId spawn_villager(void) {
     TTEntityId entity_id = tt_entities_create();
 
     TTPosition *position = tt_component_position_add(entity_id);
-    position->x = 0.0;
-    position->y = 0.0;
+    position->x = 2 * ((double) rand())/((double) RAND_MAX) - 1;;
+    position->y = 2 * ((double) rand())/((double) RAND_MAX) - 1;;
 
     TTSprite *sprite = tt_component_sprite_add(entity_id);
     sprite->grid_x = 0;
