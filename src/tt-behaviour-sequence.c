@@ -5,14 +5,9 @@
 #include <string.h>
 
 #include "bt.h"
+#include "tt-behaviour.h"
 #include "tt-error.h"
 #include "tt-entities.h"
-
-
-typedef struct {
-    TTEntityId entity_id;
-} TTBehaviourContext;
-
 
 typedef struct {
     BTBehaviour behaviour;
@@ -37,11 +32,14 @@ static void tt_behaviour_sequence_init(
     state->active_child = 0;
 }
 
+
 static BTResult tt_behaviour_sequence_tick(
     TTBehaviourSequence *behaviour,
     TTBehaviourSequenceState *state,
     TTBehaviourContext *context
 ) {
+    (void) context;
+
     while (state->active_child < behaviour->num_children) {
         BTResult result = bt_delegate(
             behaviour->children[state->active_child]
@@ -60,11 +58,12 @@ static BTResult tt_behaviour_sequence_tick(
     return BT_SUCCEEDED;
 }
 
-static void tt_behaviour_sequence_free(BTBehaviour*base) {
+
+static void tt_behaviour_sequence_free(BTBehaviour *base) {
     TTBehaviourSequence *behaviour = (TTBehaviourSequence *) base;
 
     for (size_t child = 0; child < behaviour->num_children; child++) {
-        tt_behaviour_free(behaviour->children[child]);
+        bt_behaviour_free(behaviour->children[child]);
     }
 
     free(behaviour);
@@ -82,13 +81,13 @@ BTBehaviour *tt_behaviour_sequence_from_array(BTBehaviour *children[]) {
     tt_assert(behaviour != NULL);
 
     behaviour->behaviour = (BTBehaviour) {
-        .init = tt_behaviour_sequence_init,
-        .tick = tt_behaviour_sequence_tick,
+        .init = (BTInitFn) tt_behaviour_sequence_init,
+        .tick = (BTTickFn) tt_behaviour_sequence_tick,
         .interrupt = NULL,
 
         .frame_size = sizeof(TTBehaviourSequenceState),
 
-        .free = tt_behaviour_sequence_free
+        .free = (BTFreeFn) tt_behaviour_sequence_free
     };
 
     behaviour->num_children = num_children;
