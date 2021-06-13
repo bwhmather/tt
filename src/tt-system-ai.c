@@ -36,7 +36,7 @@ void tt_system_ai_startup(void) {
     state.idle_behaviour = tt_behaviour_loop(tt_behaviour_idle());
 
     state.collect_wood_behaviour = tt_behaviour_sequence(
-        tt_behaviour_loop(
+        //tt_behaviour_loop(
             //tt_behaviour_inventory_full(),
 
             // Get wood by chopping down tree.
@@ -44,9 +44,9 @@ void tt_system_ai_startup(void) {
                 tt_behaviour_select_tree(),
                 tt_behaviour_walk_to_target()
                 //tt_behaviour_harvest_target()
-            )
-        ),
-        tt_behaviour_loop(tt_behaviour_idle())
+            ),
+        //),
+        tt_behaviour_idle()
 
         // Drop wood at stockpile.
         //tt_behaviour_select_stockpile(),
