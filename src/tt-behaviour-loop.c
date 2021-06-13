@@ -32,11 +32,14 @@ static void tt_behaviour_loop_init(
     state->active_child = 0;
 }
 
+
 static BTResult tt_behaviour_loop_tick(
     TTBehaviourLoop *behaviour,
     TTBehaviourLoopState *state,
     TTBehaviourContext *context
 ) {
+    (void) context;
+
     while (true) {
         BTResult result = bt_delegate(
             behaviour->children[state->active_child]
@@ -56,7 +59,7 @@ static BTResult tt_behaviour_loop_tick(
     }
 }
 
-static void tt_behaviour_loop_free(BTBehaviour*base) {
+static void tt_behaviour_loop_free(BTBehaviour *base) {
     TTBehaviourLoop *behaviour = (TTBehaviourLoop *) base;
 
     for (size_t child = 0; child < behaviour->num_children; child++) {
