@@ -146,6 +146,6 @@ void tt_storage_vector_remove(TTStorageVector *storage, TTEntityId entity_id) {
     }
 
     storage->mask[entity_id / 64] &= ~(((uint64_t) 1) << (entity_id % 64));
-    memset(&storage->buffer[storage->size * entity_id], 0xaa, storage->count);
+    memset(&storage->buffer[storage->size * entity_id], 0xaa, storage->size);
 }
 
