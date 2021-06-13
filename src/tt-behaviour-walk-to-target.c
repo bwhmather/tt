@@ -1,111 +1,87 @@
 #include "tt-behaviour-walk-to-target.h"
 
 #include <malloc.h>
+#include <math.h>
 #include <stddef.h>
 
 #include "tt-behaviour.h"
 #include "tt-error.h"
 
-/*
-void tt_system_move_to_target_run(void) {
-    TTEntityIter iter;
+#include "bt.h"
+#include "tt-behaviour.h"
+#include "tt-component-position.h"
+#include "tt-component-target.h"
+#include "tt-error.h"
+#include "tt-entities.h"
 
-    tt_assert(state::initialised == true);
 
-    tt_entities_iter_begin(&iter);
-
-    while (tt_entities_iter_has_next(&iter)) {
-        TTEntityId entity_id = tt_entities_iter_next(&iter);
-
-        if (!tt_component_move_to_target_has(entity_id)) continue;
-        if (!tt_component_target_has(entity_id)) {
-            // warn();
-            continue;
-        }
-        if (!tt_component_position_has(entity_id)) {
-            // warn()
-            continue;
-        }
-        //if (!tt_has_speed(entity_id)) {
-            // warn()
-          //  continue;
-        //}
-        double speed = 0.2;
-
-        TTEntityId target_id = tt_component_target_get(entity_id);
-        if (!tt_component_position_has(target_id)) {
-            // warn()
-            continue;
-        }
-
-        TTPosition &target_position = tt_component_position_get(target_id);
-        TTPosition &position = tt_component_position_get(entity_id);
-
-        double min_range = tt_component_move_to_target_get_target_range(
-            entity_id
-        );
-        double current_range = std::sqrt(
-            std::pow(position.x - target_position.x, 2) +
-            std::pow(position.y - target_position.y, 2)
-        );
-
-        if (current_range < min_range) {
-            tt_component_move_to_target_remove(entity_id);
-        }
-
-        double step = std::min(speed * 1 / 60, current_range);  // TODO
-
-        position.x += (target_position.x - position.x) * step / current_range;
-        position.y += (target_position.y - position.y) * step / current_range;
-    }
-}
-*/
-
-static TTBehaviourResult tt_behaviour_walk_to_target_do_call(
-    TTBehaviour *behaviour, TTEntityId entity_id, void *fp
+static BTResult tt_behaviour_walk_to_target_tick(
+    BTBehaviour *behaviour,
+    void *state,
+    TTBehaviourContext *context
 ) {
-    // TODO
-    return TT_BEHAVIOUR_SUCCEEDED;
-}
-
-static TTBehaviourResult tt_behaviour_walk_to_target_do_resume(
-    TTBehaviour *behaviour, TTEntityId entity_id, void *fp
-) {
-    // TODO
-    tt_assert(false);
-}
-
-static void tt_behaviour_walk_to_target_do_interrupt(
-    TTBehaviour *behaviour, TTEntityId entity_id, void *fp) {
-    return;
-}
-
-
-static size_t tt_behaviour_walk_to_target_max_stack_size(TTBehaviour *behaviour) {
     (void) behaviour;
-    return 0;
+    (void) state;
+
+    TTEntityId entity_id = context->entity_id;
+
+
+    if (!tt_component_position_has(entity_id)) {
+        return BT_FAILED;
+    }
+    if (!tt_component_target_has(entity_id)) {
+        return BT_FAILED;
+    }
+
+    TTEntityId target_id = tt_component_target_get(entity_id);
+    if (!tt_component_position_has(target_id)) {
+        return BT_FAILED;
+    }
+
+    TTPosition *position = tt_component_position_get(entity_id);
+    TTPosition *target = tt_component_position_get(target_id);
+
+    double min_range = 0.01;
+    double current_range = sqrt(
+        pow(position->x - target->x, 2) +
+        pow(position->y - target->y, 2)
+    );
+
+    if (current_range < min_range) {
+        return BT_SUCCEEDED;
+    }
+
+    double speed = 0.2;
+    double step = speed * 1.0f / 60.0f;
+    if (step > current_range) {
+        step = current_range;
+    }
+
+    position->x += (target->x - position->x) * step / current_range;
+    position->y += (target->y - position->y) * step / current_range;
+
+    return BT_RUNNING;
 }
 
 
-static void tt_behaviour_walk_to_target_free(TTBehaviour *behaviour) {
+static void tt_behaviour_walk_to_target_free(BTBehaviour *behaviour) {
     free(behaviour);
 }
 
 
-TTBehaviour *tt_behaviour_walk_to_target(void) {
-    TTBehaviour *behaviour = (TTBehaviour *) malloc(sizeof(TTBehaviour));
+BTBehaviour *tt_behaviour_walk_to_target(void) {
+    BTBehaviour *behaviour = (BTBehaviour *) malloc(sizeof(BTBehaviour));
     tt_assert(behaviour != NULL);
-    *behaviour = (TTBehaviour) {
-        .do_call = tt_behaviour_walk_to_target_do_call,
-        .do_resume = tt_behaviour_walk_to_target_do_resume,
-        .do_interrupt = tt_behaviour_walk_to_target_do_interrupt,
+
+    *behaviour = (BTBehaviour) {
+        .init = NULL,
+        .tick = (BTTickFn) tt_behaviour_walk_to_target_tick,
+        .interrupt = NULL,
 
         .frame_size = 0,
-        .compute_max_stack_size = tt_behaviour_walk_to_target_max_stack_size,
 
         .free = tt_behaviour_walk_to_target_free
     };
 
     return behaviour;
 }
-
