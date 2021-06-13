@@ -6,7 +6,7 @@
 #include "tt-storage-vector.h"
 
 
-static struct TTSystemBehaviourState {
+static struct TTComponentPositionState {
     bool initialised;
     TTStorageVector *storage;
 } state = { .initialised = false };

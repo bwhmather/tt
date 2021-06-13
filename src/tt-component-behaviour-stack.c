@@ -10,7 +10,7 @@
 const size_t STACK_SIZE = 128;
 
 
-static struct TTSystemBehaviourState {
+static struct TTComponentBehaviourStackState {
     bool initialised;
     TTStorageVector *storage;
 } state = { .initialised = false };
