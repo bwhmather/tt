@@ -142,6 +142,21 @@ static void GLAPIENTRY tt_main_gl_debug_callback(
     );
 }
 
+static TTEntityId spawn_tree(void) {
+    TTEntityId tree_id = tt_entities_create();
+    TTPosition *tree_position = tt_component_position_add(tree_id);
+    tree_position->x = 2 * ((double) rand())/((double) RAND_MAX) - 1;;
+    tree_position->y = 2 * ((double) rand())/((double) RAND_MAX) - 1;;
+
+    TTSprite *tree_sprite = tt_component_sprite_add(tree_id);
+    tree_sprite->grid_x = 0;
+    tree_sprite->grid_y = 3;
+    tree_sprite->grid_width = 2;
+    tree_sprite->grid_height = 2;
+
+    return tree_id;
+}
+
 
 static TTEntityId spawn_villager(void) {
     TTEntityId entity_id = tt_entities_create();
@@ -256,16 +271,9 @@ int main(void) {
     tt_system_behaviour_startup();
     tt_system_sprites_startup();
 
-    TTEntityId tree_id = tt_entities_create();
-    TTPosition *tree_position = tt_component_position_add(tree_id);
-    tree_position->x = 0.4;
-    tree_position->y = 0.4;
-
-    TTSprite *tree_sprite = tt_component_sprite_add(tree_id);
-    tree_sprite->grid_x = 0;
-    tree_sprite->grid_y = 3;
-    tree_sprite->grid_width = 2;
-    tree_sprite->grid_height = 2;
+    for (int i = 0; i< 20; i++) {
+        spawn_tree();
+    }
 
     for (int i = 0; i< 20; i++) {
         spawn_villager();
