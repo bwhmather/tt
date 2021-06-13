@@ -35,24 +35,23 @@ void tt_system_ai_startup(void) {
 
     state.idle_behaviour = tt_behaviour_loop(tt_behaviour_idle());
 
-    state.collect_wood_behaviour = tt_behaviour_succeed();
-
-    /*tt_behaviour_sequence(
+    state.collect_wood_behaviour = tt_behaviour_sequence(
         tt_behaviour_loop(
-            tt_behaviour_inventory_full(),
+            //tt_behaviour_inventory_full(),
 
             // Get wood by chopping down tree.
             tt_behaviour_sequence(
                 tt_behaviour_select_tree(),
-                tt_behaviour_walk_to_target(),
-                tt_behaviour_harvest_target()
+                tt_behaviour_walk_to_target()
+                //tt_behaviour_harvest_target()
             )
         ),
+        tt_behaviour_loop(tt_behaviour_idle())
 
         // Drop wood at stockpile.
-        tt_behaviour_select_stockpile(),
-        tt_behaviour_walk_to_target()
-    );*/
+        //tt_behaviour_select_stockpile(),
+        //tt_behaviour_walk_to_target()
+    );
     state.harvest_crops_behaviour = tt_behaviour_succeed();
     state.construct_buildings_behaviour = tt_behaviour_succeed();
     state.attack_behaviour = tt_behaviour_succeed();
@@ -81,7 +80,7 @@ static float tt_ai_idle_score(TTEntityId entity_id) {
 }
 
 static float tt_ai_collect_wood_score(TTEntityId entity_id) {
-    return 0.0f;
+    return 0.2f;
 }
 
 static float tt_ai_harvest_crops_score(TTEntityId entity_id) {
