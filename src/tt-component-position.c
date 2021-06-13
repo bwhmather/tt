@@ -1,7 +1,6 @@
 #include "tt-component-position.h"
 
-#include <stddef.h>
-
+#include "tt-entities.h"
 #include "tt-error.h"
 #include "tt-storage-vector.h"
 
