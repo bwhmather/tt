@@ -12,9 +12,11 @@
 #include "tt-component-brain.h"
 #include "tt-component-behaviour.h"
 #include "tt-component-behaviour-stack.h"
+#include "tt-component-harvestable.h"
 #include "tt-component-position.h"
 #include "tt-component-sprite.h"
 #include "tt-component-target.h"
+#include "tt-component-wood.h"
 #include "tt-error.h"
 #include "tt-entities.h"
 #include "tt-renderer.h"
@@ -239,9 +241,11 @@ int main(void) {
     tt_component_brain_startup();
     tt_component_behaviour_startup();
     tt_component_behaviour_stack_startup();
+    tt_component_harvestable_startup();
     tt_component_position_startup();
     tt_component_sprite_startup();
     tt_component_target_startup();
+    tt_component_wood_startup();
 
     tt_resource_camera_startup();
     tt_renderer_startup();
@@ -324,9 +328,11 @@ int main(void) {
     tt_system_behaviour_shutdown();
     tt_system_ai_shutdown();
 
+    tt_component_wood_shutdown();
     tt_component_target_shutdown();
     tt_component_sprite_shutdown();
     tt_component_position_shutdown();
+    tt_component_harvestable_shutdown();
     tt_component_behaviour_stack_shutdown();
     tt_component_behaviour_shutdown();
     tt_component_brain_shutdown();
