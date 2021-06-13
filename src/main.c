@@ -143,7 +143,7 @@ static void GLAPIENTRY tt_main_gl_debug_callback(
 }
 
 
-static void spawn_villager(void) {
+static TTEntityId spawn_villager(void) {
     TTEntityId entity_id = tt_entities_create();
 
     TTPosition *position = tt_component_position_add(entity_id);
@@ -157,6 +157,8 @@ static void spawn_villager(void) {
     sprite->grid_height = 1;
 
     tt_component_brain_set(entity_id, true);
+
+    return entity_id;
 }
 
 
