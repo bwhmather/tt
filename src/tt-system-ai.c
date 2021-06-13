@@ -10,6 +10,7 @@
 #include "tt-behaviour-select-stockpile.h"
 #include "tt-behaviour-select-tree.h"
 #include "tt-behaviour-sequence.h"
+#include "tt-behaviour-sleep.h"
 #include "tt-behaviour-succeed.h"
 #include "tt-behaviour-walk-to-target.h"
 #include "tt-component-brain.h"
@@ -42,8 +43,9 @@ void tt_system_ai_startup(void) {
             // Get wood by chopping down tree.
             tt_behaviour_sequence(
                 tt_behaviour_select_tree(),
-                tt_behaviour_walk_to_target()
+                tt_behaviour_walk_to_target(),
                 //tt_behaviour_harvest_target()
+                tt_behaviour_sleep(60)
             ),
         //),
         tt_behaviour_idle()
