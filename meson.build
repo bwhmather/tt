@@ -42,7 +42,7 @@ lib_sources = [
   'src/tt-component-brain.c',
   'src/tt-component-harvestable.c',
   'src/tt-component-position.c',
-  'src/tt-component-sprite.cpp',
+  'src/tt-component-sprite.c',
   'src/tt-component-target.c',
   'src/tt-component-wood.c',
   'src/tt-entities.cpp',
