@@ -43,7 +43,7 @@ lib_sources = [
   'src/tt-component-harvestable.cpp',
   'src/tt-component-position.c',
   'src/tt-component-sprite.cpp',
-  'src/tt-component-target.cpp',
+  'src/tt-component-target.c',
   'src/tt-component-wood.cpp',
   'src/tt-entities.cpp',
   'src/tt-error.c',
