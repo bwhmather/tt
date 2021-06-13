@@ -154,6 +154,9 @@ static TTEntityId spawn_tree(void) {
     tree_sprite->grid_width = 2;
     tree_sprite->grid_height = 2;
 
+    tt_component_harvestable_set(tree_id, true);
+    tt_component_wood_set(tree_id, 200);
+
     return tree_id;
 }
 
