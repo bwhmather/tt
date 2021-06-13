@@ -32,7 +32,7 @@ lib_sources = [
 #  'src/tt-behaviour-selector.c',
 #  'src/tt-behaviour-selector-until.c',
 #  'src/tt-behaviour-select-stockpile.c',
-#  'src/tt-behaviour-select-tree.c',
+  'src/tt-behaviour-select-tree.c',
 #  'src/tt-behaviour-sequence.c',
   'src/tt-behaviour-sleep.c',
   'src/tt-behaviour-succeed.c',
