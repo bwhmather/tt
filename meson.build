@@ -55,6 +55,7 @@ lib_sources = [
   'src/tt-system-behaviour.c',
   'src/tt-system-sprites.c',
   'src/tt-texture.c',
+  'src/tt-utils.c',
 ]
 
 lib = both_libraries(
