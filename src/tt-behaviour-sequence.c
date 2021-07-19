@@ -76,7 +76,7 @@ BTBehaviour *tt_behaviour_sequence_from_array(BTBehaviour *children[]) {
 
     TTBehaviourSequence *behaviour = (TTBehaviourSequence *) malloc(
         sizeof(TTBehaviourSequence) +
-        sizeof(BTBehaviour*) * (num_children + 1)
+        sizeof(BTBehaviour *) * (num_children + 1)
     );
     tt_assert(behaviour != NULL);
 
@@ -93,7 +93,7 @@ BTBehaviour *tt_behaviour_sequence_from_array(BTBehaviour *children[]) {
     behaviour->num_children = num_children;
     memcpy(
         behaviour->children, children,
-        num_children * sizeof(BTBehaviour*)
+        num_children * sizeof(BTBehaviour *)
     );
 
     return (BTBehaviour*) behaviour;
