@@ -85,6 +85,7 @@ test_includes = include_directories('include', 'tests')
 test_suites = {
   'tt-entities': [
     'create-callback',
+    'delete-callback',
     'new',
     'release',
     'realloc-free-list',
