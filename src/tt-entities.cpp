@@ -161,13 +161,17 @@ extern "C" void tt_entities_unbind_on_create_callback(int handle) {
     tt_assert(state::initialised == true);
     tt_assert(state::maintaining == false);
 
-    std::remove_if(
+    auto callback = std::find_if(
         state::on_create_callbacks.begin(),
         state::on_create_callbacks.end(),
         [&handle](OnCreateCallbackState& cb_state) {
             return cb_state.handle == handle;
         }
     );
+
+    tt_assert(callback != state::on_create_callbacks.end());
+
+    state::on_create_callbacks.erase(callback);
 }
 
 extern "C" int tt_entities_bind_on_delete_callback(
@@ -176,7 +180,8 @@ extern "C" int tt_entities_bind_on_delete_callback(
     tt_assert(state::initialised == true);
     tt_assert(state::maintaining == false);
 
-    OnDeleteCallbackState cb_state = state::on_delete_callbacks.emplace_back();
+    OnDeleteCallbackState& cb_state =
+        state::on_delete_callbacks.emplace_back();
 
     cb_state.handle = state::next_callback_handle++;
     cb_state.callback = callback;
@@ -189,13 +194,17 @@ extern "C" void tt_entities_unbind_on_delete_callback(int handle) {
     tt_assert(state::initialised == true);
     tt_assert(state::maintaining == false);
 
-    std::remove_if(
+    auto callback = std::find_if(
         state::on_delete_callbacks.begin(),
         state::on_delete_callbacks.end(),
         [&handle](OnDeleteCallbackState& cb_state) {
             return cb_state.handle == handle;
         }
     );
+
+    tt_assert(callback != state::on_delete_callbacks.end());
+
+    state::on_delete_callbacks.erase(callback);
 }
 
 extern "C" void tt_entities_iter_begin(TTEntityIter *iter) {
