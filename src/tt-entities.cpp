@@ -134,10 +134,6 @@ extern "C" void tt_entities_remove(TTEntityId entity_id) {
     tt_assert(state::next_live_set.at(entity_id) == true);
 
     state::next_live_set[entity_id] = false;
-
-    for (const OnDeleteCallbackState& cb_state : state::on_delete_callbacks) {
-        cb_state.callback(entity_id, cb_state.user_data);
-    }
 }
 
 
