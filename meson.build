@@ -37,6 +37,7 @@ lib_sources = [
   'src/tt-behaviour-sleep.c',
   'src/tt-behaviour-succeed.c',
   'src/tt-behaviour-walk-to-target.c',
+  'src/tt-bitset.c',
   'src/tt-component-behaviour.c',
   'src/tt-component-behaviour-stack.c',
   'src/tt-component-brain.c',
@@ -83,6 +84,11 @@ test_exe = executable(
 test_includes = include_directories('include', 'tests')
 
 test_suites = {
+  'tt-bitset': [
+    'basic',
+    'copy',
+    'copy-empty',
+  ],
   'tt-entities': [
     'create-callback',
     'delete-callback',
