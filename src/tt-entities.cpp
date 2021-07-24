@@ -33,7 +33,7 @@ namespace state {
     TTBitset next_live_set;
 
     static TTEntityId max_entity_id;
-    static std::vector<TTEntityId> free_list;
+    static TTEntityId next_free_entity_id;
 
     int next_callback_handle = 1;
     static std::vector<OnCreateCallbackState> on_create_callbacks;
@@ -51,7 +51,7 @@ extern "C" void tt_entities_startup(void) {
     tt_bitset_init(&state::next_live_set);
 
     state::max_entity_id = 0;
-    state::free_list.clear();
+    state::next_free_entity_id = 1;
 
     state::on_create_callbacks.clear();
     state::on_delete_callbacks.clear();
@@ -87,12 +87,11 @@ extern "C" void tt_entities_maintain(void) {
         }
     }
 
-    state::free_list.clear();
-    for (TTEntityId id = state::max_entity_id; id > 0; id--) {
-        if (!tt_bitset_get(&state::next_live_set, id)) {
-            state::free_list.push_back(id);
-        }
+    state::next_free_entity_id = 1;
+    while (tt_bitset_get(&state::next_live_set, state::next_free_entity_id)) {
+        state::next_free_entity_id++;
     }
+    tt_assert(state::next_free_entity_id <= state::max_entity_id + 1);
 
     tt_bitset_copy(&state::next_live_set, &state::live_set);
 
@@ -106,7 +105,8 @@ extern "C" void tt_entities_shutdown(void) {
     tt_bitset_clear(&state::live_set);
     tt_bitset_clear(&state::next_live_set);
 
-    state::free_list.clear();
+    state::max_entity_id = 0;
+    state::next_free_entity_id = 1;
 
     state::on_create_callbacks.clear();
     state::on_delete_callbacks.clear();
@@ -120,14 +120,28 @@ extern "C" TTEntityId tt_entities_create(void) {
     tt_assert(state::initialised == true);
     tt_assert(state::maintaining == false);
 
-    if (state::free_list.size()) {
-        entity_id = state::free_list.back();
-        state::free_list.pop_back();
-    } else {
-        entity_id = ++state::max_entity_id;
+    entity_id = state::next_free_entity_id;
+    tt_bitset_set(&state::next_live_set, entity_id);
+
+    if (entity_id > state::max_entity_id) {
+        state::max_entity_id = entity_id;
     }
 
-    tt_bitset_set(&state::next_live_set, entity_id);
+    while (true) {
+        state::next_free_entity_id++;
+
+        if (tt_bitset_get(
+            &state::live_set, state::next_free_entity_id
+        )) continue;
+
+        if (tt_bitset_get(
+            &state::next_live_set, state::next_free_entity_id
+        )) continue;
+
+        break;
+    };
+
+    tt_assert(state::next_free_entity_id <= state::max_entity_id + 1);
 
     return entity_id;
 }
