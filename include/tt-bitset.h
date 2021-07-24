@@ -8,6 +8,8 @@ typedef struct TTBitset {
 } TTBitset;
 
 void tt_bitset_init(TTBitset *bitset);
+void tt_bitset_destroy(TTBitset *bitset);
+
 void tt_bitset_clear(TTBitset *bitset);
 
 void tt_bitset_copy(TTBitset *src, TTBitset *tgt);

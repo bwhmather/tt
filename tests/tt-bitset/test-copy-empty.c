@@ -25,8 +25,8 @@ int main(void) {
         tt_assert(!tt_bitset_get(&tgt_bitset, id));
     }
 
-    tt_bitset_clear(&src_bitset);
-    tt_bitset_clear(&tgt_bitset);
+    tt_bitset_destroy(&src_bitset);
+    tt_bitset_destroy(&tgt_bitset);
 
     return 0;
 }

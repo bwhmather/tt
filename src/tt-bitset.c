@@ -14,13 +14,23 @@ void tt_bitset_init(TTBitset *bitset) {
     bitset->capacity = 0;
 }
 
-void tt_bitset_clear(TTBitset *bitset) {
+void tt_bitset_destroy(TTBitset *bitset) {
     tt_assert(bitset != NULL);
 
     free(bitset->storage);
 
     bitset->storage = NULL;
     bitset->capacity = 0;
+}
+
+
+void tt_bitset_clear(TTBitset *bitset) {
+    tt_assert(bitset != NULL);
+
+    if (bitset->storage == NULL) return;
+    if (bitset->capacity == 0) return;
+
+    memset(bitset->storage, 0, ((bitset->capacity - 1) / 64) + 1);
 }
 
 

@@ -26,7 +26,7 @@ int main(void) {
     tt_bitset_unset(&bitset, 10000);
     tt_assert(!tt_bitset_get(&bitset, 10000));
 
-    tt_bitset_clear(&bitset);
+    tt_bitset_destroy(&bitset);
 
     return 0;
 }

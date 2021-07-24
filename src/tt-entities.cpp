@@ -102,8 +102,8 @@ extern "C" void tt_entities_shutdown(void) {
     tt_assert(state::initialised == true);
     tt_assert(state::maintaining == false);
 
-    tt_bitset_clear(&state::live_set);
-    tt_bitset_clear(&state::next_live_set);
+    tt_bitset_destroy(&state::live_set);
+    tt_bitset_destroy(&state::next_live_set);
 
     state::max_entity_id = 0;
     state::next_free_entity_id = 1;
