@@ -232,7 +232,14 @@ extern "C" void tt_entities_iter_begin(TTEntityIter *iter) {
     tt_assert(state::initialised == true);
     tt_assert(state::maintaining == false);
 
-    *iter = 1;
+    *iter = 0;
+
+    while (true) {
+        (*iter)++;
+
+        if (*iter > state::max_entity_id) break;
+        if (tt_bitset_get(&state::live_set, *iter)) break;
+    }
 }
 
 extern "C" bool tt_entities_iter_has_next(TTEntityIter *iter) {
