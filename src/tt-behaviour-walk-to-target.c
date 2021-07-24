@@ -41,7 +41,7 @@ static BTResult tt_behaviour_walk_to_target_tick(
     TTPosition *position = tt_component_position_get(entity_id);
     TTPosition *target = tt_component_position_get(target_id);
 
-    double min_range = 0.01;
+    double min_range = 0.04;
     double current_range = sqrt(
         pow(position->x - target->x, 2) +
         pow(position->y - target->y, 2)
