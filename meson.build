@@ -95,7 +95,10 @@ test_suites = {
     'new',
     'release',
     'realloc-free-list',
-    'iterate',
+    'iter',
+    'iter-delete-first',
+    'iter-delete-last',
+    'iter-empty',
   ],
   'tt-behaviours': [
     'loop-sleep',
