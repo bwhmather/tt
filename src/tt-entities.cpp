@@ -35,6 +35,7 @@ namespace state {
     static std::vector<bool> live_set1;
     static std::vector<bool> next_live_set1;
 
+    static TTEntityId max_entity_id;
     static std::vector<TTEntityId> free_list;
 
     int next_callback_handle = 1;
@@ -56,6 +57,7 @@ extern "C" void tt_entities_startup(void) {
     state::live_set1.push_back(true);
     state::next_live_set1 = std::vector<bool>(state::live_set1);
 
+    state::max_entity_id = 0;
     state::free_list.clear();
 
     state::on_create_callbacks.clear();
@@ -139,7 +141,7 @@ extern "C" TTEntityId tt_entities_create(void) {
         state::free_list.pop_back();
         state::next_live_set1[entity_id] = true;
     } else {
-        entity_id = state::next_live_set1.size();
+        entity_id = ++state::max_entity_id;
         state::next_live_set1.push_back(true);
     }
 
@@ -237,7 +239,7 @@ extern "C" bool tt_entities_iter_has_next(TTEntityIter *iter) {
     tt_assert(state::initialised == true);
     tt_assert(state::maintaining == false);
 
-    return *iter < state::live_set1.size();
+    return *iter <= state::max_entity_id;
 }
 
 extern "C" TTEntityId tt_entities_iter_next(TTEntityIter *iter) {
@@ -246,11 +248,17 @@ extern "C" TTEntityId tt_entities_iter_next(TTEntityIter *iter) {
 
     TTEntityId entity_id = (TTEntityId) *iter;
 
+    tt_assert(entity_id <= state::max_entity_id);
+    tt_assert(tt_bitset_get(&state::live_set, entity_id));
+
     tt_assert(entity_id <= state::live_set1.size());
     tt_assert(state::live_set1[entity_id] == true);
 
     while (true) {
         (*iter)++;
+
+        if (*iter > state::max_entity_id) break;
+        if (tt_bitset_get(&state::live_set, *iter)) break;
 
         if (*iter >= state::live_set1.size()) break;
         if (state::live_set1.at(*iter)) break;
