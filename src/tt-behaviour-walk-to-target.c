@@ -4,9 +4,6 @@
 #include <math.h>
 #include <stddef.h>
 
-#include "tt-behaviour.h"
-#include "tt-error.h"
-
 #include "bt.h"
 #include "tt-behaviour.h"
 #include "tt-component-position.h"
