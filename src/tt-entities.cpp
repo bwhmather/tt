@@ -29,8 +29,8 @@ namespace state {
     static bool initialised = false;
     static bool maintaining = false;
 
-    TTBitset live_set;
-    TTBitset next_live_set;
+    static TTBitset live_set;
+    static TTBitset next_live_set;
 
     static TTEntityId max_entity_id;
     static TTEntityId next_free_entity_id;
