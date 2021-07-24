@@ -70,7 +70,7 @@ extern "C" void tt_entities_maintain(void) {
 
     state::maintaining = true;
 
-    for (TTEntityId id = 1; id < state::live_set1.size(); id++) {
+    for (TTEntityId id = 1; id <= state::max_entity_id; id++) {
         if (!tt_bitset_get(&state::live_set, id)) continue;
         if (tt_bitset_get(&state::next_live_set, id)) continue;
 
@@ -85,7 +85,7 @@ extern "C" void tt_entities_maintain(void) {
         }
     }
 
-    for (TTEntityId id = 1; id < state::next_live_set1.size(); id++) {
+    for (TTEntityId id = 1; id <= state::max_entity_id; id++) {
         if (tt_bitset_get(&state::live_set, id)) continue;
         if (!tt_bitset_get(&state::next_live_set, id)) continue;
 
@@ -101,8 +101,8 @@ extern "C" void tt_entities_maintain(void) {
     }
 
     state::free_list.clear();
-    for (TTEntityId id = state::next_live_set1.size() - 1; id > 0; id--) {
-        if (!state::next_live_set1[id]) {
+    for (TTEntityId id = state::max_entity_id; id > 0; id--) {
+        if (!tt_bitset_get(&state::next_live_set, id)) {
             state::free_list.push_back(id);
         }
     }
