@@ -20,6 +20,7 @@ int main(void) {
     for (int i = 0; i < 10; i++) {
         tt_entities_create();
     }
+    tt_entities_maintain();
 
     tt_entities_remove(1);
     tt_entities_remove(2);

@@ -152,6 +152,11 @@ extern "C" void tt_entities_remove(TTEntityId entity_id) {
 
     tt_assert(tt_bitset_get(&state::next_live_set, entity_id));
 
+    // With some work, it might be possible to relax this restriction, but with
+    // the current implementation this will result in on-create and on-delete
+    // callbacks being called.  Fix if it turns out to be a problem.
+    tt_assert(tt_bitset_get(&state::live_set, entity_id));
+
     tt_bitset_unset(&state::next_live_set, entity_id);
 }
 

@@ -92,6 +92,7 @@ test_suites = {
   'tt-entities': [
     'create-callback',
     'delete-callback',
+    'dont-reuse-before-maintain',
     'new',
     'release',
     'realloc-free-list',

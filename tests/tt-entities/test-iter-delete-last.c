@@ -11,9 +11,9 @@ int main(void) {
     tt_entities_create();
     tt_entities_create();
     tt_entities_create();
+    tt_entities_maintain();
 
     tt_entities_remove(5);
-
     tt_entities_maintain();
 
     TTEntityIter iter;

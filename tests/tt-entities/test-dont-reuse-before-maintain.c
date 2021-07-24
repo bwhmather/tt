@@ -1,5 +1,6 @@
 /**
- * Checks that `tt_entities_release_id` will make an id available for reuse.
+ * Checks that `tt_entities_release_id` won't make an id available for reuse too
+ * soon.
  */
 #include "tt-entities.h"
 
@@ -12,19 +13,17 @@ int main(void) {
     tt_assert(tt_entities_create() == 1);
     tt_assert(tt_entities_create() == 2);
     tt_assert(tt_entities_create() == 3);
-    tt_assert(tt_entities_create() == 4);
     tt_entities_maintain();
 
     tt_entities_remove(2);
-    tt_assert(tt_entities_create() == 5);
-    tt_assert(tt_entities_create() == 6);
-
-    tt_entities_remove(4);
     tt_entities_maintain();
 
+    tt_entities_remove(3);
     tt_assert(tt_entities_create() == 2);
     tt_assert(tt_entities_create() == 4);
-    tt_assert(tt_entities_create() == 7);
+    tt_entities_maintain();
+
+    tt_assert(tt_entities_create() == 3);
 
     tt_entities_shutdown();
 
