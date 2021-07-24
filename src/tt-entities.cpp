@@ -32,9 +32,6 @@ namespace state {
     TTBitset live_set;
     TTBitset next_live_set;
 
-    static std::vector<bool> live_set1;
-    static std::vector<bool> next_live_set1;
-
     static TTEntityId max_entity_id;
     static std::vector<TTEntityId> free_list;
 
@@ -53,10 +50,6 @@ extern "C" void tt_entities_startup(void) {
     tt_bitset_init(&state::live_set);
     tt_bitset_init(&state::next_live_set);
 
-    state::live_set1.clear();
-    state::live_set1.push_back(true);
-    state::next_live_set1 = std::vector<bool>(state::live_set1);
-
     state::max_entity_id = 0;
     state::free_list.clear();
 
@@ -74,9 +67,6 @@ extern "C" void tt_entities_maintain(void) {
         if (!tt_bitset_get(&state::live_set, id)) continue;
         if (tt_bitset_get(&state::next_live_set, id)) continue;
 
-        if (!state::live_set1[id]) continue;
-        if (state::next_live_set1[id]) continue;
-
         for (
             const OnDeleteCallbackState& cb_state :
             state::on_delete_callbacks
@@ -88,9 +78,6 @@ extern "C" void tt_entities_maintain(void) {
     for (TTEntityId id = 1; id <= state::max_entity_id; id++) {
         if (tt_bitset_get(&state::live_set, id)) continue;
         if (!tt_bitset_get(&state::next_live_set, id)) continue;
-
-        if (id < state::live_set1.size() && state::live_set1[id]) continue;
-        if (!state::next_live_set1[id]) continue;
 
         for (
             const OnCreateCallbackState& cb_state :
@@ -108,7 +95,6 @@ extern "C" void tt_entities_maintain(void) {
     }
 
     tt_bitset_copy(&state::next_live_set, &state::live_set);
-    state::live_set1 = state::next_live_set1;
 
     state::maintaining = false;
 }
@@ -120,8 +106,6 @@ extern "C" void tt_entities_shutdown(void) {
     tt_bitset_clear(&state::live_set);
     tt_bitset_clear(&state::next_live_set);
 
-    state::live_set1.clear();
-    state::next_live_set1.clear();
     state::free_list.clear();
 
     state::on_create_callbacks.clear();
@@ -139,10 +123,8 @@ extern "C" TTEntityId tt_entities_create(void) {
     if (state::free_list.size()) {
         entity_id = state::free_list.back();
         state::free_list.pop_back();
-        state::next_live_set1[entity_id] = true;
     } else {
         entity_id = ++state::max_entity_id;
-        state::next_live_set1.push_back(true);
     }
 
     tt_bitset_set(&state::next_live_set, entity_id);
@@ -154,11 +136,9 @@ extern "C" void tt_entities_remove(TTEntityId entity_id) {
     tt_assert(state::initialised == true);
     tt_assert(state::maintaining == false);
 
-    tt_assert(state::next_live_set1.at(entity_id) == true);
     tt_assert(tt_bitset_get(&state::next_live_set, entity_id));
 
     tt_bitset_unset(&state::next_live_set, entity_id);
-    state::next_live_set1[entity_id] = false;
 }
 
 
@@ -258,17 +238,11 @@ extern "C" TTEntityId tt_entities_iter_next(TTEntityIter *iter) {
     tt_assert(entity_id <= state::max_entity_id);
     tt_assert(tt_bitset_get(&state::live_set, entity_id));
 
-    tt_assert(entity_id <= state::live_set1.size());
-    tt_assert(state::live_set1[entity_id] == true);
-
     while (true) {
         (*iter)++;
 
         if (*iter > state::max_entity_id) break;
         if (tt_bitset_get(&state::live_set, *iter)) break;
-
-        if (*iter >= state::live_set1.size()) break;
-        if (state::live_set1.at(*iter)) break;
     }
 
     return entity_id;
