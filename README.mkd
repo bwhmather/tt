@@ -6,3 +6,5 @@ game.
 
 Villager simulator built around a behaviour tree and entity-component-system implementation in C.
 
+![screenshot](./screenshot.png)
+
