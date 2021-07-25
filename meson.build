@@ -1,13 +1,6 @@
-project(
-  'tt', 'cpp', 'c',
-  default_options: [
-    'cpp_std=c++17',
-    'cpp_eh=none',
-    'cpp_rtti=false',
-  ],
-)
+project('tt', 'c', default_options: [])
 
-cc = meson.get_compiler('cpp')
+cc = meson.get_compiler('c')
 
 m_dep = cc.find_library('m', required : false)
 glfw_dep = dependency('glfw3')
@@ -46,7 +39,7 @@ lib_sources = [
   'src/tt-component-sprite.c',
   'src/tt-component-target.c',
   'src/tt-component-wood.c',
-  'src/tt-entities.cpp',
+  'src/tt-entities.c',
   'src/tt-error.c',
   'src/tt-renderer.c',
   'src/tt-resource-camera.c',
