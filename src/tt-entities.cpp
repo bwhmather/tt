@@ -11,6 +11,7 @@ extern "C" {
 extern "C" {
 #include "tt-bitset.h"
 #include "tt-error.h"
+#include "tt-vector.h"
 }
 
 typedef struct OnCreateCallbackState {
@@ -36,8 +37,8 @@ namespace state {
     static TTEntityId next_free_entity_id;
 
     int next_callback_handle = 1;
-    static std::vector<OnCreateCallbackState> on_create_callbacks;
-    static std::vector<OnDeleteCallbackState> on_delete_callbacks;
+    static TTVector on_create_callbacks;
+    static TTVector on_delete_callbacks;
 }
 
 
@@ -53,8 +54,8 @@ extern "C" void tt_entities_startup(void) {
     state::max_entity_id = 0;
     state::next_free_entity_id = 1;
 
-    state::on_create_callbacks.clear();
-    state::on_delete_callbacks.clear();
+    tt_vector_init(&state::on_create_callbacks, sizeof(OnCreateCallbackState));
+    tt_vector_init(&state::on_delete_callbacks, sizeof(OnDeleteCallbackState));
 }
 
 extern "C" void tt_entities_maintain(void) {
@@ -68,10 +69,14 @@ extern "C" void tt_entities_maintain(void) {
         if (tt_bitset_get(&state::next_live_set, id)) continue;
 
         for (
-            const OnDeleteCallbackState& cb_state :
-            state::on_delete_callbacks
+            size_t i = 0;
+            i < tt_vector_item_count(&state::on_delete_callbacks);
+            i++
         ) {
-            cb_state.callback(id, cb_state.user_data);
+            OnDeleteCallbackState *cb_state = (OnDeleteCallbackState *)
+                tt_vector_get(&state::on_delete_callbacks, i);
+
+            cb_state->callback(id, cb_state->user_data);
         }
     }
 
@@ -80,10 +85,14 @@ extern "C" void tt_entities_maintain(void) {
         if (!tt_bitset_get(&state::next_live_set, id)) continue;
 
         for (
-            const OnCreateCallbackState& cb_state :
-            state::on_create_callbacks
+            size_t i = 0;
+            i < tt_vector_item_count(&state::on_create_callbacks);
+            i++
         ) {
-            cb_state.callback(id, cb_state.user_data);
+            OnCreateCallbackState *cb_state = (OnCreateCallbackState *)
+                tt_vector_get(&state::on_create_callbacks, i);
+
+            cb_state->callback(id, cb_state->user_data);
         }
     }
 
@@ -108,8 +117,8 @@ extern "C" void tt_entities_shutdown(void) {
     state::max_entity_id = 0;
     state::next_free_entity_id = 1;
 
-    state::on_create_callbacks.clear();
-    state::on_delete_callbacks.clear();
+    tt_vector_destroy(&state::on_create_callbacks);
+    tt_vector_destroy(&state::on_delete_callbacks);
 
     state::initialised = false;
 }
@@ -167,32 +176,36 @@ extern "C" int tt_entities_bind_on_create_callback(
     tt_assert(state::initialised == true);
     tt_assert(state::maintaining == false);
 
-    OnCreateCallbackState& cb_state =
-        state::on_create_callbacks.emplace_back();
+    OnCreateCallbackState *cb_state = (OnCreateCallbackState *)
+        tt_vector_push(&state::on_create_callbacks);
 
-    cb_state.handle = state::next_callback_handle++;
-    cb_state.callback = callback;
-    cb_state.user_data = user_data;
+    cb_state->handle = state::next_callback_handle++;
+    cb_state->callback = callback;
+    cb_state->user_data = user_data;
 
-    return cb_state.handle;
+    return cb_state->handle;
 }
 
 extern "C" void tt_entities_unbind_on_create_callback(int handle) {
     tt_assert(state::initialised == true);
     tt_assert(state::maintaining == false);
 
-    auto callback = std::find_if(
-        state::on_create_callbacks.begin(),
-        state::on_create_callbacks.end(),
-        [&handle](OnCreateCallbackState& cb_state) {
-            return cb_state.handle == handle;
+    for (
+        size_t i = 0;
+        i < tt_vector_item_count(&state::on_create_callbacks);
+        i++
+    ) {
+        OnCreateCallbackState *cb_state = (OnCreateCallbackState *)
+            tt_vector_get(&state::on_create_callbacks, i);
+        if (cb_state->handle == handle) {
+            tt_vector_remove(&state::on_create_callbacks, i);
+            return;
         }
-    );
+    }
 
-    tt_assert(callback != state::on_create_callbacks.end());
-
-    state::on_create_callbacks.erase(callback);
+    tt_assert(false);  // No callback found.
 }
+
 
 extern "C" int tt_entities_bind_on_delete_callback(
     void (*callback) (TTEntityId id, void *user_data), void *user_data
@@ -200,32 +213,36 @@ extern "C" int tt_entities_bind_on_delete_callback(
     tt_assert(state::initialised == true);
     tt_assert(state::maintaining == false);
 
-    OnDeleteCallbackState& cb_state =
-        state::on_delete_callbacks.emplace_back();
+    OnDeleteCallbackState *cb_state = (OnDeleteCallbackState *)
+        tt_vector_push(&state::on_delete_callbacks);
 
-    cb_state.handle = state::next_callback_handle++;
-    cb_state.callback = callback;
-    cb_state.user_data = user_data;
+    cb_state->handle = state::next_callback_handle++;
+    cb_state->callback = callback;
+    cb_state->user_data = user_data;
 
-    return cb_state.handle;
+    return cb_state->handle;
 }
 
 extern "C" void tt_entities_unbind_on_delete_callback(int handle) {
     tt_assert(state::initialised == true);
     tt_assert(state::maintaining == false);
 
-    auto callback = std::find_if(
-        state::on_delete_callbacks.begin(),
-        state::on_delete_callbacks.end(),
-        [&handle](OnDeleteCallbackState& cb_state) {
-            return cb_state.handle == handle;
+    for (
+        size_t i = 0;
+        i < tt_vector_item_count(&state::on_delete_callbacks);
+        i++
+    ) {
+        OnDeleteCallbackState *cb_state = (OnDeleteCallbackState *)
+            tt_vector_get(&state::on_delete_callbacks, i);
+        if (cb_state->handle == handle) {
+            tt_vector_remove(&state::on_delete_callbacks, i);
+            return;
         }
-    );
+    }
 
-    tt_assert(callback != state::on_delete_callbacks.end());
-
-    state::on_delete_callbacks.erase(callback);
+    tt_assert(false);  // No callback found.
 }
+
 
 extern "C" void tt_entities_iter_begin(TTEntityIter *iter) {
     tt_assert(state::initialised == true);
