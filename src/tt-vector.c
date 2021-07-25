@@ -1,16 +1,16 @@
 #include "tt-vector.h"
 
+#include <stdbool.h>
+#include <stddef.h>
+#include <string.h>
+#include <malloc.h>
 
-typedef struct TTVector {
-    void *storage;
+#include "tt-error.h"
 
-    size_t item_size;
-    size_t item_count;
-    size_t item_capacity;
-} TTVector;
 
 void tt_vector_init(TTVector *vector, size_t item_size) {
     tt_assert(vector != NULL);
+    tt_assert(item_size > 0);
 
     vector->storage = NULL;
     vector->item_size = item_size;
@@ -18,68 +18,124 @@ void tt_vector_init(TTVector *vector, size_t item_size) {
     vector->item_capacity = 0;
 }
 
-void tt_vector_clear(TTVector *vector) {
+void tt_vector_destroy(TTVector *vector) {
     tt_assert(vector != NULL);
 
     free(vector->storage);
     vector->storage = NULL;
 
-    vector->item_size = item_size;
+    vector->item_size = 0;
     vector->item_count = 0;
     vector->item_capacity = 0;
 }
 
+
+size_t tt_vector_item_size(TTVector *vector) {
+    tt_assert(vector != NULL);
+
+    return vector->item_size;
+}
+
+size_t tt_vector_item_count(TTVector *vector) {
+    tt_assert(vector != NULL);
+
+    return vector->item_count;
+}
+
+
 void tt_vector_reserve(TTVector *vector, size_t item_count) {
-    if (item_count >= vector->item_count) {
-        size_t new_capacity = bitset->capacity ? bitset->capacity : 1024;
+    tt_assert(vector != NULL);
 
-        while (entity_id >= new_capacity) {
-            new_capacity += new_capacity / 2;
-        }
-
-        size_t old_block_count =
-            bitset->capacity
-            ? ((bitset->capacity - 1) / 64) + 1
-            : 0;
-        size_t new_block_count = ((new_capacity - 1) / 64) + 1;
-
-        bitset->storage = (uint64_t *) realloc(
-            bitset->storage, sizeof(uint64_t) * new_block_count
-        );
-        tt_assert(bitset->storage != NULL);
-
-        memset(
-            &bitset->storage[old_block_count],
-            0, sizeof(uint64_t) * (new_block_count - old_block_count)
-        );
-
-        bitset->capacity = new_capacity;
+    if (item_count <= vector->item_count) {
+        return;
     }
+
+    if (vector->item_capacity == 0) {
+        vector->item_capacity = 1024;
+    }
+    while (item_count > vector->item_capacity) {
+        vector->item_capacity += vector->item_capacity / 2;
+    }
+
+    vector->storage = realloc(
+        vector->storage, vector->item_size * vector->item_capacity
+    );
+    tt_assert(vector->storage != NULL);
 }
 
 void tt_vector_shrink_to_fit(TTVector *vector) {
     // TODO
 }
 
+void tt_vector_clear(TTVector *vector) {
+    tt_assert(vector != NULL);
+    vector->item_count = 0;
+}
+
 void tt_vector_copy(TTVector *src, TTVector *tgt) {
     tt_assert(src != NULL);
     tt_assert(tgt != NULL);
 
-    tt_assert(false) // Not implemented.
+    tt_assert(false); // Not implemented.
 }
 
 void *tt_vector_push(TTVector *vector) {
     tt_assert(vector != NULL);
 
+    tt_vector_reserve(vector, vector->item_count + 1);
 
-    bitset->storage[entity_id / 64] |= (((uint64_t) 1) << (entity_id % 64));
+    void *result = (void *) &((char *) vector->storage)[
+        vector->item_count * vector->item_size
+    ];
 
+    vector->item_count++;
+    tt_assert(vector->item_count <= vector->item_capacity);
+
+    return result;
 }
 
 void tt_vector_pop(TTVector *vector) {
+    tt_assert(vector != NULL);
+    tt_assert(vector->item_count > 0);
 
+    vector->item_count -= 1;
 }
 
-void tt_vector_remove(TTVector *vector, offset_t index);
+void tt_vector_remove(TTVector *vector, ptrdiff_t index) {
+    tt_assert(vector != NULL);
 
-void *tt_vector_get(TTVector *vector, offset_t index);
+    if (index < 0) {
+        index = vector->item_count + index;
+    }
+    tt_assert(index >= 0);
+    tt_assert(index < vector->item_count);
+
+    char *storage_bytes = (char *) vector->storage;
+
+    char *item_start = &storage_bytes[vector->item_size * index];
+    char *tail_start = &storage_bytes[
+        vector->item_size * index + vector->item_size
+    ];
+    char *tail_end = &storage_bytes[
+        vector->item_size * vector->item_count
+    ];
+
+    tt_assert(tail_end >= tail_start);
+    tt_assert(tail_start > item_start);
+
+    if (tail_end != tail_start) {
+        memmove(item_start, tail_start, tail_end - tail_start);
+    }
+
+    vector->item_count -= 1;
+}
+
+void *tt_vector_get(TTVector *vector, ptrdiff_t index) {
+    if (index < 0) {
+        index = vector->item_count + index;
+    }
+    tt_assert(index >= 0);
+    tt_assert(index < vector->item_count);
+
+    return (void *) &((char *) vector->storage)[vector->item_size * index];
+}
