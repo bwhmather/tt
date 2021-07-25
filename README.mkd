@@ -1,5 +1,6 @@
 TT
 ==
+[![CI](https://github.com/bwhmather/tt/actions/workflows/ci.yaml/badge.svg)](https://github.com/bwhmather/tt/actions/workflows/ci.yaml)
 
 An undocumented experiment in game engine design that might eventually become a
 game.
