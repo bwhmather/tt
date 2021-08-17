@@ -43,6 +43,7 @@ lib_sources = [
   'src/tt-error.c',
   'src/tt-renderer.c',
   'src/tt-resource-camera.c',
+  'src/tt-spatial-index.c',
   'src/tt-storage-bitset.c',
   'src/tt-storage-vector.c',
   'src/tt-system-ai.c',
