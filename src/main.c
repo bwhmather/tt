@@ -9,21 +9,23 @@
 #include <cglm/cglm.h>
 
 #include "bt.h"
-#include "tt-component-brain.h"
 #include "tt-component-behaviour.h"
 #include "tt-component-behaviour-stack.h"
+#include "tt-component-brain.h"
 #include "tt-component-harvestable.h"
 #include "tt-component-position.h"
 #include "tt-component-sprite.h"
 #include "tt-component-target.h"
 #include "tt-component-wood.h"
-#include "tt-error.h"
 #include "tt-entities.h"
+#include "tt-error.h"
 #include "tt-renderer.h"
 #include "tt-resource-camera.h"
+#include "tt-resource-wood-map.h"
 #include "tt-system-ai.h"
 #include "tt-system-behaviour.h"
 #include "tt-system-sprites.h"
+#include "tt-system-update-wood-map.h"
 
 
 static const struct {
@@ -268,11 +270,13 @@ int main(void) {
     tt_component_wood_startup();
 
     tt_resource_camera_startup();
+    tt_resource_wood_map_startup();
     tt_renderer_startup();
 
     tt_system_ai_startup();
     tt_system_behaviour_startup();
     tt_system_sprites_startup();
+    tt_system_update_wood_map_startup();
 
     for (int i = 0; i< 20; i++) {
         spawn_tree();
@@ -324,6 +328,8 @@ int main(void) {
 
         tt_entities_maintain();
 
+        tt_system_update_wood_map_run();
+
         tt_system_ai_run();
         tt_system_behaviour_run();
 
@@ -334,12 +340,14 @@ int main(void) {
         glfwPollEvents();
     }
 
-    tt_renderer_shutdown();
-    tt_resource_camera_shutdown();
-
+    tt_system_update_wood_map_shutdown();
     tt_system_sprites_shutdown();
     tt_system_behaviour_shutdown();
     tt_system_ai_shutdown();
+
+    tt_renderer_shutdown();
+    tt_resource_wood_map_shutdown();
+    tt_resource_camera_shutdown();
 
     tt_component_wood_shutdown();
     tt_component_target_shutdown();
