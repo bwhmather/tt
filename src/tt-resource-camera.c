@@ -21,7 +21,7 @@ static struct TTResourceCameraState  {
     vec3 up_vector;
 } state = { .initialised = false };
 
-void tt_resource_camera_startup() {
+void tt_resource_camera_startup(void) {
     tt_assert(state.initialised == false);
 
     state.fov = M_PI / 3.0f;
@@ -37,7 +37,7 @@ void tt_resource_camera_startup() {
     state.initialised = true;
 }
 
-void tt_resource_camera_shutdown() {
+void tt_resource_camera_shutdown(void) {
     tt_assert(state.initialised == true);
 
     state.initialised = false;

@@ -23,7 +23,7 @@ static void on_delete_callback(TTEntityId entity_id, void *data) {
 }
 
 
-TTStorageBitset *tt_storage_bitset_new() {
+TTStorageBitset *tt_storage_bitset_new(void) {
     TTStorageBitset *storage = (TTStorageBitset *) malloc(
         sizeof(TTStorageBitset)
     );
