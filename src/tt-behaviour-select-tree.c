@@ -11,7 +11,7 @@
 #include "tt-component-wood.h"
 #include "tt-entities.h"
 #include "tt-error.h"
-#include "tt-utils.h"
+#include "tt-resource-wood-map.h"
 
 
 static BTResult tt_behaviour_select_tree_tick(
@@ -19,38 +19,29 @@ static BTResult tt_behaviour_select_tree_tick(
     void *state,
     TTBehaviourContext *context
 ) {
+    TTEntityId entity_id;
+    TTEntityId tree_id;
+    TTSpatialIndex *index;
+    TTPosition *position;
+
     (void) behaviour;
     (void) state;
 
-    TTEntityId entity_id = context->entity_id;
-    TTEntityIter iter;
+    entity_id = context->entity_id;
+    if (!tt_component_position_has(entity_id)) return BT_FAILED;
+    position = tt_component_position_get(entity_id);
 
-    tt_entities_iter_begin(&iter);
+    index = tt_resource_wood_map_get();
+    tree_id = tt_spatial_index_nearest(index, position->x, position->y);
 
-    TTEntityId target_id = 0;
-    double target_distance = INFINITY;
+    if (tree_id == 0) return BT_FAILED;
+    if (!tt_component_harvestable_get(tree_id)) return BT_FAILED;
+    if (!tt_component_wood_has(tree_id)) return BT_FAILED;
+    if (!tt_component_position_has(tree_id)) return BT_FAILED;
 
-    while (tt_entities_iter_has_next(&iter)) {
-        TTEntityId candidate_id = tt_entities_iter_next(&iter);
+    tt_component_target_set(entity_id, tree_id);
 
-        if (!tt_component_harvestable_get(candidate_id)) continue;
-        if (!tt_component_wood_has(candidate_id)) continue;
-        if (!tt_component_position_has(candidate_id)) continue;
-
-        double candidate_distance = tt_entity_distance(entity_id, candidate_id);
-
-        if (candidate_distance < target_distance) {
-            target_id = candidate_id;
-            target_distance = candidate_distance;
-        }
-    }
-
-    if (target_id) {
-        tt_component_target_set(entity_id, target_id);
-        return BT_SUCCEEDED;
-    } else {
-        return BT_FAILED;
-    }
+    return BT_SUCCEEDED;
 }
 
 
