@@ -122,34 +122,23 @@ void tt_spatial_index_rebuild(TTSpatialIndex *index) {
 }
 
 
-/**
- * Take a decent guess at the nearest entity to a point by bisecting the array
- * to find the hash with roughly the longest prefix of matching leading bits.
- */
 TTEntityId tt_spatial_index_nearest(
     TTSpatialIndex *index, double x, double y
 ) {
-    if (!index->entry_count) {
-        return 0;
-    }
-
     uint64_t hash = tt_spatial_index_hash(index, x, y);
 
-    size_t fst = 0;
-    size_t lst = index->entry_count + 1;
+    TTEntityId best_entity = 0;
+    int best_quality = -1;
 
-    while (lst - fst > 1) {
-        size_t brk = fst + (lst - fst) / 2;
+    for (size_t i = 0; i < index->entry_count; i++) {
+        TTSpatialIndexEntry *entry = &index->entries[i];
+        int quality = 64 - __builtin_popcountl(hash ^ entry->hash);
 
-        if (hash < index->entries[brk].hash) {
-            lst = brk;
-        } else {
-            fst = brk;
+        if (quality > best_quality) {
+            best_entity = entry->entity_id;
+            best_quality = quality;
         }
     }
 
-    tt_assert(fst >= 0);
-    tt_assert(fst < index->entry_count);
-
-    return index->entries[fst].entity_id;
+    return best_entity;
 }
