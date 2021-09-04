@@ -18,7 +18,7 @@ includes = include_directories('include')
 lib_sources = [
   'src/bt.c',
   'src/tt-behaviour-fail.c',
- # 'src/tt-behaviour-harvest-target.c',
+  'src/tt-behaviour-harvest-wood.c',
   'src/tt-behaviour-idle.c',
  # 'src/tt-behaviour-inventory-full.c',
   'src/tt-behaviour-loop.c',

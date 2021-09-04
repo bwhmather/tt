@@ -1,7 +1,7 @@
 #include "tt-system-ai.h"
 
 #include "bt.h"
-#include "tt-behaviour-harvest-target.h"
+#include "tt-behaviour-harvest-wood.h"
 #include "tt-behaviour-idle.h"
 #include "tt-behaviour-inventory-full.h"
 #include "tt-behaviour-loop.h"
@@ -13,8 +13,8 @@
 #include "tt-behaviour-sleep.h"
 #include "tt-behaviour-succeed.h"
 #include "tt-behaviour-walk-to-target.h"
-#include "tt-component-brain.h"
 #include "tt-component-behaviour.h"
+#include "tt-component-brain.h"
 #include "tt-entities.h"
 #include "tt-error.h"
 
@@ -44,7 +44,7 @@ void tt_system_ai_startup(void) {
             tt_behaviour_sequence(
                 tt_behaviour_select_tree(),
                 tt_behaviour_walk_to_target(),
-                //tt_behaviour_harvest_target()
+                tt_behaviour_harvest_wood(),
                 tt_behaviour_sleep(60)
             ),
         //),
