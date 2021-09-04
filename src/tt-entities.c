@@ -158,11 +158,11 @@ void tt_entities_remove(TTEntityId entity_id) {
     tt_assert(state.initialised == true);
     tt_assert(state.maintaining == false);
 
-    tt_assert(tt_bitset_get(&state.next_live_set, entity_id));
-
     // With some work, it might be possible to relax this restriction, but with
     // the current implementation this will result in on-create and on-delete
-    // callbacks being called.  Fix if it turns out to be a problem.
+    // callbacks not being called.  This is bad as it means that components
+    // linked to the entity won't be removed.  Will fix if restriction turns out
+    // to be a problem.
     tt_assert(tt_bitset_get(&state.live_set, entity_id));
 
     tt_bitset_unset(&state.next_live_set, entity_id);
