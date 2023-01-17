@@ -8,15 +8,14 @@
 #include "tt-error.h"
 
 
-static BTResult tt_behaviour_fail_init(
+static void tt_behaviour_fail_init(
     BTBehaviour *behaviour,
     TTBehaviourContext *context,
     void *state
 ) {
     (void) behaviour;
     (void) context;
-
-    return BT_FAILED;
+    (void) state;
 }
 
 static BTResult tt_behaviour_fail_tick(
@@ -26,10 +25,9 @@ static BTResult tt_behaviour_fail_tick(
 ) {
     (void) behaviour;
     (void) context;
+    (void) state;
 
-    // This should never be called as call will never indicate that the
-    // behaviour is still running.
-    tt_assert(false);
+    return BT_FAILED;
 }
 
 static void tt_behaviour_fail_interrupt(
@@ -39,6 +37,7 @@ static void tt_behaviour_fail_interrupt(
 ) {
     (void) behaviour;
     (void) context;
+    (void) state;
 
     // This should never be called as call will never indicate that the
     // behaviour is still running.

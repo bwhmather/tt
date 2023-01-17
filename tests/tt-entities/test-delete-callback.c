@@ -13,7 +13,6 @@ static void delete_callback(TTEntityId id, void *user_data) {
 
 
 int main(void) {
-    int expected = 0;
     int acc = 0;
 
     tt_entities_startup();

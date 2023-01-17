@@ -65,6 +65,7 @@ void tt_vector_reserve(TTVector *vector, size_t item_count) {
 
 void tt_vector_shrink_to_fit(TTVector *vector) {
     // TODO
+    (void) vector;
 }
 
 void tt_vector_clear(TTVector *vector) {
@@ -104,17 +105,14 @@ void tt_vector_pop(TTVector *vector) {
 void tt_vector_remove(TTVector *vector, ptrdiff_t index) {
     tt_assert(vector != NULL);
 
-    if (index < 0) {
-        index = vector->item_count + index;
-    }
-    tt_assert(index >= 0);
-    tt_assert(index < vector->item_count);
+    size_t offset = index < 0 ? vector->item_count + index : (size_t) index;
+    tt_assert(offset < vector->item_count);
 
     char *storage_bytes = (char *) vector->storage;
 
-    char *item_start = &storage_bytes[vector->item_size * index];
+    char *item_start = &storage_bytes[vector->item_size * offset];
     char *tail_start = &storage_bytes[
-        vector->item_size * index + vector->item_size
+        vector->item_size * offset + vector->item_size
     ];
     char *tail_end = &storage_bytes[
         vector->item_size * vector->item_count
@@ -131,11 +129,8 @@ void tt_vector_remove(TTVector *vector, ptrdiff_t index) {
 }
 
 void *tt_vector_get(TTVector *vector, ptrdiff_t index) {
-    if (index < 0) {
-        index = vector->item_count + index;
-    }
-    tt_assert(index >= 0);
-    tt_assert(index < vector->item_count);
+    size_t offset = index < 0 ? vector->item_count + index : (size_t) index;
+    tt_assert(offset < vector->item_count);
 
-    return (void *) &((char *) vector->storage)[vector->item_size * index];
+    return (void *) &((char *) vector->storage)[vector->item_size * offset];
 }

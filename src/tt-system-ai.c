@@ -82,22 +82,32 @@ static float tt_ai_idle_score(TTEntityId entity_id) {
 }
 
 static float tt_ai_collect_wood_score(TTEntityId entity_id) {
+    (void) entity_id;
+
     return 0.2f;
 }
 
 static float tt_ai_harvest_crops_score(TTEntityId entity_id) {
+    (void) entity_id;
+
     return 0.0f;
 }
 
 static float tt_ai_construct_buildings_score(TTEntityId entity_id) {
+    (void) entity_id;
+
     return 0.0f;
 }
 
 static float tt_ai_attack_score(TTEntityId entity_id) {
+    (void) entity_id;
+
     return 0.0f;
 }
 
 static float tt_ai_flee_score(TTEntityId entity_id) {
+    (void) entity_id;
+
     return 0.0f;
 }
 

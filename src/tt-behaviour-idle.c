@@ -39,6 +39,8 @@ static BTResult tt_behaviour_idle_tick(
     TTBehaviourIdleState *state,
     TTBehaviourContext *context
 ) {
+    (void) behaviour;
+
     if (!tt_component_position_has(context->entity_id)) {
         return BT_FAILED;
     }
