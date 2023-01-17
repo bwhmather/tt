@@ -11,8 +11,7 @@
 #include "tt-resource-camera.h"
 #include "tt-texture.h"
 
-
-static const char* VERTEX_SHADER_TEXT =
+static const char *VERTEX_SHADER_TEXT =
     "#version 110\n"
     "uniform mat4 camera_matrix;\n"
     "\n"
@@ -26,7 +25,7 @@ static const char* VERTEX_SHADER_TEXT =
     "    fragment_tex_coord = vertex_tex_coord;\n"
     "}\n";
 
-static const char* FRAGMENT_SHADER_TEXT =
+static const char *FRAGMENT_SHADER_TEXT =
     "#version 110\n"
     "uniform sampler2D spritesheet;\n"
     "\n"
@@ -58,9 +57,10 @@ static struct TTRendererState {
     GLint spritesheet_location;
     GLint position_location;
     GLint tex_coord_location;
-} state = { .initialised = false };
+} state = {.initialised = false};
 
-void tt_renderer_startup(void) {
+void
+tt_renderer_startup(void) {
     tt_assert(state.initialised == false);
 
     GLuint vertex_shader, fragment_shader;
@@ -69,9 +69,8 @@ void tt_renderer_startup(void) {
 
     state.buffer_capacity = 256;
     state.buffer_size = 0;
-    state.buffer_data = (TTVertex *) malloc(
-        sizeof(TTVertex) * state.buffer_capacity
-    );
+    state.buffer_data =
+        (TTVertex *)malloc(sizeof(TTVertex) * state.buffer_capacity);
     tt_assert(state.buffer_data != NULL);
 
     vertex_shader = glCreateShader(GL_VERTEX_SHADER);
@@ -90,18 +89,14 @@ void tt_renderer_startup(void) {
     glDeleteShader(vertex_shader);
     glDeleteShader(fragment_shader);
 
-    state.camera_matrix_location = glGetUniformLocation(
-        state.shader_program, "camera_matrix"
-    );
-    state.spritesheet_location = glGetAttribLocation(
-        state.shader_program, "spritesheet"
-    );
-    state.position_location = glGetAttribLocation(
-        state.shader_program, "vertex_position"
-    );
-    state.tex_coord_location = glGetAttribLocation(
-        state.shader_program, "vertex_tex_coord"
-    );
+    state.camera_matrix_location =
+        glGetUniformLocation(state.shader_program, "camera_matrix");
+    state.spritesheet_location =
+        glGetAttribLocation(state.shader_program, "spritesheet");
+    state.position_location =
+        glGetAttribLocation(state.shader_program, "vertex_position");
+    state.tex_coord_location =
+        glGetAttribLocation(state.shader_program, "vertex_tex_coord");
 
     /* Configure vertex array stride and size */
     glGenVertexArrays(1, &state.vertex_array);
@@ -112,13 +107,13 @@ void tt_renderer_startup(void) {
 
     glEnableVertexAttribArray(state.position_location);
     glVertexAttribPointer(
-        state.position_location, 3, GL_FLOAT, GL_FALSE,
-        sizeof(TTVertex), (void*) 0
+        state.position_location, 3, GL_FLOAT, GL_FALSE, sizeof(TTVertex),
+        (void *)0
     );
     glEnableVertexAttribArray(state.tex_coord_location);
     glVertexAttribPointer(
-        state.tex_coord_location, 2, GL_FLOAT, GL_FALSE,
-        sizeof(TTVertex), (void*) (sizeof(float) * 3)
+        state.tex_coord_location, 2, GL_FLOAT, GL_FALSE, sizeof(TTVertex),
+        (void *)(sizeof(float) * 3)
     );
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -133,7 +128,8 @@ void tt_renderer_startup(void) {
     state.initialised = true;
 }
 
-void tt_renderer_shutdown(void) {
+void
+tt_renderer_shutdown(void) {
     tt_assert(state.initialised == true);
 
     free(state.buffer_data);
@@ -146,29 +142,26 @@ void tt_renderer_shutdown(void) {
     state.initialised = false;
 }
 
-void tt_renderer_push_vertex(TTVertex *v) {
+void
+tt_renderer_push_vertex(TTVertex *v) {
     tt_assert(state.initialised == true);
 
     if (state.buffer_size >= state.buffer_capacity) {
         state.buffer_capacity += state.buffer_capacity / 2;
 
-        state.buffer_data = (TTVertex *) realloc(
-            state.buffer_data,
-            sizeof(TTVertex) * state.buffer_capacity
+        state.buffer_data = (TTVertex *)realloc(
+            state.buffer_data, sizeof(TTVertex) * state.buffer_capacity
         );
         tt_assert(state.buffer_data != NULL);
     }
 
-    memcpy(
-        &state.buffer_data[state.buffer_size],
-        v, sizeof(TTVertex)
-    );
+    memcpy(&state.buffer_data[state.buffer_size], v, sizeof(TTVertex));
 
     state.buffer_size++;
 }
 
-
-void tt_renderer_do_render(void) {
+void
+tt_renderer_do_render(void) {
     tt_assert(state.initialised == true);
 
     mat4 camera_matrix;
@@ -177,8 +170,7 @@ void tt_renderer_do_render(void) {
     glUseProgram(state.shader_program);
 
     glUniformMatrix4fv(
-        state.camera_matrix_location,
-        1, GL_FALSE, (float *) camera_matrix
+        state.camera_matrix_location, 1, GL_FALSE, (float *)camera_matrix
     );
 
     glActiveTexture(GL_TEXTURE0);
@@ -189,9 +181,8 @@ void tt_renderer_do_render(void) {
     glBindBuffer(GL_ARRAY_BUFFER, state.buffer);
 
     glBufferData(
-        GL_ARRAY_BUFFER,
-        sizeof(TTVertex) * state.buffer_size, state.buffer_data,
-        GL_STREAM_DRAW
+        GL_ARRAY_BUFFER, sizeof(TTVertex) * state.buffer_size,
+        state.buffer_data, GL_STREAM_DRAW
     );
 
     glDrawArrays(GL_TRIANGLES, 0, state.buffer_size);

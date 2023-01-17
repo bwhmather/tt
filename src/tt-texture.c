@@ -1,17 +1,17 @@
 #include "tt-texture.h"
 
+#include <malloc.h>
 #include <setjmp.h>
 #include <stdio.h>
 #include <string.h>
-#include <malloc.h>
 
 #include <GL/glew.h>
 #include <png.h>
 
 #include "tt-error.h"
 
-
-GLuint tt_load_texture(char const *filename) {
+GLuint
+tt_load_texture(char const *filename) {
     FILE *fp = NULL;
     png_structp png_ptr = NULL;
     png_infop info_ptr = NULL;
@@ -23,7 +23,7 @@ GLuint tt_load_texture(char const *filename) {
     int interlace_type;
 
     unsigned long row_bytes;
-    unsigned char* data = NULL;
+    unsigned char *data = NULL;
 
     tt_debug("loading %s", filename);
 
@@ -34,9 +34,7 @@ GLuint tt_load_texture(char const *filename) {
         tt_abort_errno("could not open image");
     }
 
-    png_ptr = png_create_read_struct(
-        PNG_LIBPNG_VER_STRING, NULL, NULL, NULL
-    );
+    png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
     if (png_ptr == NULL) {
         tt_abort("could not allocate PNG read struct");
     }
@@ -60,14 +58,12 @@ GLuint tt_load_texture(char const *filename) {
     );
 
     png_get_IHDR(
-        png_ptr, info_ptr,
-        &width, &height,
-        &bit_depth, &color_type, &interlace_type,
-        NULL, NULL
+        png_ptr, info_ptr, &width, &height, &bit_depth, &color_type,
+        &interlace_type, NULL, NULL
     );
 
     row_bytes = png_get_rowbytes(png_ptr, info_ptr);
-    data = (unsigned char*) malloc(row_bytes * height);
+    data = (unsigned char *)malloc(row_bytes * height);
 
     row_pointers = png_get_rows(png_ptr, info_ptr);
 
@@ -84,23 +80,23 @@ GLuint tt_load_texture(char const *filename) {
     GLint internal_format = 0;
 
     switch (color_type) {
-      case PNG_COLOR_TYPE_RGBA:
+    case PNG_COLOR_TYPE_RGBA:
         internal_format = GL_RGBA;
         break;
 
-      case PNG_COLOR_TYPE_RGB:
+    case PNG_COLOR_TYPE_RGB:
         internal_format = GL_RGB;
         break;
 
-      case PNG_COLOR_TYPE_GRAY:
+    case PNG_COLOR_TYPE_GRAY:
         internal_format = GL_LUMINANCE;
         break;
 
-      case PNG_COLOR_TYPE_GRAY_ALPHA:
+    case PNG_COLOR_TYPE_GRAY_ALPHA:
         internal_format = GL_LUMINANCE_ALPHA;
         break;
 
-      default:
+    default:
         tt_abort("unsupported PNG color type: %d", color_type);
     }
 
@@ -125,20 +121,20 @@ GLuint tt_load_texture(char const *filename) {
 
     glTexImage2D(
         GL_TEXTURE_2D,
-        0,  // Mip-map level.
-        internal_format,  // Internal format.
+        0,               // Mip-map level.
+        internal_format, // Internal format.
         width, height,
-        0,  // Border.
+        0,                // Border.
         internal_format,  // Data format.
-        GL_UNSIGNED_BYTE,  // Data type.
+        GL_UNSIGNED_BYTE, // Data type.
         data
     );
     tt_abort_if_gl_error("failed to upload image data")
 
-    glGenerateMipmap(GL_TEXTURE_2D);
+        glGenerateMipmap(GL_TEXTURE_2D);
     tt_abort_if_gl_error("failed to generate mipmaps")
 
-    glBindTexture(GL_TEXTURE_2D, 0);
+        glBindTexture(GL_TEXTURE_2D, 0);
 
     free(data);
 

@@ -8,20 +8,17 @@
 #include "tt-behaviour.h"
 #include "tt-component-position.h"
 #include "tt-component-target.h"
-#include "tt-error.h"
 #include "tt-entities.h"
+#include "tt-error.h"
 
-
-static BTResult tt_behaviour_walk_to_target_tick(
-    BTBehaviour *behaviour,
-    void *state,
-    TTBehaviourContext *context
+static BTResult
+tt_behaviour_walk_to_target_tick(
+    BTBehaviour *behaviour, void *state, TTBehaviourContext *context
 ) {
-    (void) behaviour;
-    (void) state;
+    (void)behaviour;
+    (void)state;
 
     TTEntityId entity_id = context->entity_id;
-
 
     if (!tt_component_position_has(entity_id)) {
         return BT_FAILED;
@@ -39,10 +36,8 @@ static BTResult tt_behaviour_walk_to_target_tick(
     TTPosition *target = tt_component_position_get(target_id);
 
     double min_range = 0.04;
-    double current_range = sqrt(
-        pow(position->x - target->x, 2) +
-        pow(position->y - target->y, 2)
-    );
+    double current_range =
+        sqrt(pow(position->x - target->x, 2) + pow(position->y - target->y, 2));
 
     if (current_range < min_range) {
         return BT_SUCCEEDED;
@@ -60,25 +55,24 @@ static BTResult tt_behaviour_walk_to_target_tick(
     return BT_RUNNING;
 }
 
-
-static void tt_behaviour_walk_to_target_free(BTBehaviour *behaviour) {
+static void
+tt_behaviour_walk_to_target_free(BTBehaviour *behaviour) {
     free(behaviour);
 }
 
-
-BTBehaviour *tt_behaviour_walk_to_target(void) {
-    BTBehaviour *behaviour = (BTBehaviour *) malloc(sizeof(BTBehaviour));
+BTBehaviour *
+tt_behaviour_walk_to_target(void) {
+    BTBehaviour *behaviour = (BTBehaviour *)malloc(sizeof(BTBehaviour));
     tt_assert(behaviour != NULL);
 
-    *behaviour = (BTBehaviour) {
-        .init = NULL,
-        .tick = (BTTickFn) tt_behaviour_walk_to_target_tick,
-        .interrupt = NULL,
+    *behaviour = (BTBehaviour
+    ){.init = NULL,
+      .tick = (BTTickFn)tt_behaviour_walk_to_target_tick,
+      .interrupt = NULL,
 
-        .frame_size = 0,
+      .frame_size = 0,
 
-        .free = tt_behaviour_walk_to_target_free
-    };
+      .free = tt_behaviour_walk_to_target_free};
 
     return behaviour;
 }

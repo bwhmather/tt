@@ -7,62 +7,57 @@
 #include "tt-behaviour.h"
 #include "tt-error.h"
 
-
-static void tt_behaviour_fail_init(
-    BTBehaviour *behaviour,
-    TTBehaviourContext *context,
-    void *state
+static void
+tt_behaviour_fail_init(
+    BTBehaviour *behaviour, TTBehaviourContext *context, void *state
 ) {
-    (void) behaviour;
-    (void) context;
-    (void) state;
+    (void)behaviour;
+    (void)context;
+    (void)state;
 }
 
-static BTResult tt_behaviour_fail_tick(
-    BTBehaviour *behaviour,
-    TTBehaviourContext *context,
-    void *state
+static BTResult
+tt_behaviour_fail_tick(
+    BTBehaviour *behaviour, TTBehaviourContext *context, void *state
 ) {
-    (void) behaviour;
-    (void) context;
-    (void) state;
+    (void)behaviour;
+    (void)context;
+    (void)state;
 
     return BT_FAILED;
 }
 
-static void tt_behaviour_fail_interrupt(
-    BTBehaviour *behaviour,
-    TTBehaviourContext *context,
-    void *state
+static void
+tt_behaviour_fail_interrupt(
+    BTBehaviour *behaviour, TTBehaviourContext *context, void *state
 ) {
-    (void) behaviour;
-    (void) context;
-    (void) state;
+    (void)behaviour;
+    (void)context;
+    (void)state;
 
     // This should never be called as call will never indicate that the
     // behaviour is still running.
     tt_assert(false);
 }
 
-
-static void tt_behaviour_fail_free(BTBehaviour *behaviour) {
+static void
+tt_behaviour_fail_free(BTBehaviour *behaviour) {
     free(behaviour);
 }
 
-
-BTBehaviour *tt_behaviour_fail(void) {
-    BTBehaviour *behaviour = (BTBehaviour *) malloc(sizeof(BTBehaviour));
+BTBehaviour *
+tt_behaviour_fail(void) {
+    BTBehaviour *behaviour = (BTBehaviour *)malloc(sizeof(BTBehaviour));
     tt_assert(behaviour != NULL);
 
-    *behaviour = (BTBehaviour) {
-        .init = (BTInitFn) tt_behaviour_fail_init,
-        .tick = (BTTickFn) tt_behaviour_fail_tick,
-        .interrupt = (BTInterruptFn) tt_behaviour_fail_interrupt,
+    *behaviour = (BTBehaviour
+    ){.init = (BTInitFn)tt_behaviour_fail_init,
+      .tick = (BTTickFn)tt_behaviour_fail_tick,
+      .interrupt = (BTInterruptFn)tt_behaviour_fail_interrupt,
 
-        .frame_size = 0,
+      .frame_size = 0,
 
-        .free = tt_behaviour_fail_free
-    };
+      .free = tt_behaviour_fail_free};
 
     return behaviour;
 }

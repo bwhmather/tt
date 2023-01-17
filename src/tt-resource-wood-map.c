@@ -5,15 +5,14 @@
 #include "tt-error.h"
 #include "tt-spatial-index.h"
 
-
-static struct TTResourceWoodMapState  {
+static struct TTResourceWoodMapState {
     bool initialised;
 
     TTSpatialIndex index;
-} state = { .initialised = false };
+} state = {.initialised = false};
 
-
-void tt_resource_wood_map_startup(void) {
+void
+tt_resource_wood_map_startup(void) {
     tt_assert(state.initialised == false);
 
     tt_spatial_index_init(&state.index);
@@ -21,8 +20,8 @@ void tt_resource_wood_map_startup(void) {
     state.initialised = true;
 }
 
-
-void tt_resource_wood_map_shutdown(void) {
+void
+tt_resource_wood_map_shutdown(void) {
     tt_assert(state.initialised == true);
 
     tt_spatial_index_destroy(&state.index);
@@ -30,8 +29,8 @@ void tt_resource_wood_map_shutdown(void) {
     state.initialised = false;
 }
 
-
-TTSpatialIndex *tt_resource_wood_map_get(void) {
+TTSpatialIndex *
+tt_resource_wood_map_get(void) {
     tt_assert(state.initialised == true);
 
     return &state.index;

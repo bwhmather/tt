@@ -8,19 +8,17 @@
 #include "tt-error.h"
 #include "tt-vector.h"
 
-
 typedef struct OnCreateCallbackState {
     int handle;
-    void (*callback) (TTEntityId id, void *user_data);
+    void (*callback)(TTEntityId id, void *user_data);
     void *user_data;
 } OnCreateCallbackState;
 
 typedef struct OnDeleteCallbackState {
     int handle;
-    void (*callback) (TTEntityId id, void *user_data);
+    void (*callback)(TTEntityId id, void *user_data);
     void *user_data;
 } OnDeleteCallbackState;
-
 
 static struct TTEntitiesState {
     bool initialised;
@@ -36,12 +34,10 @@ static struct TTEntitiesState {
     TTVector on_create_callbacks;
     TTVector on_delete_callbacks;
 } state = {
-    .initialised = false, .maintaining = false,
-    .next_callback_handle = 1
-};
+    .initialised = false, .maintaining = false, .next_callback_handle = 1};
 
-
-void tt_entities_startup(void) {
+void
+tt_entities_startup(void) {
     tt_assert(state.initialised == false);
     tt_assert(state.maintaining == false);
 
@@ -57,21 +53,21 @@ void tt_entities_startup(void) {
     tt_vector_init(&state.on_delete_callbacks, sizeof(OnDeleteCallbackState));
 }
 
-void tt_entities_maintain(void) {
+void
+tt_entities_maintain(void) {
     tt_assert(state.initialised == true);
     tt_assert(state.maintaining == false);
 
     state.maintaining = true;
 
     for (TTEntityId id = 1; id <= state.max_entity_id; id++) {
-        if (!tt_bitset_get(&state.live_set, id)) continue;
-        if (tt_bitset_get(&state.next_live_set, id)) continue;
+        if (!tt_bitset_get(&state.live_set, id))
+            continue;
+        if (tt_bitset_get(&state.next_live_set, id))
+            continue;
 
-        for (
-            size_t i = 0;
-            i < tt_vector_item_count(&state.on_delete_callbacks);
-            i++
-        ) {
+        for (size_t i = 0; i < tt_vector_item_count(&state.on_delete_callbacks);
+             i++) {
             OnDeleteCallbackState *cb_state = (OnDeleteCallbackState *)
                 tt_vector_get(&state.on_delete_callbacks, i);
 
@@ -80,14 +76,13 @@ void tt_entities_maintain(void) {
     }
 
     for (TTEntityId id = 1; id <= state.max_entity_id; id++) {
-        if (tt_bitset_get(&state.live_set, id)) continue;
-        if (!tt_bitset_get(&state.next_live_set, id)) continue;
+        if (tt_bitset_get(&state.live_set, id))
+            continue;
+        if (!tt_bitset_get(&state.next_live_set, id))
+            continue;
 
-        for (
-            size_t i = 0;
-            i < tt_vector_item_count(&state.on_create_callbacks);
-            i++
-        ) {
+        for (size_t i = 0; i < tt_vector_item_count(&state.on_create_callbacks);
+             i++) {
             OnCreateCallbackState *cb_state = (OnCreateCallbackState *)
                 tt_vector_get(&state.on_create_callbacks, i);
 
@@ -106,7 +101,8 @@ void tt_entities_maintain(void) {
     state.maintaining = false;
 }
 
-void tt_entities_shutdown(void) {
+void
+tt_entities_shutdown(void) {
     tt_assert(state.initialised == true);
     tt_assert(state.maintaining == false);
 
@@ -122,7 +118,8 @@ void tt_entities_shutdown(void) {
     state.initialised = false;
 }
 
-TTEntityId tt_entities_create(void) {
+TTEntityId
+tt_entities_create(void) {
     TTEntityId entity_id;
 
     tt_assert(state.initialised == true);
@@ -138,13 +135,11 @@ TTEntityId tt_entities_create(void) {
     while (true) {
         state.next_free_entity_id++;
 
-        if (tt_bitset_get(
-            &state.live_set, state.next_free_entity_id
-        )) continue;
+        if (tt_bitset_get(&state.live_set, state.next_free_entity_id))
+            continue;
 
-        if (tt_bitset_get(
-            &state.next_live_set, state.next_free_entity_id
-        )) continue;
+        if (tt_bitset_get(&state.next_live_set, state.next_free_entity_id))
+            continue;
 
         break;
     };
@@ -154,7 +149,8 @@ TTEntityId tt_entities_create(void) {
     return entity_id;
 }
 
-void tt_entities_remove(TTEntityId entity_id) {
+void
+tt_entities_remove(TTEntityId entity_id) {
     tt_assert(state.initialised == true);
     tt_assert(state.maintaining == false);
 
@@ -168,15 +164,15 @@ void tt_entities_remove(TTEntityId entity_id) {
     tt_bitset_unset(&state.next_live_set, entity_id);
 }
 
-
-int tt_entities_bind_on_create_callback(
-    void (*callback) (TTEntityId id, void *user_data), void *user_data
+int
+tt_entities_bind_on_create_callback(
+    void (*callback)(TTEntityId id, void *user_data), void *user_data
 ) {
     tt_assert(state.initialised == true);
     tt_assert(state.maintaining == false);
 
-    OnCreateCallbackState *cb_state = (OnCreateCallbackState *)
-        tt_vector_push(&state.on_create_callbacks);
+    OnCreateCallbackState *cb_state =
+        (OnCreateCallbackState *)tt_vector_push(&state.on_create_callbacks);
 
     cb_state->handle = state.next_callback_handle++;
     cb_state->callback = callback;
@@ -185,15 +181,13 @@ int tt_entities_bind_on_create_callback(
     return cb_state->handle;
 }
 
-void tt_entities_unbind_on_create_callback(int handle) {
+void
+tt_entities_unbind_on_create_callback(int handle) {
     tt_assert(state.initialised == true);
     tt_assert(state.maintaining == false);
 
-    for (
-        size_t i = 0;
-        i < tt_vector_item_count(&state.on_create_callbacks);
-        i++
-    ) {
+    for (size_t i = 0; i < tt_vector_item_count(&state.on_create_callbacks);
+         i++) {
         OnCreateCallbackState *cb_state = (OnCreateCallbackState *)
             tt_vector_get(&state.on_create_callbacks, i);
         if (cb_state->handle == handle) {
@@ -202,18 +196,18 @@ void tt_entities_unbind_on_create_callback(int handle) {
         }
     }
 
-    tt_assert(false);  // No callback found.
+    tt_assert(false); // No callback found.
 }
 
-
-int tt_entities_bind_on_delete_callback(
-    void (*callback) (TTEntityId id, void *user_data), void *user_data
+int
+tt_entities_bind_on_delete_callback(
+    void (*callback)(TTEntityId id, void *user_data), void *user_data
 ) {
     tt_assert(state.initialised == true);
     tt_assert(state.maintaining == false);
 
-    OnDeleteCallbackState *cb_state = (OnDeleteCallbackState *)
-        tt_vector_push(&state.on_delete_callbacks);
+    OnDeleteCallbackState *cb_state =
+        (OnDeleteCallbackState *)tt_vector_push(&state.on_delete_callbacks);
 
     cb_state->handle = state.next_callback_handle++;
     cb_state->callback = callback;
@@ -222,15 +216,13 @@ int tt_entities_bind_on_delete_callback(
     return cb_state->handle;
 }
 
-void tt_entities_unbind_on_delete_callback(int handle) {
+void
+tt_entities_unbind_on_delete_callback(int handle) {
     tt_assert(state.initialised == true);
     tt_assert(state.maintaining == false);
 
-    for (
-        size_t i = 0;
-        i < tt_vector_item_count(&state.on_delete_callbacks);
-        i++
-    ) {
+    for (size_t i = 0; i < tt_vector_item_count(&state.on_delete_callbacks);
+         i++) {
         OnDeleteCallbackState *cb_state = (OnDeleteCallbackState *)
             tt_vector_get(&state.on_delete_callbacks, i);
         if (cb_state->handle == handle) {
@@ -239,11 +231,11 @@ void tt_entities_unbind_on_delete_callback(int handle) {
         }
     }
 
-    tt_assert(false);  // No callback found.
+    tt_assert(false); // No callback found.
 }
 
-
-void tt_entities_iter_begin(TTEntityIter *iter) {
+void
+tt_entities_iter_begin(TTEntityIter *iter) {
     tt_assert(state.initialised == true);
     tt_assert(state.maintaining == false);
 
@@ -252,23 +244,27 @@ void tt_entities_iter_begin(TTEntityIter *iter) {
     while (true) {
         (*iter)++;
 
-        if (*iter > state.max_entity_id) break;
-        if (tt_bitset_get(&state.live_set, *iter)) break;
+        if (*iter > state.max_entity_id)
+            break;
+        if (tt_bitset_get(&state.live_set, *iter))
+            break;
     }
 }
 
-bool tt_entities_iter_has_next(TTEntityIter *iter) {
+bool
+tt_entities_iter_has_next(TTEntityIter *iter) {
     tt_assert(state.initialised == true);
     tt_assert(state.maintaining == false);
 
     return *iter <= state.max_entity_id;
 }
 
-TTEntityId tt_entities_iter_next(TTEntityIter *iter) {
+TTEntityId
+tt_entities_iter_next(TTEntityIter *iter) {
     tt_assert(state.initialised == true);
     tt_assert(state.maintaining == false);
 
-    TTEntityId entity_id = (TTEntityId) *iter;
+    TTEntityId entity_id = (TTEntityId)*iter;
 
     tt_assert(entity_id <= state.max_entity_id);
     tt_assert(tt_bitset_get(&state.live_set, entity_id));
@@ -276,8 +272,10 @@ TTEntityId tt_entities_iter_next(TTEntityIter *iter) {
     while (true) {
         (*iter)++;
 
-        if (*iter > state.max_entity_id) break;
-        if (tt_bitset_get(&state.live_set, *iter)) break;
+        if (*iter > state.max_entity_id)
+            break;
+        if (tt_bitset_get(&state.live_set, *iter))
+            break;
     }
 
     return entity_id;

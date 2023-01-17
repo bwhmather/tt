@@ -9,22 +9,24 @@
 #include "tt-error.h"
 #include "tt-resource-wood-map.h"
 
-
 static struct TTSystemSpritesState {
     bool initialised;
-} state = { .initialised = false };
+} state = {.initialised = false};
 
-void tt_system_update_wood_map_startup(void) {
+void
+tt_system_update_wood_map_startup(void) {
     tt_assert(state.initialised == false);
     state.initialised = true;
 }
 
-void tt_system_update_wood_map_shutdown(void) {
+void
+tt_system_update_wood_map_shutdown(void) {
     tt_assert(state.initialised == true);
     state.initialised = false;
 }
 
-void tt_system_update_wood_map_run(void) {
+void
+tt_system_update_wood_map_run(void) {
     TTEntityIter iter;
     TTSpatialIndex *index;
 
@@ -38,9 +40,12 @@ void tt_system_update_wood_map_run(void) {
     while (tt_entities_iter_has_next(&iter)) {
         TTEntityId entity_id = tt_entities_iter_next(&iter);
 
-        if (!tt_component_wood_has(entity_id)) continue;
-        if (!tt_component_harvestable_get(entity_id)) continue;
-        if (!tt_component_position_has(entity_id)) continue;
+        if (!tt_component_wood_has(entity_id))
+            continue;
+        if (!tt_component_harvestable_get(entity_id))
+            continue;
+        if (!tt_component_position_has(entity_id))
+            continue;
 
         TTPosition *position = tt_component_position_get(entity_id);
 

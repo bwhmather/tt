@@ -2,5 +2,5 @@
 
 #include "bt.h"
 
-
-BTBehaviour *tt_behaviour_select_stockpile(void);
+BTBehaviour *
+tt_behaviour_select_stockpile(void);

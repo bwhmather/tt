@@ -8,22 +8,24 @@
 #include "tt-error.h"
 #include "tt-renderer.h"
 
-
 static struct TTSystemSpritesState {
     bool initialised;
-} state = { .initialised = false };
+} state = {.initialised = false};
 
-void tt_system_sprites_startup(void) {
+void
+tt_system_sprites_startup(void) {
     tt_assert(state.initialised == false);
     state.initialised = true;
 }
 
-void tt_system_sprites_shutdown(void) {
+void
+tt_system_sprites_shutdown(void) {
     tt_assert(state.initialised == true);
     state.initialised = false;
 }
 
-void tt_system_sprites_run(void) {
+void
+tt_system_sprites_run(void) {
     TTEntityIter iter;
 
     tt_assert(state.initialised == true);
@@ -34,8 +36,10 @@ void tt_system_sprites_run(void) {
         TTVertex vertex;
         TTEntityId entity_id = tt_entities_iter_next(&iter);
 
-        if (!tt_component_sprite_has(entity_id)) continue;
-        if (!tt_component_position_has(entity_id)) continue;
+        if (!tt_component_sprite_has(entity_id))
+            continue;
+        if (!tt_component_position_has(entity_id))
+            continue;
 
         TTSprite *sprite = tt_component_sprite_get(entity_id);
         TTPosition *position = tt_component_position_get(entity_id);

@@ -1,0 +1,28 @@
+---
+BasedOnStyle: LLVM
+IndentWidth: 4
+UseTab: Never
+TabWidth: 4
+---
+Language: Cpp
+ColumnLimit: 80
+AlignAfterOpenBracket: BlockIndent
+AlignOperands: DontAlign
+BreakBeforeTernaryOperators: true
+AlwaysBreakAfterReturnType: All
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex: '"tt-.+"'
+    Priority: 3
+  - Regex: '"bt.h"'
+    Priority: 3
+  - Regex: '<GL/.+>'
+    Priority: 2
+  - Regex: '<cglm/.+>'
+    Priority: 2
+  - Regex: '<GLFW/.+>'
+    Priority: 2
+  - Regex: '<png.h>'
+    Priority: 2
+  - Regex: '<.+>'
+    Priority: 1

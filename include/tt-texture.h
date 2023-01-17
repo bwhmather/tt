@@ -2,5 +2,5 @@
 
 #include <GL/glew.h>
 
-
-GLuint tt_load_texture(char const *filename);
+GLuint
+tt_load_texture(char const *filename);

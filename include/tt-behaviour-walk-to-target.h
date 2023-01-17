@@ -2,5 +2,5 @@
 
 #include "bt.h"
 
-
-BTBehaviour *tt_behaviour_walk_to_target(void);
+BTBehaviour *
+tt_behaviour_walk_to_target(void);

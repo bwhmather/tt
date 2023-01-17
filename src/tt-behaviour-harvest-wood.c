@@ -6,38 +6,35 @@
 
 #include "bt.h"
 #include "tt-behaviour.h"
-#include "tt-component-wood.h"
-#include "tt-component-target.h"
 #include "tt-component-harvestable.h"
-#include "tt-error.h"
+#include "tt-component-target.h"
+#include "tt-component-wood.h"
 #include "tt-entities.h"
-
+#include "tt-error.h"
 
 typedef struct {
     double readiness;
 } TTBehaviourHarvestTargetState;
 
-
-static void tt_behaviour_harvest_wood_init(
-    BTBehaviour *behaviour,
-    TTBehaviourHarvestTargetState *state,
+static void
+tt_behaviour_harvest_wood_init(
+    BTBehaviour *behaviour, TTBehaviourHarvestTargetState *state,
     TTBehaviourContext *context
 ) {
-    (void) behaviour;
-    (void) context;
+    (void)behaviour;
+    (void)context;
 
     state->readiness = 0.0;
 }
 
-
 static int BT_BEHAVIOUR_HARVEST_CAPACITY = 100;
 
-static BTResult tt_behaviour_harvest_wood_tick(
-    BTBehaviour *behaviour,
-    TTBehaviourHarvestTargetState *state,
+static BTResult
+tt_behaviour_harvest_wood_tick(
+    BTBehaviour *behaviour, TTBehaviourHarvestTargetState *state,
     TTBehaviourContext *context
 ) {
-    (void) behaviour;
+    (void)behaviour;
 
     TTEntityId entity_id = context->entity_id;
 
@@ -46,10 +43,8 @@ static BTResult tt_behaviour_harvest_wood_tick(
     // if (carrying_something_other_than_wood()) {
     //     return BT_FAILED;
     // }
-    if (
-        tt_component_wood_has(entity_id) &&
-        tt_component_wood_get(entity_id) >= BT_BEHAVIOUR_HARVEST_CAPACITY
-    ) {
+    if (tt_component_wood_has(entity_id) &&
+        tt_component_wood_get(entity_id) >= BT_BEHAVIOUR_HARVEST_CAPACITY) {
         return BT_SUCCEEDED;
     }
 
@@ -71,14 +66,12 @@ static BTResult tt_behaviour_harvest_wood_tick(
     }
     state->readiness = 0.0;
 
-
     // Figure out how much we can get from the tree, and how much of it would
     // fit in our inventory.
-    int entity_wood = tt_component_wood_has(entity_id)
-        ? tt_component_wood_get(entity_id) : 0;
-    int target_wood = tt_component_wood_has(target_id)
-        ? tt_component_wood_get(target_id) : 0;
-
+    int entity_wood =
+        tt_component_wood_has(entity_id) ? tt_component_wood_get(entity_id) : 0;
+    int target_wood =
+        tt_component_wood_has(target_id) ? tt_component_wood_get(target_id) : 0;
 
     int transferred_wood = 40;
     if (transferred_wood > target_wood) {
@@ -108,25 +101,24 @@ static BTResult tt_behaviour_harvest_wood_tick(
     return BT_RUNNING;
 }
 
-
-static void tt_behaviour_harvest_wood_free(BTBehaviour *behaviour) {
+static void
+tt_behaviour_harvest_wood_free(BTBehaviour *behaviour) {
     free(behaviour);
 }
 
-
-BTBehaviour *tt_behaviour_harvest_wood(void) {
-    BTBehaviour *behaviour = (BTBehaviour *) malloc(sizeof(BTBehaviour));
+BTBehaviour *
+tt_behaviour_harvest_wood(void) {
+    BTBehaviour *behaviour = (BTBehaviour *)malloc(sizeof(BTBehaviour));
     tt_assert(behaviour != NULL);
 
-    *behaviour = (BTBehaviour) {
-        .init = (BTInitFn) tt_behaviour_harvest_wood_init,
-        .tick = (BTTickFn) tt_behaviour_harvest_wood_tick,
-        .interrupt = NULL,
+    *behaviour = (BTBehaviour
+    ){.init = (BTInitFn)tt_behaviour_harvest_wood_init,
+      .tick = (BTTickFn)tt_behaviour_harvest_wood_tick,
+      .interrupt = NULL,
 
-        .frame_size = sizeof(TTBehaviourHarvestTargetState),
+      .frame_size = sizeof(TTBehaviourHarvestTargetState),
 
-        .free = tt_behaviour_harvest_wood_free
-    };
+      .free = tt_behaviour_harvest_wood_free};
 
     return behaviour;
 }

@@ -2,5 +2,5 @@
 
 #include "bt.h"
 
-
-BTBehaviour *tt_behaviour_idle(void);
+BTBehaviour *
+tt_behaviour_idle(void);

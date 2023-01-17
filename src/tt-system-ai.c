@@ -5,10 +5,10 @@
 #include "tt-behaviour-idle.h"
 #include "tt-behaviour-inventory-full.h"
 #include "tt-behaviour-loop.h"
-#include "tt-behaviour-selector.h"
-#include "tt-behaviour-selector-until.h"
 #include "tt-behaviour-select-stockpile.h"
 #include "tt-behaviour-select-tree.h"
+#include "tt-behaviour-selector-until.h"
+#include "tt-behaviour-selector.h"
 #include "tt-behaviour-sequence.h"
 #include "tt-behaviour-sleep.h"
 #include "tt-behaviour-succeed.h"
@@ -17,7 +17,6 @@
 #include "tt-component-brain.h"
 #include "tt-entities.h"
 #include "tt-error.h"
-
 
 static struct TTSystemAIState {
     bool initialised;
@@ -28,31 +27,29 @@ static struct TTSystemAIState {
     BTBehaviour *construct_buildings_behaviour;
     BTBehaviour *attack_behaviour;
     BTBehaviour *flee_behaviour;
-} state = { .initialised = false };
+} state = {.initialised = false};
 
-
-void tt_system_ai_startup(void) {
+void
+tt_system_ai_startup(void) {
     tt_assert(state.initialised == false);
 
     state.idle_behaviour = tt_behaviour_loop(tt_behaviour_idle());
 
     state.collect_wood_behaviour = tt_behaviour_sequence(
-        //tt_behaviour_loop(
-            //tt_behaviour_inventory_full(),
+        // tt_behaviour_loop(
+        // tt_behaviour_inventory_full(),
 
-            // Get wood by chopping down tree.
-            tt_behaviour_sequence(
-                tt_behaviour_select_tree(),
-                tt_behaviour_walk_to_target(),
-                tt_behaviour_harvest_wood(),
-                tt_behaviour_sleep(60)
-            ),
+        // Get wood by chopping down tree.
+        tt_behaviour_sequence(
+            tt_behaviour_select_tree(), tt_behaviour_walk_to_target(),
+            tt_behaviour_harvest_wood(), tt_behaviour_sleep(60)
+        ),
         //),
         tt_behaviour_idle()
 
         // Drop wood at stockpile.
-        //tt_behaviour_select_stockpile(),
-        //tt_behaviour_walk_to_target()
+        // tt_behaviour_select_stockpile(),
+        // tt_behaviour_walk_to_target()
     );
     state.harvest_crops_behaviour = tt_behaviour_succeed();
     state.construct_buildings_behaviour = tt_behaviour_succeed();
@@ -62,7 +59,8 @@ void tt_system_ai_startup(void) {
     state.initialised = true;
 }
 
-void tt_system_ai_shutdown(void) {
+void
+tt_system_ai_shutdown(void) {
     tt_assert(state.initialised == true);
 
     bt_behaviour_free(state.idle_behaviour);
@@ -75,43 +73,50 @@ void tt_system_ai_shutdown(void) {
     state.initialised = false;
 }
 
-static float tt_ai_idle_score(TTEntityId entity_id) {
-    (void) entity_id;
+static float
+tt_ai_idle_score(TTEntityId entity_id) {
+    (void)entity_id;
 
     return 0.1f;
 }
 
-static float tt_ai_collect_wood_score(TTEntityId entity_id) {
-    (void) entity_id;
+static float
+tt_ai_collect_wood_score(TTEntityId entity_id) {
+    (void)entity_id;
 
     return 0.2f;
 }
 
-static float tt_ai_harvest_crops_score(TTEntityId entity_id) {
-    (void) entity_id;
+static float
+tt_ai_harvest_crops_score(TTEntityId entity_id) {
+    (void)entity_id;
 
     return 0.0f;
 }
 
-static float tt_ai_construct_buildings_score(TTEntityId entity_id) {
-    (void) entity_id;
+static float
+tt_ai_construct_buildings_score(TTEntityId entity_id) {
+    (void)entity_id;
 
     return 0.0f;
 }
 
-static float tt_ai_attack_score(TTEntityId entity_id) {
-    (void) entity_id;
+static float
+tt_ai_attack_score(TTEntityId entity_id) {
+    (void)entity_id;
 
     return 0.0f;
 }
 
-static float tt_ai_flee_score(TTEntityId entity_id) {
-    (void) entity_id;
+static float
+tt_ai_flee_score(TTEntityId entity_id) {
+    (void)entity_id;
 
     return 0.0f;
 }
 
-void tt_system_ai_run(void) {
+void
+tt_system_ai_run(void) {
     TTEntityIter iter;
 
     tt_assert(state.initialised == true);
@@ -121,7 +126,8 @@ void tt_system_ai_run(void) {
     while (tt_entities_iter_has_next(&iter)) {
         TTEntityId entity_id = tt_entities_iter_next(&iter);
 
-        if (!tt_component_brain_get(entity_id)) continue;
+        if (!tt_component_brain_get(entity_id))
+            continue;
 
         BTBehaviour *new_behaviour = NULL;
         float best_score = 0.0f;

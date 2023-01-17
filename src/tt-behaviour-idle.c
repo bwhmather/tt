@@ -4,42 +4,39 @@
 #include <malloc.h>
 #include <math.h>
 #include <stddef.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "bt.h"
 #include "tt-behaviour.h"
 #include "tt-component-position.h"
-#include "tt-error.h"
 #include "tt-entities.h"
-
+#include "tt-error.h"
 
 typedef struct {
     double target_x;
     double target_y;
 } TTBehaviourIdleState;
 
-
-static void tt_behaviour_idle_init(
-    BTBehaviour *behaviour,
-    TTBehaviourIdleState *state,
+static void
+tt_behaviour_idle_init(
+    BTBehaviour *behaviour, TTBehaviourIdleState *state,
     TTBehaviourContext *context
 ) {
-    (void) behaviour;
-    (void) context;
+    (void)behaviour;
+    (void)context;
 
     // Choose target.
-    state->target_x = 2 * ((double) rand())/((double) RAND_MAX) - 1;
-    state->target_y = 2 * ((double) rand())/((double) RAND_MAX) - 1;
-
+    state->target_x = 2 * ((double)rand()) / ((double)RAND_MAX) - 1;
+    state->target_y = 2 * ((double)rand()) / ((double)RAND_MAX) - 1;
 }
 
-static BTResult tt_behaviour_idle_tick(
-    BTBehaviour *behaviour,
-    TTBehaviourIdleState *state,
+static BTResult
+tt_behaviour_idle_tick(
+    BTBehaviour *behaviour, TTBehaviourIdleState *state,
     TTBehaviourContext *context
 ) {
-    (void) behaviour;
+    (void)behaviour;
 
     if (!tt_component_position_has(context->entity_id)) {
         return BT_FAILED;
@@ -69,25 +66,24 @@ static BTResult tt_behaviour_idle_tick(
     return BT_RUNNING;
 }
 
-static void tt_behaviour_idle_free(BTBehaviour* behaviour) {
+static void
+tt_behaviour_idle_free(BTBehaviour *behaviour) {
     free(behaviour);
 }
 
-
-BTBehaviour *tt_behaviour_idle(void) {
-    BTBehaviour *behaviour = (BTBehaviour *) malloc(sizeof(BTBehaviour));
+BTBehaviour *
+tt_behaviour_idle(void) {
+    BTBehaviour *behaviour = (BTBehaviour *)malloc(sizeof(BTBehaviour));
     tt_assert(behaviour != NULL);
 
-    *behaviour = (BTBehaviour) {
-        .init = (BTInitFn) tt_behaviour_idle_init,
-        .tick = (BTTickFn) tt_behaviour_idle_tick,
-        .interrupt = NULL,
+    *behaviour = (BTBehaviour
+    ){.init = (BTInitFn)tt_behaviour_idle_init,
+      .tick = (BTTickFn)tt_behaviour_idle_tick,
+      .interrupt = NULL,
 
-        .frame_size = sizeof(TTBehaviourIdleState),
+      .frame_size = sizeof(TTBehaviourIdleState),
 
-        .free = tt_behaviour_idle_free
-    };
+      .free = tt_behaviour_idle_free};
 
     return behaviour;
 }
-

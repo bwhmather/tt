@@ -1,7 +1,7 @@
 #include <errno.h>
 #include <math.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include <GL/glew.h>
 #define GLFW_INCLUDE_NONE
@@ -9,8 +9,8 @@
 #include <cglm/cglm.h>
 
 #include "bt.h"
-#include "tt-component-behaviour.h"
 #include "tt-component-behaviour-stack.h"
+#include "tt-component-behaviour.h"
 #include "tt-component-brain.h"
 #include "tt-component-harvestable.h"
 #include "tt-component-position.h"
@@ -27,7 +27,6 @@
 #include "tt-system-sprites.h"
 #include "tt-system-update-wood-map.h"
 
-
 static const struct {
     float x, y, z;
     float r, g, b;
@@ -40,7 +39,7 @@ static const struct {
     {-1.0f, -1.0f, 0.0f, 0.2f, 0.6f, 0.1f},
 };
 
-static const char* vertex_shader_text =
+static const char *vertex_shader_text =
     "#version 110\n"
     "uniform mat4 MVP;\n"
     "attribute vec3 vCol;\n"
@@ -51,104 +50,107 @@ static const char* vertex_shader_text =
     "    color = vCol;\n"
     "}\n";
 
-static const char* fragment_shader_text =
+static const char *fragment_shader_text =
     "#version 110\n"
     "varying vec3 color;\n"
     "void main() {\n"
     "    gl_FragColor = vec4(color, 1.0);\n"
     "}\n";
 
-
-static void tt_main_glfw_error_callback(int error, const char* description) {
+static void
+tt_main_glfw_error_callback(int error, const char *description) {
     fprintf(stderr, "GLFW ERROR: %s (%i)\n", description, error);
 }
 
-static void tt_main_glfw_key_callback(
-    GLFWwindow* window, int key, int scancode, int action, int mods
+static void
+tt_main_glfw_key_callback(
+    GLFWwindow *window, int key, int scancode, int action, int mods
 ) {
-    (void) scancode;
-    (void) mods;
+    (void)scancode;
+    (void)mods;
 
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
 }
 
-
-static const char *tt_gl_error_source_str(GLenum source) {
-    switch(source) {
-      case GL_DEBUG_SOURCE_API:
+static const char *
+tt_gl_error_source_str(GLenum source) {
+    switch (source) {
+    case GL_DEBUG_SOURCE_API:
         return "GL API";
-      case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
+    case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
         return "GL Window System";
-      case GL_DEBUG_SOURCE_SHADER_COMPILER:
+    case GL_DEBUG_SOURCE_SHADER_COMPILER:
         return "GL Shader Compiler";
-      case GL_DEBUG_SOURCE_THIRD_PARTY:
+    case GL_DEBUG_SOURCE_THIRD_PARTY:
         return "GL Third-Party";
-      case GL_DEBUG_SOURCE_APPLICATION:
+    case GL_DEBUG_SOURCE_APPLICATION:
         return "GL Application";
-      default:
+    default:
         return "GL";
     }
 }
 
-static const char *tt_gl_error_level_str(GLenum level) {
+static const char *
+tt_gl_error_level_str(GLenum level) {
     switch (level) {
-      case GL_DEBUG_SEVERITY_LOW:
+    case GL_DEBUG_SEVERITY_LOW:
         return "DEBUG";
-      case GL_DEBUG_SEVERITY_MEDIUM:
+    case GL_DEBUG_SEVERITY_MEDIUM:
         return "INFO";
-      case GL_DEBUG_SEVERITY_HIGH:
+    case GL_DEBUG_SEVERITY_HIGH:
         return "ERROR";
-      default:
+    default:
         return "ERROR";
     }
 }
 
-static const char *tt_gl_error_type_str(GLenum type) {
+static const char *
+tt_gl_error_type_str(GLenum type) {
     switch (type) {
-      case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
+    case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
         return "deprecated behaviour: ";
-      case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
+    case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
         return "undefined behaviour: ";
-      case GL_DEBUG_TYPE_PORTABILITY:
+    case GL_DEBUG_TYPE_PORTABILITY:
         return "portability: ";
-      case GL_DEBUG_TYPE_PERFORMANCE:
+    case GL_DEBUG_TYPE_PERFORMANCE:
         return "performance: ";
-      case GL_DEBUG_TYPE_MARKER:
+    case GL_DEBUG_TYPE_MARKER:
         return "marker: ";
-      case GL_DEBUG_TYPE_PUSH_GROUP:
+    case GL_DEBUG_TYPE_PUSH_GROUP:
         return "push group: ";
-      case GL_DEBUG_TYPE_POP_GROUP:
+    case GL_DEBUG_TYPE_POP_GROUP:
         return "pop group: ";
-      default:
+    default:
         return "";
     }
 }
 
-static void GLAPIENTRY tt_main_gl_debug_callback(
-    GLenum source, GLenum type, GLuint id,
-    GLenum severity, GLsizei length,
-    const GLchar* message, const void* userParam
+static void GLAPIENTRY
+tt_main_gl_debug_callback(
+    GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
+    const GLchar *message, const void *userParam
 ) {
-    (void) id;
-    (void) length;
-    (void) userParam;
+    (void)id;
+    (void)length;
+    (void)userParam;
 
     fprintf(
-        stderr, "%s: %s:%s %s\n",
-        tt_gl_error_source_str(source),
-        tt_gl_error_level_str(severity),
-        tt_gl_error_type_str(type),
-        message
+        stderr, "%s: %s:%s %s\n", tt_gl_error_source_str(source),
+        tt_gl_error_level_str(severity), tt_gl_error_type_str(type), message
     );
 }
 
-static TTEntityId spawn_tree(void) {
+static TTEntityId
+spawn_tree(void) {
     TTEntityId tree_id = tt_entities_create();
     TTPosition *tree_position = tt_component_position_add(tree_id);
-    tree_position->x = 2 * ((double) rand())/((double) RAND_MAX) - 1;;
-    tree_position->y = 2 * ((double) rand())/((double) RAND_MAX) - 1;;
+    tree_position->x = 2 * ((double)rand()) / ((double)RAND_MAX) - 1;
+    ;
+    tree_position->y = 2 * ((double)rand()) / ((double)RAND_MAX) - 1;
+    ;
 
     TTSprite *tree_sprite = tt_component_sprite_add(tree_id);
     tree_sprite->grid_x = 0;
@@ -162,13 +164,15 @@ static TTEntityId spawn_tree(void) {
     return tree_id;
 }
 
-
-static TTEntityId spawn_villager(void) {
+static TTEntityId
+spawn_villager(void) {
     TTEntityId entity_id = tt_entities_create();
 
     TTPosition *position = tt_component_position_add(entity_id);
-    position->x = 2 * ((double) rand())/((double) RAND_MAX) - 1;;
-    position->y = 2 * ((double) rand())/((double) RAND_MAX) - 1;;
+    position->x = 2 * ((double)rand()) / ((double)RAND_MAX) - 1;
+    ;
+    position->y = 2 * ((double)rand()) / ((double)RAND_MAX) - 1;
+    ;
 
     TTSprite *sprite = tt_component_sprite_add(entity_id);
     sprite->grid_x = 0;
@@ -181,9 +185,9 @@ static TTEntityId spawn_villager(void) {
     return entity_id;
 }
 
-
-int main(void) {
-    GLFWwindow* window;
+int
+main(void) {
+    GLFWwindow *window;
     GLuint vertex_buffer, vertex_array;
     GLuint vertex_shader, fragment_shader, program;
     GLint mvp_location, vpos_location, vcol_location;
@@ -246,13 +250,12 @@ int main(void) {
 
     glEnableVertexAttribArray(vpos_location);
     glVertexAttribPointer(
-        vpos_location, 3, GL_FLOAT, GL_FALSE,
-        sizeof(vertices[0]), (void*) 0
+        vpos_location, 3, GL_FLOAT, GL_FALSE, sizeof(vertices[0]), (void *)0
     );
     glEnableVertexAttribArray(vcol_location);
     glVertexAttribPointer(
-        vcol_location, 3, GL_FLOAT, GL_FALSE,
-        sizeof(vertices[0]), (void*) (sizeof(float) * 3)
+        vcol_location, 3, GL_FLOAT, GL_FALSE, sizeof(vertices[0]),
+        (void *)(sizeof(float) * 3)
     );
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -278,11 +281,11 @@ int main(void) {
     tt_system_sprites_startup();
     tt_system_update_wood_map_startup();
 
-    for (int i = 0; i< 20; i++) {
+    for (int i = 0; i < 20; i++) {
         spawn_tree();
     }
 
-    for (int i = 0; i< 20; i++) {
+    for (int i = 0; i < 20; i++) {
         spawn_villager();
     }
 
@@ -290,9 +293,9 @@ int main(void) {
     tt_resource_camera_set_near_clipping_plane(0.1f);
     tt_resource_camera_set_far_clipping_plane(4.0f);
 
-    vec3 eye_vector = { 1.0f, -2.0f, 1.0f };
-    vec3 centre_vector = { 0.0f, 0.0f, 0.0f };
-    vec3 up_vector = { 0.0f, 0.0f, 1.0f };
+    vec3 eye_vector = {1.0f, -2.0f, 1.0f};
+    vec3 centre_vector = {0.0f, 0.0f, 0.0f};
+    vec3 up_vector = {0.0f, 0.0f, 1.0f};
     tt_resource_camera_look_at(eye_vector, centre_vector, up_vector);
 
     while (!glfwWindowShouldClose(window)) {
@@ -300,7 +303,7 @@ int main(void) {
         int width, height;
 
         glfwGetFramebufferSize(window, &width, &height);
-        aspect_ratio = (float) width / (float) height;
+        aspect_ratio = (float)width / (float)height;
         tt_resource_camera_set_aspect_ratio(aspect_ratio);
 
         mat4 camera_matrix;
@@ -310,9 +313,7 @@ int main(void) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glUseProgram(program);
-        glUniformMatrix4fv(
-            mvp_location, 1, GL_FALSE, (float *) camera_matrix
-        );
+        glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (float *)camera_matrix);
 
         glBindVertexArray(vertex_array);
         glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
@@ -364,4 +365,3 @@ int main(void) {
     glfwTerminate();
     exit(EXIT_SUCCESS);
 }
-
