@@ -6,8 +6,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - run: sudo apt-get install meson ninja-build libglfw3 libglfw3-dev libglew2.1 libglew-dev
-    - run: meson setup build --debug -Db_sanitize=address,undefined
+    - run: sudo apt-get update
+    - run: sudo apt-get install meson ninja-build libglfw3-dev libglew-dev libpng-dev
+    - run: meson setup build --warnlevel 3 --werror --debug -Db_sanitize=address,undefined
       env:
         CC: gcc
     - run: meson test -C build --verbose
@@ -15,4 +16,4 @@ jobs:
       if: failure()
       with:
         name: Linux_Meson_Testlog
-        path: builddir/meson-logs/testlog.txt
+        path: build/meson-logs/testlog.txt
