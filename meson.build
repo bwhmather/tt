@@ -3,10 +3,10 @@ project('tt', 'c', default_options: [])
 cc = meson.get_compiler('c')
 
 m_dep = cc.find_library('m', required : false)
-glfw_dep = dependency('glfw3')
-glew_dep = dependency('glew')
 cglm_dep = dependency('cglm', fallback : ['cglm', 'cglm_dep'])
-libpng_dep = dependency('libpng')
+glew_dep = dependency('glew', fallback : ['glew', 'glew_dep'])
+glfw_dep = dependency('glfw3', fallback : ['glfw', 'glfw_dep'])
+libpng_dep = dependency('libpng', fallback : ['libpng', 'libpng_dep'])
 
 dependencies = [m_dep, glfw_dep, glew_dep, cglm_dep, libpng_dep]
 
