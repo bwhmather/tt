@@ -1,10 +1,6 @@
 #pragma once
 
-#ifdef __cplusplus
-#define NO_RETURN [[noreturn]]
-#else
 #define NO_RETURN _Noreturn
-#endif
 
 typedef enum {
     TT_LOG_LEVEL_DEBUG,
@@ -26,22 +22,13 @@ tt_log_impl(
     tt_log_impl(__FILE__, __LINE__, __func__, TT_LOG_LEVEL_DEBUG, __VA_ARGS__);
 
 #define tt_info(...)                                                           \
-    do {                                                                       \
-        tt_log_impl(                                                           \
-            __FILE__, __LINE__, __func__, TT_LOG_LEVEL_INFO, __VA_ARGS__       \
-        );
+    tt_log_impl(__FILE__, __LINE__, __func__, TT_LOG_LEVEL_INFO, __VA_ARGS__);
 
 #define tt_warning(...)                                                        \
-    do {                                                                       \
-        tt_log_impl(                                                           \
-            __FILE__, __LINE__, __func__, TT_LOG_LEVEL_WARNING, __VA_ARGS__    \
-        );
+    tt_log_impl(__FILE__, __LINE__, __func__, TT_LOG_LEVEL_WARNING, __VA_ARGS__);
 
 #define tt_error(...)                                                          \
-    do {                                                                       \
-        tt_log_impl(                                                           \
-            __FILE__, __LINE__, __func__, TT_LOG_LEVEL_ERROR, __VA_ARGS__      \
-        );
+    tt_log_impl(__FILE__, __LINE__, __func__, TT_LOG_LEVEL_ERROR, __VA_ARGS__);
 
 NO_RETURN void
 tt_abort_impl(
