@@ -1,7 +1,6 @@
 #include "tt-behaviour-select-tree.h"
 
 #include <malloc.h>
-#include <math.h>
 
 #include "bt.h"
 #include "tt-behaviour.h"
@@ -12,6 +11,7 @@
 #include "tt-entities.h"
 #include "tt-error.h"
 #include "tt-resource-wood-map.h"
+#include "tt-spatial-index.h"
 
 static BTResult
 tt_behaviour_select_tree_tick(

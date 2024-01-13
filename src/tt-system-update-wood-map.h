@@ -1,7 +1,5 @@
 #pragma once
 
-#include "tt-entities.h"
-
 void
 tt_system_update_wood_map_startup(void);
 void

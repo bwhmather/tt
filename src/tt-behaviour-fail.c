@@ -1,7 +1,7 @@
 #include "tt-behaviour-fail.h"
 
 #include <malloc.h>
-#include <stddef.h>
+#include <stdbool.h>
 
 #include "bt.h"
 #include "tt-behaviour.h"

@@ -8,6 +8,7 @@
 #include "tt-entities.h"
 #include "tt-error.h"
 #include "tt-resource-wood-map.h"
+#include "tt-spatial-index.h"
 
 static struct TTSystemSpritesState {
     bool initialised;

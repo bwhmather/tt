@@ -6,7 +6,6 @@
 
 #include "bt.h"
 #include "tt-behaviour.h"
-#include "tt-entities.h"
 #include "tt-error.h"
 
 typedef struct {

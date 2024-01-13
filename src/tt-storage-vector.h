@@ -1,5 +1,8 @@
 #pragma once
 
+#include <stdbool.h>
+#include <stddef.h>
+
 #include "tt-entities.h"
 
 typedef struct TTStorageVector TTStorageVector;

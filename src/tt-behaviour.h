@@ -1,7 +1,5 @@
 #pragma once
 
-#include <stddef.h>
-
 #include "tt-entities.h"
 
 typedef struct {

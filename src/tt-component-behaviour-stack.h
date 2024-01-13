@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdbool.h>
+
 #include "bt.h"
 #include "tt-entities.h"
 

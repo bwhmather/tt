@@ -3,7 +3,10 @@
 #include <math.h>
 #include <stdbool.h>
 
-#include <cglm/cglm.h>
+#include <cglm/cam.h>
+#include <cglm/mat4.h>
+#include <cglm/types.h>
+#include <cglm/vec3.h>
 
 #include "tt-error.h"
 

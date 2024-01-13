@@ -10,9 +10,6 @@ libpng_dep = dependency('libpng', fallback : ['libpng', 'libpng_dep'])
 
 dependencies = [m_dep, glfw_dep, glew_dep, cglm_dep, libpng_dep]
 
-includes = include_directories('include')
-
-
 ### Library ###
 
 lib_sources = [
@@ -20,11 +17,7 @@ lib_sources = [
   'src/tt-behaviour-fail.c',
   'src/tt-behaviour-harvest-wood.c',
   'src/tt-behaviour-idle.c',
- # 'src/tt-behaviour-inventory-full.c',
   'src/tt-behaviour-loop.c',
-#  'src/tt-behaviour-selector.c',
-#  'src/tt-behaviour-selector-until.c',
-#  'src/tt-behaviour-select-stockpile.c',
   'src/tt-behaviour-select-tree.c',
   'src/tt-behaviour-sequence.c',
   'src/tt-behaviour-sleep.c',
@@ -58,7 +51,7 @@ lib_sources = [
 
 lib = both_libraries(
   'tt', lib_sources,
-  include_directories : includes,
+  include_directories : [],
   dependencies : dependencies,
   install : true,
 )
@@ -69,7 +62,7 @@ lib = both_libraries(
 test_exe = executable(
   'tt',
   'src/main.c',
-  include_directories : includes,
+  include_directories : [],
   dependencies : dependencies,
   link_with : lib,
   install : true,
@@ -78,7 +71,7 @@ test_exe = executable(
 
 ### Tests ###
 
-test_includes = include_directories('include', 'tests')
+test_includes = include_directories('src', 'tests')
 
 test_suites = {
   'tt-bitset': [
@@ -120,3 +113,37 @@ foreach suite, tests : test_suites
     test(suite + '-' + test_name, test_exe, timeout: 10)
   endforeach
 endforeach
+
+python_test_suites = {
+  'lint': [
+    'exact-includes',
+    'unused-symbols',
+    'no-circular-includes',
+    'source-and-header-orders-match',
+    'source-and-header-contents-match',
+  ],
+}
+
+pymod = import('python')
+python = pymod.find_installation('python3')
+
+foreach suite, tests : python_test_suites
+  foreach test_name : tests
+    test(
+      suite + '-' + test_name,
+      python,
+      args: [
+        meson.current_source_dir() +
+        '/tests/' + suite +
+        '/test_' + test_name.replace('-', '_') + '.py',
+      ],
+      env: {
+        'MESON_BUILD_ROOT': meson.project_build_root(),
+        'MESON_SOURCE_ROOT': meson.project_source_root(),
+      },
+      timeout: 1000,
+    )
+  endforeach
+endforeach
+
+

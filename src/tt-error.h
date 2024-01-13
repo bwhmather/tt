@@ -25,7 +25,9 @@ tt_log_impl(
     tt_log_impl(__FILE__, __LINE__, __func__, TT_LOG_LEVEL_INFO, __VA_ARGS__);
 
 #define tt_warning(...)                                                        \
-    tt_log_impl(__FILE__, __LINE__, __func__, TT_LOG_LEVEL_WARNING, __VA_ARGS__);
+    tt_log_impl(                                                               \
+        __FILE__, __LINE__, __func__, TT_LOG_LEVEL_WARNING, __VA_ARGS__        \
+    );
 
 #define tt_error(...)                                                          \
     tt_log_impl(__FILE__, __LINE__, __func__, TT_LOG_LEVEL_ERROR, __VA_ARGS__);

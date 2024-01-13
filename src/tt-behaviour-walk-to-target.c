@@ -2,7 +2,6 @@
 
 #include <malloc.h>
 #include <math.h>
-#include <stddef.h>
 
 #include "bt.h"
 #include "tt-behaviour.h"

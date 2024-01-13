@@ -1,7 +1,5 @@
 #pragma once
 
-#include "tt-entities.h"
-
 void
 tt_system_sprites_startup(void);
 void

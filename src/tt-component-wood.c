@@ -1,5 +1,7 @@
 #include "tt-component-wood.h"
 
+#include <stdbool.h>
+
 #include "tt-entities.h"
 #include "tt-error.h"
 #include "tt-storage-vector.h"

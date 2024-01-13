@@ -1,8 +1,6 @@
 #include "tt-behaviour-harvest-wood.h"
 
 #include <malloc.h>
-#include <math.h>
-#include <stddef.h>
 
 #include "bt.h"
 #include "tt-behaviour.h"

@@ -1,11 +1,12 @@
 #include "tt-renderer.h"
 
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include <GL/glew.h>
-#include <cglm/cglm.h>
+#include <cglm/types.h>
 
 #include "tt-error.h"
 #include "tt-resource-camera.h"

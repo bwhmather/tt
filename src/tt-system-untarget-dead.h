@@ -1,7 +1,5 @@
 #pragma once
 
-#include "tt-entities.h"
-
 void
 tt_system_untarget_dead_startup(void);
 void

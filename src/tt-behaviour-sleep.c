@@ -1,12 +1,9 @@
 #include "tt-behaviour-sleep.h"
 
 #include <malloc.h>
-#include <stddef.h>
-#include <string.h>
 
 #include "bt.h"
 #include "tt-behaviour.h"
-#include "tt-entities.h"
 #include "tt-error.h"
 
 typedef struct {

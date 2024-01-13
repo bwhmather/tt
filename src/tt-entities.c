@@ -1,8 +1,7 @@
 #include "tt-entities.h"
 
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
+#include <stdbool.h>
+#include <stddef.h>
 
 #include "tt-bitset.h"
 #include "tt-error.h"

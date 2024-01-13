@@ -1,16 +1,12 @@
 
 #include "tt-behaviour-idle.h"
 
-#include <malloc.h>
 #include <math.h>
-#include <stddef.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "bt.h"
 #include "tt-behaviour.h"
 #include "tt-component-position.h"
-#include "tt-entities.h"
 #include "tt-error.h"
 
 typedef struct {

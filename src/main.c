@@ -5,10 +5,11 @@
 
 #include <GL/glew.h>
 #define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
-#include <cglm/cglm.h>
+#include <stdbool.h>
 
-#include "bt.h"
+#include <GLFW/glfw3.h>
+#include <cglm/types.h>
+
 #include "tt-component-behaviour-stack.h"
 #include "tt-component-behaviour.h"
 #include "tt-component-brain.h"

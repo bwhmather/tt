@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cglm/cglm.h>
+#include <cglm/types.h>
 
 void
 tt_resource_camera_startup();

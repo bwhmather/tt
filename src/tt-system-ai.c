@@ -1,14 +1,12 @@
 #include "tt-system-ai.h"
 
+#include <stdbool.h>
+
 #include "bt.h"
 #include "tt-behaviour-harvest-wood.h"
 #include "tt-behaviour-idle.h"
-#include "tt-behaviour-inventory-full.h"
 #include "tt-behaviour-loop.h"
-#include "tt-behaviour-select-stockpile.h"
 #include "tt-behaviour-select-tree.h"
-#include "tt-behaviour-selector-until.h"
-#include "tt-behaviour-selector.h"
 #include "tt-behaviour-sequence.h"
 #include "tt-behaviour-sleep.h"
 #include "tt-behaviour-succeed.h"

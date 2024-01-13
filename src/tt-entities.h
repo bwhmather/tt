@@ -2,7 +2,6 @@
 
 #include <stdbool.h>
 #include <stddef.h>
-#include <stdint.h>
 
 typedef size_t TTEntityId;
 typedef size_t TTEntityIter;
@@ -10,10 +9,9 @@ typedef size_t TTEntityIter;
 void
 tt_entities_startup(void);
 void
-tt_entities_shutdown(void);
-
-void
 tt_entities_maintain(void);
+void
+tt_entities_shutdown(void);
 
 TTEntityId
 tt_entities_create(void);

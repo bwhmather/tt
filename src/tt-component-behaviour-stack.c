@@ -1,9 +1,10 @@
 #include "tt-component-behaviour-stack.h"
 
+#include <stdbool.h>
 #include <stddef.h>
 
 #include "bt.h"
-#include "tt-behaviour.h"
+#include "tt-entities.h"
 #include "tt-error.h"
 #include "tt-storage-vector.h"
 

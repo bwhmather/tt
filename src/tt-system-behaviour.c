@@ -1,5 +1,7 @@
 #include "tt-system-behaviour.h"
 
+#include <stdbool.h>
+
 #include "bt.h"
 #include "tt-behaviour.h"
 #include "tt-component-behaviour-stack.h"

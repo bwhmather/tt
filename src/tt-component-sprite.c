@@ -1,5 +1,7 @@
 #include "tt-component-sprite.h"
 
+#include <stdbool.h>
+
 #include "tt-entities.h"
 #include "tt-error.h"
 #include "tt-storage-vector.h"
