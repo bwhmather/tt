@@ -36,7 +36,7 @@ tt_storage_vector_new(size_t component_size) {
     storage->count = 256;
 
     storage->mask =
-        (uint64_t *)calloc(sizeof(uint64_t), ((storage->count - 1) / 64) + 1);
+        (uint64_t *)calloc(((storage->count - 1) / 64) + 1, sizeof(uint64_t));
     tt_assert(storage->mask != NULL);
 
     storage->buffer = (unsigned char *)calloc(component_size, storage->count);
